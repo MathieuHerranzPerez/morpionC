@@ -1,5 +1,3 @@
-
-
 #ifndef liste_H
 #define liste_H
 
@@ -20,12 +18,12 @@ int estVide(tpl liste);				// verifie si la liste est vide
 tpl ajoutListe(int i, int j, tpl liste);
 int teteListeI(tpl liste);
 int teteListeJ(tpl liste);
-tpl queueListe(tpl liste); 
-tpl creeListe(); 
+tpl queueListe(tpl liste);
+tpl creeListe();
 int compterLongueur(tpl liste);
-tpl copierListe(tpl liste); 
+tpl copierListe(tpl liste);
 tpl rechercherElmt(int i, int j, tpl liste);
-tpl supprimerElmt(int i, int j, tpl liste); 
+tpl supprimerElmt(int i, int j, tpl liste);
 tpl recopierInverse(tpl liste);
 void afficherListe(tpl liste);
 

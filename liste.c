@@ -41,7 +41,7 @@ tpl ajoutListe(int i, int j, tpl liste)
 {
     tpl newListe;
     newListe = (tpl)malloc(sizeof(t_liste));
-    newListe->i = i;    
+    newListe->i = i;
     newListe->j = j;
     newListe->suiv = liste;
     return newListe;
@@ -81,7 +81,7 @@ tpl queueListe(tpl liste)
 }
 
 /**
- * @brief demande à l'utilisateur de saisir des valeurs, 
+ * @brief demande à l'utilisateur de saisir des valeurs,
  * et creer une liste à partir de celles-ci
  * @return tpl la nouvelle liste
  */
@@ -96,12 +96,12 @@ tpl creerListe()
     do{
         printf("saisir nouvelle valeur i : ");
         scanf("%d", & i);
-		printf("saisir nouvelle valeur j : ");
+        printf("saisir nouvelle valeur j : ");
         scanf("%d", & j);
-		if(i >= 0)
-			liste = ajoutListe(i, j, liste);
+        if(i >= 0)
+            liste = ajoutListe(i, j, liste);
     } while(i >= 0);
-      
+
     return liste;
 }
 
@@ -143,7 +143,7 @@ int compterLongueur(tpl liste)
  */
 tpl copierListe(tpl liste)
 {
-    if(estVide(liste))        
+    if(estVide(liste))
         return liste;
     else
         return ajoutListe(teteListeI(liste), teteListeJ(liste), copierListe(queueListe(liste)));
@@ -157,8 +157,8 @@ tpl copierListe(tpl liste)
  */
 tpl rechercherElmt(int i, int j, tpl liste)
 {
-    while(!estVide(liste) && teteListeI(liste) != i 
-          && teteListeJ(liste) != j)
+    while(!estVide(liste) && (teteListeI(liste) != i
+          || teteListeJ(liste) != j))
     {
         liste = queueListe(liste);
     }
@@ -174,25 +174,27 @@ tpl rechercherElmt(int i, int j, tpl liste)
 tpl supprimerElmt(int i, int j, tpl liste)
 {
     tpl listeTmp = liste;
-    while(teteListeI(liste) == i && teteListeJ(liste) == j)   // on traite le premier à part
+    tpl tmpListe = liste;
+    while(liste != creerVide() && teteListeI(liste) == i && teteListeJ(liste) == j)   // on traite le premier à part
     {
-        liste = queueListe(liste);
-        free(listeTmp);
-        listeTmp = liste;
+        tmpListe = queueListe(liste);
+        free(liste);
+        liste = tmpListe;
     }
-    
+
     while(queueListe(liste) != creerVide())
     {
-        if(teteListeI(queueListe(liste)) == i && 
+        if(teteListeI(queueListe(liste)) == i &&
             teteListeJ(queueListe(liste)) == j)
         {
-            free(queueListe(liste));
+            listeTmp = queueListe(liste);
             liste->suiv = queueListe(queueListe(liste));
+            free(listeTmp);
         }
         else
             liste = queueListe(liste);
-    }    
-    return listeTmp;
+    }
+    return tmpListe;
 }
 
 /**

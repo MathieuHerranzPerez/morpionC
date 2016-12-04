@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "liste.h"
 
-int TAILLE = 0;
+static int TAILLE = 0;
 
 /**
  * @brief initialiserMorpion demande la taille du plateau
@@ -10,10 +10,12 @@ int TAILLE = 0;
  * @param morpion
  * @return renvoie le plateau initialisé
  */
-char** initialiserMorpion(char** morpion)
+char** initialiserMorpion()
 {
     int i, j;
-    
+
+    char** morpion;
+
     //On demande à l'utilisteur de saisir la taille du plateau
     while(TAILLE < 5 || TAILLE > 25)
     {
@@ -48,13 +50,13 @@ void afficherMorpion(char** morpion)
 {
     int i, j;
     //clear le terminal
-    printf("\033[H\033[J  ");
+    //printf("\033[H\033[J  ");
     for(i = 0; i < TAILLE; ++i)
     {
         printf("%d ", i);
     }
     printf("\n");
-    
+
     for(i = 0; i < TAILLE; ++i)
     {
         printf("%d|", i);
@@ -72,7 +74,7 @@ void afficherMorpion(char** morpion)
  * @param joueur
  */
 void afficherJoueurActuel(int joueur)
-{           
+{
     if(joueur)
     {
         printf("C'est au joueur ");
@@ -80,7 +82,7 @@ void afficherJoueurActuel(int joueur)
         printf("X");
         printf("\033[30m");
         printf(" de jouer.\n");
-    }    
+    }
     else
     {
         printf("C'est au joueur ");
@@ -104,7 +106,7 @@ int changerJoueur(int joueur)
  */
 int estFin(int nbCoupsJoues)
 {
-    return nbCoupsJoues == TAILLE;
+    return nbCoupsJoues == TAILLE * TAILLE;
 }
 
 /**
@@ -120,165 +122,236 @@ int verifierCaseSaisieJouable(int i, int j, tpl liste)
     if(rechercherElmt(i, j, liste) != creerVide())
         return 1;
     else
-        return 0;    
+        return 0;
 }
 
-
+/**
+ * @brief trouverCasesJouables
+ * @param i
+ * @param j
+ * @param liste
+ * @param morpion
+ * @return
+ */
 tpl trouverCasesJouables(int i, int j, tpl liste, char** morpion)
 {
     int indI;
     int indJ;
-            
-    //on supprime la case jouée
-    supprimerElmt(i, j, liste);
-    for(indI = i-1; indI < i+1; ++indI)
+    for(indI = i-1; indI <= i+1; ++indI)
     {
-        for(indJ = j-1; indJ < j+1; ++indJ)
+        for(indJ = j-1; indJ <= j+1; ++indJ)
         {
             if(indI >= 0 && indJ >= 0 && indI < TAILLE && indJ < TAILLE
-                    && morpion[indI][indJ] == ' ')
+                    && morpion[indI][indJ] == ' ' && !rechercherElmt(indI, indJ, liste))
             {
-                ajoutListe(indI, indJ, liste);
+                liste = ajoutListe(indI, indJ, liste);
             }
         }
     }
+    //on supprime la case jouée
+    liste = supprimerElmt(i, j, liste);
     return liste;
 }
 
+/**
+ * @brief estGainDiagAsc
+ * @param i
+ * @param j
+ * @param morpion
+ * @return
+ */
 int estGainDiagAsc(int i, int j, char** morpion)
 {
     int indI;
     int indJ;
     int cptNbAlignes;
-    
+
     cptNbAlignes=1;
     indI = i;
-    indJ=j; 
-    
-    while(indI > 1 &&  indJ < TAILLE-1 
+    indJ=j;
+
+    while(indI > 1 &&  indJ < TAILLE-1
         && morpion[indI][indJ]==morpion[indI-1][indJ+1])
     {
-        cptNbAlignes = cptNbAlignes+1;          
+        cptNbAlignes = cptNbAlignes+1;
         indI = indI-1;
-        indJ = indJ+1;   
+        indJ = indJ+1;
     }
     indI = i;
     indJ = j;
-    while(indI < TAILLE+1 && indJ > 1 
+    while(indI < TAILLE+1 && indJ > 1
         && morpion[indI][indJ]==morpion[indI+1][indJ-1])
     {
-        cptNbAlignes = cptNbAlignes+1;          
+        cptNbAlignes = cptNbAlignes+1;
         indI = indI+1;
-        indJ = indJ-1;   
+        indJ = indJ-1;
     }
     return (cptNbAlignes == 5);
 }
 
+/**
+ * @brief estGainDiagDes
+ * @param i
+ * @param j
+ * @param morpion
+ * @return
+ */
 int estGainDiagDes(int i, int j, char** morpion)
 {
     int indI;
     int indJ;
     int cptNbAlignes;
-    
+
     cptNbAlignes=1;
     indI = i;
-    indJ=j; 
-    
-    while(indI > 1 &&  indJ > 1 
-        && morpion[indI][indJ]==morpion[indI-1][indJ-1])
+    indJ=j;
+
+    while(indI > 1 &&  indJ > 1
+        && morpion[indI][indJ]==morpion[indI-1][indJ-1]) //TODO seg fault
     {
-        cptNbAlignes = cptNbAlignes+1;          
+        cptNbAlignes = cptNbAlignes+1;
         indI = indI-1;
-        indJ = indJ-1;   
+        indJ = indJ-1;
     }
     indI = i;
     indJ = j;
-    while(indI < TAILLE+1 && indJ < TAILLE+1 
+    while(indI < TAILLE+1 && indJ < TAILLE+1
         && morpion[indI][indJ]==morpion[indI+1][indJ+1])
     {
-        cptNbAlignes = cptNbAlignes+1;          
+        cptNbAlignes = cptNbAlignes+1;
         indI = indI+1;
-        indJ = indJ+1;   
+        indJ = indJ+1;
     }
     return (cptNbAlignes == 5);
 }
 
+/**
+ * @brief estGainVertical
+ * @param i
+ * @param j
+ * @param morpion
+ * @return
+ */
 int estGainVertical(int i, int j, char** morpion)
 {
     int indI;
     int cptNbAlignes;
-    
+
     cptNbAlignes=1;
-    indI = i; 
-    
+    indI = i;
+
     while(indI < TAILLE-1 && morpion[indI][j]==morpion[indI+1][j])
     {
-        cptNbAlignes = cptNbAlignes+1;          
-        indI = indI +1;   
+        cptNbAlignes = cptNbAlignes+1;
+        indI = indI +1;
     }
     indI = i;
     while(indI > 1 && morpion[indI][j]==morpion[indI-1][j])
     {
-        cptNbAlignes = cptNbAlignes+1;          
-        indI = indI -1;   
+        cptNbAlignes = cptNbAlignes+1;
+        indI = indI -1;
     }
     return (cptNbAlignes == 5);
 }
 
+/**
+ * @brief estGainHorizontal
+ * @param i
+ * @param j
+ * @param morpion
+ * @return
+ */
 int estGainHorizontal(int i, int j, char** morpion)
 {
     int indJ;
     int cptNbAlignes;
-    
+
     cptNbAlignes=1;
     indJ = j;
-    
+
     while(indJ < TAILLE-1 && morpion[i][indJ]==morpion[i][indJ+1])
     {
-        cptNbAlignes = cptNbAlignes+1;          
-        indJ = indJ +1;   
+        cptNbAlignes = cptNbAlignes+1;
+        indJ = indJ +1;
     }
     indJ = j;
     while(indJ > 1 && morpion[i][indJ]==morpion[i][indJ-1])
     {
-        cptNbAlignes = cptNbAlignes+1;          
-        indJ = indJ -1;   
+        cptNbAlignes = cptNbAlignes+1;
+        indJ = indJ -1;
     }
     return (cptNbAlignes == 5);
 }
 
+/**
+ * @brief estGain
+ * @param i
+ * @param j
+ * @param morpion
+ * @return
+ */
 int estGain(int i, int j, char** morpion)
 {
     return (estGainDiagAsc(i, j, morpion) || estGainDiagDes(i, j, morpion) ||
             estGainHorizontal(i, j, morpion) || estGainVertical(i, j, morpion));
 }
 
-void jouerJoueur(int joueur, char** morpion, tpl liste)
+/**
+ * @brief jouerJoueur
+ * @param i
+ * @param j
+ * @param joueur
+ * @param morpion
+ * @param liste
+ */
+void jouerJoueur(int i, int j, int joueur, char** morpion, tpl liste)
+{
+    morpion[i][j] = (joueur == 1 ? 'X' : 'O');
+}
+
+void test()
 {
     int i = -1; //pour ne pas le trouver dans la lsite
     int j = -1; //pour ne pas le trouver dans la lsite
-    
-    while(rechercherElmt(i, j, liste) != NULL)
+    int cptTour = 0;
+    int joueur = 1;
+    tpl liste = creerVide();
+
+    char** morpion = initialiserMorpion();
+    morpion[TAILLE/2][TAILLE/2] = 'O';
+    liste = ajoutListe(TAILLE/2, TAILLE/2, liste);
+    liste = trouverCasesJouables(TAILLE/2, TAILLE/2, liste, morpion);
+
+    do
     {
-        printf("Entrez i : ");
-        scanf("%d", &i);
-        printf("Entrez j : ");
-        scanf("%d", &j);
-        if(rechercherElmt(i, j, liste) == NULL)
-            printf("Mauvaises coordonnées, veuillez en entrer de nouvelles.\n");
-    }
-    morpion[i][j] = (joueur == 1 ? 'X' : 'O');
+        i = -1;
+        j = -1;
+        afficherMorpion(morpion);
+        afficherJoueurActuel(joueur);
+        //on saisie i et j
+        while(rechercherElmt(i, j, liste) == NULL)
+        {
+            printf("Entrez ligne : ");
+            scanf("%d", &i);
+            printf("Entrez colonne : ");
+            scanf("%d", &j);
+            afficherListe(liste);
+            if(!verifierCaseSaisieJouable(i, j, liste))
+            {
+                printf("Mauvaises coordonnées, veuillez en entrer de nouvelles.\n");
+                afficherListe(liste);
+            }
+        }
+        jouerJoueur(i, j, joueur, morpion, liste);
+        liste = trouverCasesJouables(i, j, liste, morpion);
+        joueur = changerJoueur(joueur);
+        ++cptTour;
+    } while(!estGain(i, j, morpion) && !estFin(cptTour));
 }
 
 int main(void)
 {
-    //jouer();
-    int joueur = 1;
-    char ** morpion = initialiserMorpion(morpion);
-    afficherMorpion(morpion);
-    afficherJoueurActuel(joueur);
-
-
+    test();
     return 0;
 }
 
