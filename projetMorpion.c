@@ -26,7 +26,7 @@ tpm initialiserMorpion()
     tpm morpion = (tpm)malloc(sizeof(t_morpion));
 
     //On demande à l'utilisteur de saisir la taille du plateau
-    while(taille < 2 || taille > 25)
+    while(taille < 5 || taille > 25)
     {
         printf("saisir la taille du morpion (>5 et <25) : ");
         scanf("%d", &taille);
@@ -60,7 +60,7 @@ void afficherMorpion(tpm morpion)
 {
     int i, j;
     //clear le terminal
-    // printf("\033[H\033[J  ");
+    printf("\033[H\033[J  ");
     for(i = 0; i < getTailleMorpion(morpion); ++i)
     {
         printf("%d ", i);
@@ -74,16 +74,16 @@ void afficherMorpion(tpm morpion)
         {
             if(morpion->morpion[i][j] == 'X')
             {
-                //printf("\033[31m");
+                printf("\033[31m");
                 printf("X");
-                // printf("\033[30m");
+                printf("\033[30m");
                 printf("|");
             }
             else if(morpion->morpion[i][j] == 'O')
             {
-                //printf("\033[32m");
+                printf("\033[32m");
                 printf("O");
-                //printf("\033[30m");
+                printf("\033[30m");
                 printf("|");
             }
             else
@@ -330,7 +330,7 @@ int estGain(int i, int j, tpm morpion)
  * @param morpion
  * @param liste
  */
-void jouerJoueur(int i, int j, int joueur, tpm morpion, tpl liste)
+void jouerJoueur(int i, int j, int joueur, tpm morpion)
 {
     morpion->morpion[i][j] = (joueur == 1 ? 'X' : 'O');
 }
