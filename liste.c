@@ -158,7 +158,7 @@ tpl copierListe(tpl liste)
 tpl rechercherElmt(int i, int j, tpl liste)
 {
     while(!estVide(liste) && (teteListeI(liste) != i
-          || teteListeJ(liste) != j))
+                              || teteListeJ(liste) != j))
     {
         liste = queueListe(liste);
     }
@@ -181,18 +181,20 @@ tpl supprimerElmt(int i, int j, tpl liste)
         free(liste);
         liste = tmpListe;
     }
-
-    while(queueListe(liste) != creerVide())
+    if(!estVide(liste))
     {
-        if(teteListeI(queueListe(liste)) == i &&
-            teteListeJ(queueListe(liste)) == j)
+        while(queueListe(liste) != creerVide())
         {
-            listeTmp = queueListe(liste);
-            liste->suiv = queueListe(queueListe(liste));
-            free(listeTmp);
+            if(teteListeI(queueListe(liste)) == i &&
+               teteListeJ(queueListe(liste)) == j)
+            {
+                listeTmp = queueListe(liste);
+                liste->suiv = queueListe(queueListe(liste));
+                free(listeTmp);
+            }
+            else
+                liste = queueListe(liste);
         }
-        else
-            liste = queueListe(liste);
     }
     return tmpListe;
 }

@@ -9,8 +9,7 @@ typedef struct structListe
     int i;
     int j;
     struct structListe * suiv;
-}
-t_liste, * tpl;
+} t_liste, * tpl;
 
 
 tpl creerVide(void);		// créé une liste vide
