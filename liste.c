@@ -9,7 +9,7 @@
 #include <malloc.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "liste.h"
+#include "fichierH/liste.h"
 
 
 /**
@@ -96,7 +96,7 @@ tpl creerListe()
     do{
         printf("saisir nouvelle valeur i : ");
         scanf("%d", & i);
-        printf("saisir nouvelle valeur j : ");
+        printf("saisir nouvellevoid supprimerListe(tpl liste); valeur j : ");
         scanf("%d", & j);
         if(i >= 0)
             liste = ajoutListe(i, j, liste);
@@ -158,7 +158,7 @@ tpl copierListe(tpl liste)
 tpl rechercherElmt(int i, int j, tpl liste)
 {
     while(!estVide(liste) && (teteListeI(liste) != i
-                              || teteListeJ(liste) != j))
+          || teteListeJ(liste) != j))
     {
         liste = queueListe(liste);
     }
@@ -186,7 +186,7 @@ tpl supprimerElmt(int i, int j, tpl liste)
         while(queueListe(liste) != creerVide())
         {
             if(teteListeI(queueListe(liste)) == i &&
-               teteListeJ(queueListe(liste)) == j)
+                teteListeJ(queueListe(liste)) == j)
             {
                 listeTmp = queueListe(liste);
                 liste->suiv = queueListe(queueListe(liste));
@@ -213,4 +213,19 @@ tpl recopierInverse(tpl liste)
         liste = queueListe(liste);
     }
     return newListe;
+}
+
+void supprimerListeRec(tpl liste)
+{
+    if(liste != NULL)
+    {
+        supprimerListeRec(queueListe(liste));
+        free(liste);
+    }
+}
+
+void supprimerListe(tpl *liste)
+{
+    supprimerListeRec(*liste);
+    *liste = NULL;
 }

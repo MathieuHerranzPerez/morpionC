@@ -9,7 +9,8 @@ typedef struct structListe
     int i;
     int j;
     struct structListe * suiv;
-} t_liste, * tpl;
+}
+t_liste, * tpl;
 
 
 tpl creerVide(void);		// créé une liste vide
@@ -25,5 +26,7 @@ tpl rechercherElmt(int i, int j, tpl liste);
 tpl supprimerElmt(int i, int j, tpl liste);
 tpl recopierInverse(tpl liste);
 void afficherListe(tpl liste);
+void supprimerListe(tpl *liste);
+void supprimerListeRec(tpl liste);
 
 #endif
