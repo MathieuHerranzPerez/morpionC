@@ -44,7 +44,12 @@ static tpl trouverJouables(tpm morpion)
 
 
 
-
+/**
+ * Enleve de la grille le dernier coups joué aux coordonnées i j
+ * @param i colonne
+ * @param j ligne
+ * @param morpion
+ */
 static void dejouer(int i, int j, tpm morpion)
 {
     morpion->morpion[i][j] = ' ';
