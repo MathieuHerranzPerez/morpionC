@@ -56,7 +56,7 @@ static void dejouer(int i, int j, tpm morpion)
 }
 
 /**
- * Compte le nombre de mêmes symboles succéssifs à partir des coordonnées i j
+ * Compte le nombre de mêmes symboles succéssifs horizontalement à partir des coordonnées i j
  * @param i colonne
  * @param j ligne
  * @param morpion
