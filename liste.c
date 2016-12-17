@@ -215,17 +215,15 @@ tpl recopierInverse(tpl liste)
     return newListe;
 }
 
-void supprimerListeRec(tpl liste)
-{
-    if(liste != NULL)
-    {
-        supprimerListeRec(queueListe(liste));
-        free(liste);
-    }
-}
 
-void supprimerListe(tpl *liste)
+tpl supprimerListe(tpl liste)
 {
-    supprimerListeRec(*liste);
-    *liste = NULL;
+    tpl listeTmp;
+    while(!estVide(liste))
+    {
+        listeTmp = liste;
+        liste = queueListe(liste);
+        free(listeTmp);
+    }
+    return creerVide();
 }

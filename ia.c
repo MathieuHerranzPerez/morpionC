@@ -5,7 +5,7 @@
 #include "fichierH/jeu.h"
 #include "fichierH/gainFin.h"
 
-//
+
 //void IA_jouer(tpm morpion, int profondeur, tpl liste, int joueur)
 //{
 //    int maxi = -10000;
