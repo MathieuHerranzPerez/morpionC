@@ -3,7 +3,7 @@
 #include "liste.h"
 
 typedef struct morp{
-    int taille;
+    int taille;//
     char** morpion;
 } t_morpion, *tpm;
 
