@@ -19,8 +19,6 @@ int main(void)
     tpm morpion = initialiserMorpion();
 
     jouerJoueur(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, joueur, morpion); // premier coup au milieu
-    //on supprime la case jouée
-    liste = supprimerElmt(i, j, liste);
     joueur = changerJoueur(joueur);
     liste = trouverCasesJouables(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, liste, morpion);
 

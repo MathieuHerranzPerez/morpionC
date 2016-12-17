@@ -5,6 +5,43 @@
 #include "fichierH/jeu.h"
 #include "fichierH/gainFin.h"
 
+/**
+ * Fonction plus lente que trouverCasesJouables(), mais n'oblige pas à une copie de liste
+ * @param morpion
+ * @return
+ */
+static tpl trouverJouables(tpm morpion)
+{
+    tpl liste = creerVide();
+    int i, j, k, l;
+    printf("%d\n", getTailleMorpion(morpion));
+    for(i = 0; i < getTailleMorpion(morpion); ++i)
+    {
+        for(j = 0; j < getTailleMorpion(morpion); ++j)
+        {
+            if(morpion->morpion[i][j] != ' ')
+            {
+                for(k = i-1; k <= i+1; ++k)
+                {
+                    printf("k : %d\n", k);
+                    for(l = j-1; l <= j+1; ++l)
+                    {
+                        printf("l : %d\n", k);
+                        if(k >= 0 && k < getTailleMorpion(morpion) && l >= 0 && l < getTailleMorpion(morpion))
+                        {
+                            if(morpion->morpion[l][k] == ' ' && !rechercherElmt(l, k, liste))
+                            {
+                                liste = ajoutListe(l, k, liste);
+                                afficherListe(liste);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return liste;
+}
 
 //void IA_jouer(tpm morpion, int profondeur, tpl liste, int joueur)
 //{
