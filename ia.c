@@ -55,6 +55,13 @@ static void dejouer(int i, int j, tpm morpion)
     morpion->morpion[i][j] = ' ';
 }
 
+/**
+ * Compte le nombre de mêmes symboles succéssifs à partir des coordonnées i j
+ * @param i colonne
+ * @param j ligne
+ * @param morpion
+ * @return le nombre de symboles succéssifs
+ */
 int compterSuccHorizontale(int i, int j, tpm morpion)
 {
     int indJ;
