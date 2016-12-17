@@ -10,6 +10,9 @@
  * @param morpion
  * @return
  */
+
+int profondeur = 5;
+
 static tpl trouverJouables(tpm morpion)
 {
     tpl liste = creerVide();
@@ -134,7 +137,98 @@ static tpl trouverJouables(tpm morpion)
 //
 //     return poidsM;
 //}
-//
+
+
+static void dejouer(int i, int j, tpm morpion)
+{
+    morpion->morpion[i][j] = ' ';
+}
+
+static int minMax(tpm morpion ,int profondeur, int estMax, tpl liste, int joueur)
+{
+    int poidsM;
+    int i, j, tmp;
+
+    if(estMax)
+        poidsM = -1000;
+    else
+        poidsM = 1000;
+
+
+    if(profondeur == 0 || /*gagnant(morpion) != 0 ||TODO*/ estFin(morpion))
+    {
+        return eval(morpion);
+    }
+
+    while(liste != NULL)
+    {
+        i = teteListeI(liste);
+        j = teteListeJ(liste);
+        jouerJoueur(i, j, joueur, morpion);
+        joueur = changerJoueur(joueur);
+        liste = supprimerListe(liste);
+        liste = trouverJouables(morpion);
+
+        if(estMax)
+            estMax = 0;
+        else
+            estMax = 1;
+
+        tmp = minMax(morpion, profondeur-1, estMax, liste, joueur);
+        if(estMax)
+            if(tmp > poidsM)
+                poidsM = tmp;
+        else
+            if(tmp < poidsM)
+                poidsM = tmp;
+
+        // on remet la case testée à defaut
+        dejouer(i, j, morpion);
+
+        liste = queueListe(liste);
+    }
+
+    return poidsM;
+}
+
+void IA_jouer(tpm morpion, int joueur)
+{
+    int maxi = -10000;
+    int tmp, indI, indJ;
+    int i, j;
+    tpl liste = creerVide();
+
+    liste = trouverJouables(morpion);
+
+    while(liste != NULL)
+    {
+        i = teteListeI(liste);
+        j = teteListeJ(liste);
+        jouerJoueur(i, j, joueur, morpion);
+        joueur = changerJoueur(joueur);
+        liste = supprimerListe(liste);
+        liste = trouverJouables(morpion);
+
+        tmp = minMax(morpion, profondeur-1, 0, liste, joueur);
+        if(tmp > maxi)
+        {
+             maxi = tmp;
+             indI = i;
+             indJ = j;
+        }
+
+        // on remet la case testée à defaut
+        dejouer(i, j, morpion);
+
+        liste = queueListe(liste);
+    }
+    liste = supprimerListe(liste);
+    liste = trouverJouables(morpion);
+    jouerJoueur(indI, indJ, joueur, morpion);
+}
+
+
+
 //void compterSymbSucc(tpm morpion, int *nbCroixAlign, int *nbRondsAlign, int nbAlign)
 //{
 //    int i;
