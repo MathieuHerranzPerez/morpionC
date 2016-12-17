@@ -4,7 +4,7 @@
 
 typedef struct morp{
     int taille;//
-    char** morpion;
+    char** morpion;//
 } t_morpion, *tpm;
 
 
