@@ -39,7 +39,6 @@ static tpl trouverJouables(tpm morpion)
             }
         }
     }
-    afficherListe(liste);
     return liste;
 }
 
@@ -104,9 +103,6 @@ int compterSuccVerticale(int i, int j, tpm morpion)
         cptNbAlignes = cptNbAlignes+1;
         indI = indI -1;
     }
-    printf("%d %d\n", i, j);
-    printf("vertical suuc : %d\n", cptNbAlignes);
-
     return cptNbAlignes;
 }
 
@@ -210,7 +206,8 @@ static int estBloqueV(int i, int j, tpm morpion)
         indI = indI +1;
     }
     indI = i;
-    while(indI > 0 && morpion->morpion[indI][j] == morpion->morpion[indI-1][j])
+    while(indI > 0 && (morpion->morpion[indI][j] == morpion->morpion[indI-1][j]
+            || morpion->morpion[indI-1][j] == ' '))
     {
         ++cptPlaceDispo;
         indI = indI -1;
@@ -226,11 +223,11 @@ static int estBloqueDA(int i, int j, tpm morpion)
     int indJ;
     int cptPlaceDispo;
 
-    cptPlaceDispo=1;
+    cptPlaceDispo = 1;
     indI = i;
-    indJ=j;
+    indJ = j;
 
-    while(indI > 0 &&  indJ < getTailleMorpion(morpion)-1
+    while(indI > 0 && indJ < getTailleMorpion(morpion)-1
           && (morpion->morpion[indI][indJ] == morpion->morpion[indI-1][indJ+1]
               || morpion->morpion[indI-1][indJ+1] == ' '))
     {
@@ -242,7 +239,7 @@ static int estBloqueDA(int i, int j, tpm morpion)
     indJ = j;
     while(indI < getTailleMorpion(morpion)-1 && indJ > 0
           && (morpion->morpion[indI][indJ] == morpion->morpion[indI+1][indJ-1]
-              || morpion->morpion[indI-1][indJ+1] == ' '))
+              || morpion->morpion[indI+1][indJ-1] == ' '))
     {
         ++cptPlaceDispo;
         indI = indI+1;
@@ -302,7 +299,10 @@ static int eval(int indI, int indJ, tpm morpion, int estMax) //TODO prendre en c
         poidsDD = 0;
     int meilleurPoids;
 
+    afficherMorpion(morpion); // affichageTest
     // compter nb pions successifs et si ils sont bloqués
+
+    printf("%d %d\n", indI, indJ); // affichageTest
 
     //horizontale
     cptHorizontale = compterSuccHorizontale(indI, indJ, morpion);
@@ -317,6 +317,7 @@ static int eval(int indI, int indJ, tpm morpion, int estMax) //TODO prendre en c
         else
             return -200;
     }
+    printf("est bloque H : %d\n", estBloqueH(indI, indJ, morpion)); // affichageTest
 
     //verticale
     cptVerticale = compterSuccVerticale(indI, indJ, morpion);
@@ -331,7 +332,7 @@ static int eval(int indI, int indJ, tpm morpion, int estMax) //TODO prendre en c
         else
             return -200;
     }
-
+    printf("est bloque V : %d\n", estBloqueV(indI, indJ, morpion)); // affichageTest
     //diag asc
     cptDiagAsc = compterSuccDiagAsc(indI, indJ, morpion);
     if(cptDiagAsc >= 3 && cptDiagAsc < 5 && !estBloqueDA(indI, indJ, morpion))
@@ -345,6 +346,7 @@ static int eval(int indI, int indJ, tpm morpion, int estMax) //TODO prendre en c
         else
             return -200;
     }
+    printf("est bloque DA : %d\n", estBloqueDA(indI, indJ, morpion)); // affichageTest
 
     //diag desc
     cptDiagDes = compterSuccDiagDesc(indI, indJ, morpion);
@@ -359,6 +361,7 @@ static int eval(int indI, int indJ, tpm morpion, int estMax) //TODO prendre en c
         else
             return -200;
     }
+    printf("est bloque DD : %d\n", estBloqueDD(indI, indJ, morpion)); // affichageTest
 
     if(poidsH > poidsV)
         meilleurPoids = poidsH;
