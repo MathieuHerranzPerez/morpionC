@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.3)
-project(morp)
+project(morpionC)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 
@@ -16,4 +16,4 @@ set(SOURCE_FILES main.c
                  liste.c
                  fichierH/morpion.h
                  morpion.c)
-add_executable(morp ${SOURCE_FILES})
+add_executable(morpionC ${SOURCE_FILES})

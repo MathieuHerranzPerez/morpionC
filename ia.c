@@ -11,7 +11,7 @@
  * @return
  */
 
-int profondeur = 3;
+int profondeur = 1;
 
 static tpl trouverJouables(tpm morpion)
 {
@@ -29,9 +29,9 @@ static tpl trouverJouables(tpm morpion)
                     {
                         if(k >= 0 && k < getTailleMorpion(morpion) && l >= 0 && l < getTailleMorpion(morpion))
                         {
-                            if(morpion->morpion[l][k] == ' ' && !rechercherElmt(l, k, liste))
+                            if(morpion->morpion[k][l] == ' ' && !rechercherElmt(k, l, liste))
                             {
-                                liste = ajoutListe(l, k, liste);
+                                liste = ajoutListe(k, l, liste);
                             }
                         }
                     }
@@ -39,6 +39,7 @@ static tpl trouverJouables(tpm morpion)
             }
         }
     }
+    afficherListe(liste);
     return liste;
 }
 
@@ -103,6 +104,9 @@ int compterSuccVerticale(int i, int j, tpm morpion)
         cptNbAlignes = cptNbAlignes+1;
         indI = indI -1;
     }
+    printf("%d %d\n", i, j);
+    printf("vertical suuc : %d\n", cptNbAlignes);
+
     return cptNbAlignes;
 }
 
@@ -281,8 +285,15 @@ static int estBloqueDD(int i, int j, tpm morpion)
         return 0;
     return 1;
 }
-
-static int eval(int indI, int indJ, tpm morpion, int estMax)
+/**
+ * Evalue juste le dernier coups joué
+ * @param indI
+ * @param indJ
+ * @param morpion
+ * @param estMax
+ * @return
+ */
+static int eval(int indI, int indJ, tpm morpion, int estMax) //TODO prendre en compte le dernier coup joué, et tout les coups intermédiaires (pas juste le dernier)
 {
     int cptHorizontale, cptVerticale, cptDiagDes, cptDiagAsc;
     int poidsH = 0,
@@ -384,14 +395,13 @@ static int minMax(tpm morpion ,int profondeur, int estMax, tpl listeCoord, int j
 
     liste = trouverJouables(morpion);
     listeTmp = liste;
+    joueur = changerJoueur(joueur);
 
     while(liste != NULL)
     {
         i = teteListeI(liste);
         j = teteListeJ(liste);
         jouerJoueur(i, j, joueur, morpion);
-        //if
-        joueur = changerJoueur(joueur);
 
         if(estMax)
             estMax = 0;
@@ -432,7 +442,6 @@ tpl jouerIA(tpm morpion, int joueur)
         i = teteListeI(liste);
         j = teteListeJ(liste);
         jouerJoueur(i, j, joueur, morpion);
-        joueur = changerJoueur(joueur);
 
         tmp = minMax(morpion, profondeur-1, 0, liste, joueur);
         if(tmp > maxi)
