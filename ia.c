@@ -300,6 +300,7 @@ static int eval(int indI, int indJ, tpm morpion, int estMax) //TODO prendre en c
     int meilleurPoids;
 
     afficherMorpion(morpion); // affichageTest
+
     // compter nb pions successifs et si ils sont bloqués
 
     printf("%d %d\n", indI, indJ); // affichageTest
