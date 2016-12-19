@@ -70,6 +70,8 @@ static void jouerJvIA()
     tpl coordListe = creerVide(); // pour chercher la case jouée par l'IA
     tpl liste = creerVide();
 
+    int seriesX, seriesO;
+
     tpm morpion = initialiserMorpion();
 
     jouerJoueur(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, joueur, morpion); // premier coup au milieu
@@ -116,6 +118,8 @@ static void jouerJvIA()
         }
         joueur = changerJoueur(joueur);
         ++morpion->nbCoupsJoues;
+
+        nbSeriesAlign(morpion, & seriesX, & seriesO, 3);
 
     } while(!estGain(i, j, morpion) && !estFin(morpion));
 }

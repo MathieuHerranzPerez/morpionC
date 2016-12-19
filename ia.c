@@ -5,6 +5,12 @@
 #include "fichierH/jeu.h"
 #include "fichierH/gainFin.h"
 
+
+static int estBloqueH(int i, int j, tpm morpion);
+static int estBloqueV(int i, int j, tpm morpion);
+static int estBloqueDA(int i, int j, tpm morpion);
+static int estBloqueDD(int i, int j, tpm morpion);
+
 /**
  * Fonction plus lente que trouverCasesJouables(), mais n'oblige pas à une copie de liste
  * @param morpion
@@ -12,6 +18,183 @@
  */
 
 int profondeur = 1;
+
+void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign) //TODO mettre ca en static et l'enlever du .h
+{
+    int i, j, k, l;
+    int cptO, cptX;
+
+    *seriesX = 0;
+    *seriesO = 0;
+
+    //ligne
+    for(i = 0; i < getTailleMorpion(morpion); ++i)
+    {
+        cptO = 0;
+        cptX = 0;
+
+        //horizontale
+        for(j = 0; j < getTailleMorpion(morpion); ++j)
+        {
+            if(morpion->morpion[i][j] == 'O')
+            {
+                ++cptO;
+                cptX = 0;
+                if(cptO == nbAlign && !estBloqueH(i, j, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                    ++*seriesO;
+            }
+            else if(morpion->morpion[i][j] == 'X')
+            {
+                ++cptX;
+                cptO = 0;
+                if(cptX == nbAlign && !estBloqueH(i, j, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                    ++*seriesX;
+            }
+        }
+
+        cptO = 0;
+        cptX = 0;
+
+        //verticalement
+        for(j = 0; j < getTailleMorpion(morpion); ++j)
+        {
+            if(morpion->morpion[j][i] == '0')
+            {
+                ++cptO;
+                cptX = 0;
+
+                if(cptO == nbAlign && !estBloqueV(i, j, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                    ++*seriesO;
+            }
+            else if(morpion->morpion[j][i] == 'X')
+            {
+                ++cptX;
+                cptO = 0;
+                if(cptX == nbAlign && !estBloqueV(i, j, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                    ++*seriesX;
+            }
+        }
+    }
+
+    cptO = 0;
+    cptX = 0;
+
+    //diag desc
+    for(i = 0; i < getTailleMorpion(morpion) - 4; ++i)
+    {
+        cptO = 0;
+        cptX = 0;
+        k = i;
+        l = 0;
+        while(k < getTailleMorpion(morpion))
+        {
+            if(morpion->morpion[k][l] == '0')
+            {
+                ++cptO;
+                cptX = 0;
+
+                if(cptO == nbAlign && !estBloqueDD(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                    ++*seriesO;
+            }
+            else if(morpion->morpion[k][l] == 'X')
+            {
+                ++cptX;
+                cptO = 0;
+                if(cptX == nbAlign && !estBloqueV(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                    ++*seriesX;
+            }
+            ++k;
+            ++l;
+        }
+    }
+    for(j = 1; j < getTailleMorpion(morpion) - 4; ++j) // on commence à 1 pour pas refaire la meme diag qu'avec i = 0
+    {
+        cptO = 0;
+        cptX = 0;
+        k = 0;
+        l = j;
+        while(l < getTailleMorpion(morpion))
+        {
+            if(morpion->morpion[k][l] == '0')
+            {
+                ++cptO;
+                cptX = 0;
+
+                if(cptO == nbAlign && !estBloqueDD(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                    ++*seriesO;
+            }
+            else if(morpion->morpion[k][l] == 'X')
+            {
+                ++cptX;
+                cptO = 0;
+                if(cptX == nbAlign && !estBloqueV(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                    ++*seriesX;
+            }
+            ++k;
+            ++l;
+        }
+    }
+
+    //diag desc
+
+    for(i = 0; i < getTailleMorpion(morpion) - 4; ++i)
+    {
+        cptO = 0;
+        cptX = 0;
+        k = i;
+        l = getTailleMorpion(morpion) - 1;
+        while(k < getTailleMorpion(morpion))
+        {
+            if(morpion->morpion[k][l] == '0')
+            {
+                ++cptO;
+                cptX = 0;
+
+                if(cptO == nbAlign && !estBloqueDD(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                    ++*seriesO;
+            }
+            else if(morpion->morpion[k][l] == 'X')
+            {
+                ++cptX;
+                cptO = 0;
+                if(cptX == nbAlign && !estBloqueV(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                    ++*seriesX;
+            }
+            ++k;
+            --l;
+        }
+    }
+    for(j = getTailleMorpion(morpion)-2; j > 3; --j) // on commence à taille - 2 pour pas refaire la meme diag qu'avec i = 0
+    {
+        cptO = 0;
+        cptX = 0;
+        k = 0;
+        l = j;
+        while(l >= 0)
+        {
+            if(morpion->morpion[k][l] == '0')
+            {
+                ++cptO;
+                cptX = 0;
+
+                if(cptO == nbAlign && !estBloqueDD(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                    ++*seriesO;
+            }
+            else if(morpion->morpion[k][l] == 'X')
+            {
+                ++cptX;
+                cptO = 0;
+                if(cptX == nbAlign && !estBloqueV(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                    ++*seriesX;
+            }
+            ++k;
+            --l;
+        }
+    }
+
+    printf("seriesX : %d\n", *seriesX);
+    printf("seriesO : %d\n", *seriesO);
+}
 
 static tpl trouverJouables(tpm morpion)
 {
