@@ -100,7 +100,7 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign) //TODO 
             {
                 ++cptX;
                 cptO = 0;
-                if(cptX == nbAlign && !estBloqueV(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                if(cptX == nbAlign && !estBloqueDD(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
                     ++*seriesX;
             }
             ++k;
@@ -127,7 +127,7 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign) //TODO 
             {
                 ++cptX;
                 cptO = 0;
-                if(cptX == nbAlign && !estBloqueV(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                if(cptX == nbAlign && !estBloqueDD(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
                     ++*seriesX;
             }
             ++k;
@@ -135,7 +135,7 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign) //TODO 
         }
     }
 
-    //diag desc
+    //diag asc
 
     for(i = 0; i < getTailleMorpion(morpion) - 4; ++i)
     {
@@ -150,14 +150,14 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign) //TODO 
                 ++cptO;
                 cptX = 0;
 
-                if(cptO == nbAlign && !estBloqueDD(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                if(cptO == nbAlign && !estBloqueDA(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
                     ++*seriesO;
             }
             else if(morpion->morpion[k][l] == 'X')
             {
                 ++cptX;
                 cptO = 0;
-                if(cptX == nbAlign && !estBloqueV(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                if(cptX == nbAlign && !estBloqueDA(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
                     ++*seriesX;
             }
             ++k;
@@ -177,14 +177,14 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign) //TODO 
                 ++cptO;
                 cptX = 0;
 
-                if(cptO == nbAlign && !estBloqueDD(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                if(cptO == nbAlign && !estBloqueDA(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
                     ++*seriesO;
             }
             else if(morpion->morpion[k][l] == 'X')
             {
                 ++cptX;
                 cptO = 0;
-                if(cptX == nbAlign && !estBloqueV(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                if(cptX == nbAlign && !estBloqueDA(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
                     ++*seriesX;
             }
             ++k;
