@@ -14,7 +14,7 @@ tpm initialiserMorpion()
     //On demande à l'utilisteur de saisir la taille du plateau
     while(taille < 2 || taille > 25)
     {
-        printf("saisir la taille du morpion (>5 et <25) : ");
+        printf("saisir la taille du morpion (>5 et <25)\n>");
         scanf("%d", &taille);
     }
 

@@ -374,6 +374,8 @@ static int eval(int indI, int indJ, tpm morpion, int estMax) //TODO prendre en c
     if(poidsDD > meilleurPoids)
         meilleurPoids = poidsDD;
 
+    printf("meilleurPoids : %d\n", meilleurPoids);
+
     if(estMax)
         return meilleurPoids;
     else
@@ -413,6 +415,7 @@ static int minMax(tpm morpion ,int profondeur, int estMax, tpl listeCoord, int j
             estMax = 1;
 
         tmp = minMax(morpion, profondeur-1, estMax, liste, joueur);
+        printf("tpm : %d\n", tmp);// affichage test
         if(estMax)
             if(tmp > poidsM)
                 poidsM = tmp;
@@ -428,6 +431,8 @@ static int minMax(tpm morpion ,int profondeur, int estMax, tpl listeCoord, int j
     listeTmp = supprimerListe(listeTmp);
     free(listeTmp);
     free(liste);
+
+    printf("poidsM : %d\n", poidsM);    //affichage test
     return poidsM;
 }
 
@@ -447,13 +452,16 @@ tpl jouerIA(tpm morpion, int joueur)
         j = teteListeJ(liste);
         jouerJoueur(i, j, joueur, morpion);
 
-        tmp = minMax(morpion, profondeur-1, 0, liste, joueur);
+        tmp = minMax(morpion, profondeur-1, 1, liste, joueur);
         if(tmp > maxi)
         {
-             maxi = tmp;
-             indI = i;
-             indJ = j;
+            maxi = tmp;
+            indI = i;
+            printf("meilleur i : %d\n", i); //affichage test
+            indJ = j;
+            printf("meilleur j : %d\n", j); //affichage test
         }
+        printf("maxi : %d\n\n", maxi);// affichage test
 
         // on remet la case testée à defaut
         dejouer(i, j, morpion);
