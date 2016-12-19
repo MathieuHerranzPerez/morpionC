@@ -101,26 +101,21 @@ static void jouerJvIA()
             listeTmp = copierListe(liste); //pour trouver l'element joué par l'IA
 
             liste = supprimerListe(liste);
-            joueur = changerJoueur(joueur);
-            ++morpion->nbCoupsJoues;
         }
         else
         {
-            afficherListe(listeTmp);
+            afficherListe(listeTmp); // affichage test
 
             liste = jouerIA(morpion, joueur);
 
-            coordListe = trouverCaseJouee(listeTmp, liste);
-
+            coordListe = trouverCaseJouee(listeTmp, liste); // pour sortir en cas de victoire de l'IA
             i = teteListeI(coordListe);
-
             j = teteListeJ(coordListe);
 
             supprimerListe(listeTmp);
-
-            joueur = changerJoueur(joueur);
-            ++morpion->nbCoupsJoues;
         }
+        joueur = changerJoueur(joueur);
+        ++morpion->nbCoupsJoues;
 
     } while(!estGain(i, j, morpion) && !estFin(morpion));
 }
@@ -130,7 +125,7 @@ int main(void)
     int choix = 0;
     while(choix <= 0 || choix > 3)
     {
-        printf("Voulez-vous jouer\n - (1) en J vs J\n - (2) en J vs IA\n - (3) en IA v sAI, et donc ne pas jouer ...\n> ");
+        printf("Voulez-vous jouer\n - (1) en J vs J\n - (2) en J vs IA\n - (3) en IA vs IA, et donc ne pas jouer ...\n> ");
         scanf("%d", &choix);
     }
     switch(choix)
