@@ -195,6 +195,23 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign) //TODO 
     printf("seriesO : %d\n", *seriesO);
 }
 
+/**
+ * Vérifie grâce à nbSeriesAlign si il y a un gagnant
+ * @param morpion
+ * @return vrai ou faux
+ */
+static int estGainIA(tpm morpion)
+{
+    int seriesJ1 = 0;
+    int seriesJ2 = 0;
+
+    nbSeriesAlign(morpion, & seriesJ1, & seriesJ2, 5);
+    if(seriesJ1 || seriesJ2)
+        return 1;
+    return 0;
+}
+
+
 static tpl trouverJouables(tpm morpion)
 {
     tpl liste = creerVide();
@@ -564,6 +581,35 @@ static int eval(int indI, int indJ, tpm morpion, int estMax) //TODO prendre en c
         return meilleurPoids * (-1);
 }
 
+
+static int eval2(int indI, int indJ, tpm morpion, int estMax) //TODO prendre en compte le dernier coup joué, et tout les coups intermédiaires (pas juste le dernier)
+{
+    int cptHorizontale, cptVerticale, cptDiagDes, cptDiagAsc;
+    int seriesJ1 = 0;
+    int seriesJ2 = 0;
+
+    afficherMorpion(morpion); // affichageTest
+
+    // compter nb pions successifs et si ils sont bloqués
+
+    printf("%d %d\n", indI, indJ); // affichageTest
+
+    if(estGainIA(morpion))
+    {
+        if(estMax)  //il faut faire l'inverse car ici on aura déjà changé de joueur (et donc de estMax)
+            return -1000 + morpion->nbCoupsJoues;       //TODO inverser ?
+        else
+            return 1000 - morpion->nbCoupsJoues;        //TODO inverser ?
+    }
+
+    // on compte le nombre de séries de 3 pions non bloqués de chaque joueur
+    nbSeriesAlign(morpion, & seriesJ1, & seriesJ2, 3);
+
+    if(estMax)
+        return seriesJ2 - seriesJ1;     //TODO inverser ?
+    return seriesJ1 - seriesJ2;         //TODO inverser ?
+}
+
 static int minMax(tpm morpion ,int profondeur, int estMax, tpl listeCoord, int joueur)
 {
     int poidsM;
@@ -578,7 +624,7 @@ static int minMax(tpm morpion ,int profondeur, int estMax, tpl listeCoord, int j
 
     if(profondeur == 0 || estGain(teteListeI(listeCoord), teteListeJ(listeCoord), morpion) || estFin(morpion))
     {
-        return eval(teteListeI(listeCoord), teteListeJ(listeCoord), morpion, estMax);
+        return eval2(teteListeI(listeCoord), teteListeJ(listeCoord), morpion, estMax);
     }
 
     liste = trouverJouables(morpion);
@@ -590,6 +636,7 @@ static int minMax(tpm morpion ,int profondeur, int estMax, tpl listeCoord, int j
         i = teteListeI(liste);
         j = teteListeJ(liste);
         jouerJoueur(i, j, joueur, morpion);
+        ++morpion->nbCoupsJoues;
 
         if(estMax)
             estMax = 0;
@@ -607,6 +654,7 @@ static int minMax(tpm morpion ,int profondeur, int estMax, tpl listeCoord, int j
 
         // on remet la case testée à defaut
         dejouer(i, j, morpion);
+        --morpion->nbCoupsJoues;
 
         liste = queueListe(liste);
     }
@@ -633,8 +681,9 @@ tpl jouerIA(tpm morpion, int joueur)
         i = teteListeI(liste);
         j = teteListeJ(liste);
         jouerJoueur(i, j, joueur, morpion);
+        ++morpion->nbCoupsJoues;
 
-        tmp = minMax(morpion, profondeur-1, 1, liste, joueur);
+        tmp = minMax(morpion, profondeur-1, 0, liste, joueur);
         if(tmp > maxi)
         {
             maxi = tmp;
@@ -647,6 +696,7 @@ tpl jouerIA(tpm morpion, int joueur)
 
         // on remet la case testée à defaut
         dejouer(i, j, morpion);
+        --morpion->nbCoupsJoues;
 
         liste = queueListe(liste);
     }
