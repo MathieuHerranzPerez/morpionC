@@ -87,7 +87,7 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign) //TODO 
         l = 0;
         while(k < getTailleMorpion(morpion))
         {
-            if(morpion->morpion[k][l] == '0')
+            if(morpion->morpion[k][l] == 'O')
             {
                 ++cptO;
                 cptX = 0;
@@ -114,7 +114,7 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign) //TODO 
         l = j;
         while(l < getTailleMorpion(morpion))
         {
-            if(morpion->morpion[k][l] == '0')
+            if(morpion->morpion[k][l] == 'O')
             {
                 ++cptO;
                 cptX = 0;
@@ -144,7 +144,7 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign) //TODO 
         l = getTailleMorpion(morpion) - 1;
         while(k < getTailleMorpion(morpion))
         {
-            if(morpion->morpion[k][l] == '0')
+            if(morpion->morpion[k][l] == 'O')
             {
                 ++cptO;
                 cptX = 0;
@@ -171,7 +171,7 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign) //TODO 
         l = j;
         while(l >= 0)
         {
-            if(morpion->morpion[k][l] == '0')
+            if(morpion->morpion[k][l] == 'O')
             {
                 ++cptO;
                 cptX = 0;
