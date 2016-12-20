@@ -72,6 +72,7 @@ static void jouerJvIA()
 
     int seriesX, seriesO;
 
+    choisirDifficulte();
     tpm morpion = initialiserMorpion();
 
     jouerJoueur(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, joueur, morpion); // premier coup au milieu
