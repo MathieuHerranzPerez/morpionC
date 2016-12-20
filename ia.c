@@ -26,7 +26,6 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign) //TODO 
 
     *seriesX = 0;
     *seriesO = 0;
-
     //ligne
     for(i = 0; i < getTailleMorpion(morpion); ++i)
     {
@@ -58,19 +57,19 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign) //TODO 
         //verticalement
         for(j = 0; j < getTailleMorpion(morpion); ++j)
         {
-            if(morpion->morpion[j][i] == '0')
+            if(morpion->morpion[j][i] == 'O')
             {
                 ++cptO;
                 cptX = 0;
 
-                if(cptO == nbAlign && !estBloqueV(i, j, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                if(cptO == nbAlign && !estBloqueV(j, i, morpion)) // onvérifie en même temps que ce n'est pas bloqué
                     ++*seriesO;
             }
             else if(morpion->morpion[j][i] == 'X')
             {
                 ++cptX;
                 cptO = 0;
-                if(cptX == nbAlign && !estBloqueV(i, j, morpion)) // onvérifie en même temps que ce n'est pas bloqué
+                if(cptX == nbAlign && !estBloqueV(j, i, morpion)) // onvérifie en même temps que ce n'est pas bloqué
                     ++*seriesX;
             }
         }
