@@ -112,8 +112,13 @@ static void jouerJvIA()
             liste = jouerIA(morpion, joueur);
 
             coordListe = trouverCaseJouee(listeTmp, liste); // pour sortir en cas de victoire de l'IA
-            i = teteListeI(coordListe);
-            j = teteListeJ(coordListe);
+            if(coordListe != creerVide())
+            {
+                i = teteListeI(coordListe);
+                j = teteListeJ(coordListe);
+            }
+            printf("i jouee par IA : %d\n", i);
+            printf("j jouee par IA : %d\n", j);
 
             supprimerListe(listeTmp);
         }
