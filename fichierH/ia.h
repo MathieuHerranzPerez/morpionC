@@ -3,6 +3,7 @@
 
 #include "liste.h"
 #include "morpion.h"
+#include "parcoursMorpion.h"
 
 /**
  *

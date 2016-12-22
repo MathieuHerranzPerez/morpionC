@@ -9,6 +9,16 @@
 #include "fichierH/joueur.h"
 
 
+#ifdef __WIN32__
+#include <windows.h>
+#define Sleep(n) Sleep(n)
+
+#else /*Le reste, UNIX en particulier*/
+#include <unistd.h>
+#define Sleep(n) usleep(n)
+#endif
+
+
 static tpl trouverCaseJouee(tpl liste, tpl listeF)
 {
     if(listeF != creerVide())
@@ -33,6 +43,7 @@ static void jouerJvJ()
     joueur = changerJoueur(joueur);
     liste = trouverCasesJouables(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, liste, morpion);
 
+    printf("LE JOUEUR 1 COMMENCE, BONNE CHANCE\n");
     do
     {
         i = -1;
@@ -59,6 +70,16 @@ static void jouerJvJ()
         joueur = changerJoueur(joueur);
         ++morpion->nbCoupsJoues;
     } while(!estGain(i, j, morpion) && !estFin(morpion));
+
+    if(estGain(i, j, morpion))
+    {
+        joueur = changerJoueur(joueur);
+        printf("LE JOUEUR %d A GAGNE !\n", joueur);
+    }
+    else if(estFin(morpion))
+    {
+        printf("EGALITE\n");
+    }
 }
 
 static void jouerJvIA()
@@ -125,9 +146,72 @@ static void jouerJvIA()
         joueur = changerJoueur(joueur);
         ++morpion->nbCoupsJoues;
 
-        nbSeriesAlign(morpion, & seriesX, & seriesO, 3);
-
     } while(!estGain(i, j, morpion) && !estFin(morpion));
+    if(estGain(i, j, morpion))
+    {
+        joueur = changerJoueur(joueur);
+        if(joueur == 0)
+            printf("VOUS AVEZ GAGNE\n");
+        else
+            printf("VOUS AVEZ PERDU, ESSAYEZ PEUT-ETRE AVEC UNE DIFFICULTE MOINDRE\n");
+    }
+    else if(estFin(morpion))
+    {
+        printf("EGALITE\n");
+    }
+}
+
+static void jouerIAvIA()
+{
+    int i = -1; //pour ne pas le trouver dans la lsite
+    int j = -1; //pour ne pas le trouver dans la lsite
+    int joueur = 1;
+    tpl listeTmp = creerVide();
+    tpl coordListe = creerVide(); // pour chercher la case jouée par l'IA
+    tpl liste = creerVide();
+
+    int seriesX, seriesO;
+
+    choisirDifficulte();
+    tpm morpion = initialiserMorpion();
+
+    jouerJoueur(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, joueur, morpion); // premier coup au milieu
+    joueur = changerJoueur(joueur);
+    liste = trouverCasesJouables(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, liste, morpion);
+
+    do
+    {
+        listeTmp = copierListe(liste); //pour trouver l'element joué par l'IA
+        liste = supprimerListe(liste);
+        liste = jouerIA(morpion, joueur);
+
+        coordListe = trouverCaseJouee(listeTmp, liste); // pour sortir en cas de victoire de l'IA
+        if(coordListe != creerVide())
+        {
+            i = teteListeI(coordListe);
+            j = teteListeJ(coordListe);
+        }
+        printf("i jouee par IA : %d\n", i);
+        printf("j jouee par IA : %d\n", j);
+
+        supprimerListe(listeTmp);
+        joueur = changerJoueur(joueur);
+        ++morpion->nbCoupsJoues;
+
+        printf("------JEU------\n");
+        afficherMorpion(morpion);
+        printf("----FIN JEU----\n");
+        Sleep(1000);
+    } while(!estGain(i, j, morpion) && !estFin(morpion));
+    if(estGain(i, j, morpion))
+    {
+        joueur = changerJoueur(joueur);
+        printf("LE JOUEUR %d A GAGNE !\n", joueur);
+    }
+    else if(estFin(morpion))
+    {
+        printf("EGALITE\n");
+    }
 }
 
 int main(void)
@@ -149,7 +233,7 @@ int main(void)
             break;
 
         case 3 :
-            //jouerIAvIA();
+            jouerIAvIA();
             break;
         default :
             break;
