@@ -4,7 +4,7 @@
 static int estBloque(char pion, int i, int j, tpm morpion){
     if( i >= getTailleMorpion(morpion) || j >= getTailleMorpion(morpion))
         return 1;
-    if( i <  0 || j <  0)
+    if(i <  0 || j <  0)
         return 1;
 
     // si on tombe sur un pion de l'adversaire, return 1
@@ -98,8 +98,8 @@ static int peutGagnerVert(char pion, int i, int j, int tailleSerie, int *nbCases
         *nbCasesLibres = tailleSerie;
         nbCasesLibresB = *nbCasesLibres;
         nbCasesLibresH = *nbCasesLibres;
-        peutGagnerVert(pion, i + 1, j, 0, &nbCasesLibresB, 1, morpion);
-        peutGagnerVert(pion, i - tailleSerie, j, 0, &nbCasesLibresH, -1, morpion) ;
+        peutGagnerVert(pion, i + 1, j, 0, & nbCasesLibresB, 1, morpion);
+        peutGagnerVert(pion, i - tailleSerie, j, 0, & nbCasesLibresH, -1, morpion) ;
 
         nbCasesLibresH -= tailleSerie;
         nbCasesLibresB -= tailleSerie;
@@ -111,7 +111,7 @@ static int peutGagnerVert(char pion, int i, int j, int tailleSerie, int *nbCases
     }
     ++*nbCasesLibres;
 
-    // si on a trouvé que tailleSerie + nbCasesLibres = 5, c est que la serie peut etre gagnante
+    // si on a trouvé que tailleSerie + nbCasesLibres == 5, c est que la serie peut etre gagnante
     if(*nbCasesLibres == 5)
         return 1;
     //lors des iterations suivantes , on lance recursivement l'algorithme pour les cases suivantes (selon le sens)
@@ -127,7 +127,8 @@ static int peutGagnerHori(char pion, int i, int j, int tailleSerie, int *nbCases
         return 0;
 
     //lors de la premiere iteration , on lance recursivement l'algorithme avant la serie et apres la serie
-    if(tailleSerie){
+    if(tailleSerie)
+    {
         *nbCasesLibres = tailleSerie;
         nbCasesLibresD = *nbCasesLibres;
         nbCasesLibresG = *nbCasesLibres;
@@ -157,65 +158,69 @@ static void comparerSeries2Succ(int nbMaxOcc, int *nbOcc, char *pion, int i, int
     compar(nbMaxOcc, nbOcc, pion, i, j, series0, series1, morpion);
 }
 
-static void serie_comparer_2_pions_diag_right2left(int nbMaxOcc, int *nbOcc, char *pion, int i, int j, int* series0, int* series1, tpm morpion)
+static void comparerSerie2SuccDiagDes(int nbMaxOcc, int *nbOccu, char *pion, int i, int j, int *series0, int *series1,
+                                      tpm morpion)
 {
+    int nbCasesLibres;
     if(morpion->morpion[i][j] == ' ')
     {
-        *nbOcc = 0;
+        *nbOccu = 0;
         *pion = ' ';
         return;
     }
 
     if(morpion->morpion[i][j] == *pion && *pion != ' '){
-        ++*nbOcc;
-        if(*nbOcc == nbMaxOcc){
-            int nbCasesLibres = 0;
+        ++*nbOccu;
+        if(*nbOccu == nbMaxOcc){
+            nbCasesLibres = 0;
             if(peutGagnerDiagAsc(*pion, i, j, nbMaxOcc, & nbCasesLibres, 0, morpion)){
                 if(*pion == 'X')
                     ++*series0;
                 else
                     ++*series1 ;
             }
-            *nbOcc = 0;
+            *nbOccu = 0;
             *pion = ' ';
         }
     }
     else
     {
         *pion = morpion->morpion[i][j];
-        *nbOcc = 1;
+        *nbOccu = 1;
     }
 }
 
-static void comparerSerie2SuccDiagAsc(int nbMaxOcc, int *nbOcc, char *pion, int i, int j, int *series0, int *series1,
+static void comparerSerie2SuccDiagAsc(int nbMaxOcc, int *nbOccu, char *pion, int i, int j, int *series0, int *series1,
                                       tpm morpion)
 {
+    int nbCasesLibres;
     if(morpion->morpion[i][j] == ' ')
     {
-        *nbOcc=0;
+        *nbOccu = 0;
         *pion = ' ';
         return;
     }
 
-    if(morpion->morpion[i][j] == *pion){
-        ++*nbOcc;
-        if(*nbOcc == nbMaxOcc)
+    if(morpion->morpion[i][j] == *pion && *pion != ' ')
+    {
+        ++*nbOccu;
+        if(*nbOccu == nbMaxOcc)
         {
-            int nbCasesLibres = 0;
+            nbCasesLibres = 0;
             if(peutGagnerDiagDesc(*pion, i, j, nbMaxOcc, & nbCasesLibres, 0, morpion)){
-                if(*pion =='X')
+                if(*pion == 'X')
                     ++*series0;
                 else
                     ++*series1;
             }
-             *nbOcc = 0;
+            *nbOccu = 0;
             *pion = ' ';
         }
     }
     else
     {
         *pion = morpion->morpion[i][j];
-        *nbOcc = 1;
+        *nbOccu = 1;
     }
 }
 
@@ -300,22 +305,42 @@ static void rechercherSeriesSuccDiagDes(int nbMaxOcc, int departX, int departY, 
     char pion = ' ';
 
     for(i = departY, j = departX; i < morpion->taille && j >= 0; ++i, --j)
-        comparerSeries2Succ(nbMaxOcc, & nbOcc, & pion, i, j, series0, series1, serie_comparer_2_pions_diag_right2left,
+        comparerSeries2Succ(nbMaxOcc, &nbOcc, &pion, i, j, series0, series1, comparerSerie2SuccDiagDes,
                             morpion);
+}
+
+static void rechercherSeriesSuccHaut(int nbMaxOcc, int colonne, int *series0, int *series1, tpm morpion)
+{
+    int i;
+    int nbOccu = 0;
+    char pion = ' ';
+    
+    for(i = 0; i < morpion->taille ; ++i)
+        comparerSeries2Succ(nbMaxOcc, & nbOccu, & pion, i, colonne, series0, series1, comparerSerie2Bas, morpion);
+}
+
+static void rechercherSeriesSuccLarg(int nbMaxOcc, int ligne, int *series0, int *series1, tpm morpion)
+{
+    int i;
+    int nbOccu = 0;
+    char pion = ' ';
+    
+    for(i = 0; i < morpion->taille ; ++i)
+        comparerSeries2Succ(nbMaxOcc, & nbOccu, & pion, ligne, i, series0, series1, comparerSerie2Droite, morpion);
 }
 
 static void rechercherSeriesSuccDiags(int nbMaxOcc, int *series0, int *series1, tpm morpion)
 {
     int i;
 
-    /* parcours du premier element */
+    // parcours du premier element
     rechercherSeriesSuccDiagASc(nbMaxOcc, 0, 0, series0, series1, morpion);
 
     for(i = 1; i < morpion->taille - nbMaxOcc +1 ; ++i){
-        /* parcours les colonnes de la premiere ligne */
+        // parcours les colonnes de la premiere ligne
         rechercherSeriesSuccDiagASc(nbMaxOcc, i, 0, series0, series1, morpion);
 
-        /* parcours les lignes de la premiere colonne*/
+        // parcours les lignes de la premiere colonne
         rechercherSeriesSuccDiagASc(nbMaxOcc, 0, i, series0, series1, morpion);
     }
 
@@ -323,37 +348,20 @@ static void rechercherSeriesSuccDiags(int nbMaxOcc, int *series0, int *series1, 
 
     for(i = morpion->taille -2; i >= nbMaxOcc -1 ; --i)
     {
-        /* parcours les colonnes de la premiere ligne */
+        // parcours les colonnes de la premiere ligne
         rechercherSeriesSuccDiagDes(nbMaxOcc, i, 0, series0, series1, morpion);
-        /* parcours les lignes de la derniere colonne*/
+        // parcours les lignes de la derniere colonne
         rechercherSeriesSuccDiagDes(nbMaxOcc, morpion->taille - 1, morpion->taille - 1 - i, series0, series1, morpion);
     }
 }
 
-static void rechercherSeriesSuccHaut(int nbMaxOcc, int colonne, int *series0, int *series1, tpm morpion)
-{
-    int i;
-    int nbOcc = 0;
-    char pion = ' ';
-    
-    for(i = 0; i < morpion->taille ; ++i)
-        comparerSeries2Succ(nbMaxOcc, & nbOcc, & pion, i, colonne, series0, series1, comparerSerie2Bas, morpion);
-}
-static void rechercherSeriesSuccHauts(int nbMaxOcc, int *series0, int *series1, tpm morpion){
+static void rechercherSeriesSuccVert(int nbMaxOcc, int *series0, int *series1, tpm morpion){
     int i;
     for(i = 0; i < morpion->taille ; ++i)
         rechercherSeriesSuccHaut(nbMaxOcc, i, series0, series1, morpion);
 }
 
-static void rechercherSeriesSuccLarg(int nbMaxOcc, int ligne, int *series0, int *series1, tpm morpion){
-    int i;
-    int nbOcc = 0;
-    char pion = ' ';
-    
-    for(i = 0; i < morpion->taille ; ++i)
-        comparerSeries2Succ(nbMaxOcc, & nbOcc, & pion, ligne, i, series0, series1, comparerSerie2Droite, morpion);
-}
-static void rechercherSeriesSuccLargs(int nbMaxOcc, int *series0, int *series1, tpm morpion){
+static void rechercherSeriesSuccHori(int nbMaxOcc, int *series0, int *series1, tpm morpion){
     int i;
     for(i = 0; i < morpion->taille ; ++i)
         rechercherSeriesSuccLarg(nbMaxOcc, i, series0, series1, morpion);
@@ -364,7 +372,7 @@ void rechercherSeriesSucc(int nbMaxOcc, int *series0, int *series1, tpm morpion)
 {
     rechercherSeriesSuccDiags(nbMaxOcc, series0, series1, morpion);
 
-    rechercherSeriesSuccHauts(nbMaxOcc, series0, series1, morpion);
+    rechercherSeriesSuccVert(nbMaxOcc, series0, series1, morpion);
 
-    rechercherSeriesSuccLargs(nbMaxOcc, series0, series1, morpion);
+    rechercherSeriesSuccHori(nbMaxOcc, series0, series1, morpion);
 }

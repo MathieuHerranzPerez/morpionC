@@ -12,9 +12,9 @@ tpm initialiserMorpion()
     tpm morpion = (tpm)malloc(sizeof(t_morpion));
 
     //On demande à l'utilisteur de saisir la taille du plateau
-    while(taille < 2 || taille > 25)
+    while(taille < 2 || taille > 15)
     {
-        printf("saisir la taille du morpion (>5 et <25)\n>");
+        printf("saisir la taille du morpion (>5 et <15)\n>");
         scanf("%d", &taille);
     }
 

@@ -91,8 +91,6 @@ static void jouerJvIA()
     tpl coordListe = creerVide(); // pour chercher la case jouée par l'IA
     tpl liste = creerVide();
 
-    int seriesX, seriesO;
-
     choisirDifficulte();
     tpm morpion = initialiserMorpion();
 
@@ -170,8 +168,6 @@ static void jouerIAvIA()
     tpl coordListe = creerVide(); // pour chercher la case jouée par l'IA
     tpl liste = creerVide();
 
-    int seriesX, seriesO;
-
     choisirDifficulte();
     tpm morpion = initialiserMorpion();
 
@@ -203,6 +199,7 @@ static void jouerIAvIA()
         printf("----FIN JEU----\n");
         Sleep(1000);
     } while(!estGain(i, j, morpion) && !estFin(morpion));
+
     if(estGain(i, j, morpion))
     {
         joueur = changerJoueur(joueur);
