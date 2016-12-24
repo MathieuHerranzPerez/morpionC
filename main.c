@@ -214,26 +214,38 @@ static void jouerIAvIA()
 int main(void)
 {
     int choix = 0;
-    while(choix <= 0 || choix > 3)
-    {
-        printf("Voulez-vous jouer\n - (1) en J vs J\n - (2) en J vs IA\n - (3) en IA vs IA, et donc ne pas jouer ...\n> ");
-        scanf("%d", &choix);
-    }
-    switch(choix)
-    {
-        case 1 :
-            jouerJvJ();
-            break;
+    int sortir = 0;
 
-        case 2 :
-            jouerJvIA();
-            break;
+    while(sortir == 0)
+    {
+        while (choix <= 0 || choix > 4)
+        {
+            printf("Voulez-vous jouer\n - (1) en J vs J\n - (2) en J vs IA\n - (3) en IA vs IA, et donc ne pas jouer ...\n"
+                           " (4) Ou lire les regles du jeu ?\n> ");
+            scanf("%d", &choix);
+            if (choix == 4) {
+                afficherRegles();
+                choix = 0;
+            }
+        }
+        switch (choix) {
+            case 1 :
+                jouerJvJ();
+                break;
 
-        case 3 :
-            jouerIAvIA();
-            break;
-        default :
-            break;
+            case 2 :
+                jouerJvIA();
+                break;
+
+            case 3 :
+                jouerIAvIA();
+                break;
+            default :
+                break;
+        }
+        int choix = 0;
+        printf("Partie finie, voulez-vous quitter (0 / 1) ?\n>");
+        scanf("%d", & sortir);
     }
     return 0;
 }

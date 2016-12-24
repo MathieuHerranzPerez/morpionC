@@ -45,3 +45,13 @@ void jouerJoueur(int i, int j, int joueur, tpm morpion)
     else
         morpion->morpion[i][j] = 'O';
 }
+
+void afficherRegles()
+{
+    printf("===== Regles du jeu =====\n\n"
+                   "Chacun leurs tours les joueurs devront placer leurs symboles dans la grille du morpion. "
+                   "Le premier symbole doit etre place au milieu de la grille. Les suivants "
+                   "devront etre places a cote des symboles deja places. Le jeu prend fin si la grille "
+                   "est remplie ou si un des deux joueurs reussit a aligner cinq de ses symboles, "
+                   "en diagonale, verticale ou en horizontale.\n\n========================\n\n");
+}

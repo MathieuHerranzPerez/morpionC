@@ -879,69 +879,6 @@ static int evalBacASable(tpm morpion)
     return seriesX - seriesO;
 }
 
-//
-//static int minMax(tpm morpion ,int profondeur, int estMax, tpl listeCoord, int joueur)
-//{
-//    int poidsM;
-//    int i, j, tmp;
-//    int estFctMax;
-//    tpl listeTmp;
-//    tpl liste = creerVide();
-//
-//    if(estMax)
-//        poidsM = -1000;
-//    else
-//        poidsM = 1000;
-//
-//    if(profondeur == 0 || estGain(teteListeI(listeCoord), teteListeJ(listeCoord), morpion) || estFin(morpion))
-//    {
-//        return evalFacile(morpion);
-//    }
-//
-//    liste = trouverJouables(morpion);
-//    listeTmp = liste;
-//    joueur = changerJoueur(joueur);
-//
-//    if(estMax)
-//        estFctMax = 0;
-//    else
-//        estFctMax = 1;
-//
-//    while(liste != NULL)
-//    {
-//        i = teteListeI(liste);
-//        j = teteListeJ(liste);
-//        jouerJoueur(i, j, joueur, morpion);
-//        ++morpion->nbCoupsJoues;
-//
-//        tmp = minMax(morpion, profondeur-1, estFctMax, liste, joueur);
-//        printf("tpm : %d\n", tmp);// affichage test
-//        if(estMax)
-//        {
-//            if (tmp > poidsM)
-//                poidsM = tmp;
-//        }
-//        else
-//        {
-//            if (tmp < poidsM)
-//                poidsM = tmp;
-//        }
-//
-//        // on remet la case testée à defaut
-//        dejouer(i, j, morpion);
-//        --morpion->nbCoupsJoues;
-//
-//        liste = queueListe(liste);
-//    }
-//    listeTmp = supprimerListe(listeTmp);
-//    free(listeTmp);
-//    free(liste);
-//
-//    printf("poidsM : %d\n", poidsM);    //affichage test
-//    return poidsM;
-//}
-
-
 static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
 {
     int poidsM;

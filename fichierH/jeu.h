@@ -20,4 +20,6 @@ void afficherMorpion(tpm morpion);
  */
 void jouerJoueur(int i, int j, int joueur, tpm morpion);
 
+void afficherRegles();
+
 #endif
