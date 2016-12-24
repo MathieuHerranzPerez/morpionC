@@ -1006,12 +1006,35 @@ static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
     return poidsM;
 }
 
+static void afficherPatienter(int cpt)
+{
+    //clear le terminal
+    //printf("\033[H\033[J  ");
+    switch (cpt % 4)
+    {
+        case 0 :
+            printf("veuillez patienter\n");
+            break;
+        case 1 :
+            printf("veuillez patienter .\n");
+            break;
+        case 2 :
+            printf("veuillez patienter ..\n");
+            break;
+        case 3 :
+            printf("veuillez patienter ...\n");
+            break;
+        default :
+            break;
+    }
+}
 
 tpl jouerIA(tpm morpion, int joueur)
 {
     int maxi = -10000;
     int tmp, indI, indJ;
     int i, j;
+    int cpt = 0;    //pour l'affichage
     tpl liste = creerVide();
 
     liste = trouverJouables(morpion);
@@ -1022,6 +1045,9 @@ tpl jouerIA(tpm morpion, int joueur)
 
     while(liste != NULL)
     {
+        afficherPatienter(cpt); // affichage
+        ++cpt;                  // affichage
+
         i = teteListeI(liste);
         j = teteListeJ(liste);
         jouerJoueur(i, j, joueur, morpion);
