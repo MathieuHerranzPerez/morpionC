@@ -14,7 +14,6 @@
  */
 
 tpl jouerIA(tpm morpion, int joueur);
-void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign);
 void choisirDifficulte();
 
 #endif

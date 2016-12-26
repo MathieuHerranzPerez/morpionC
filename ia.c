@@ -7,11 +7,6 @@
 #include "fichierH/parcoursMorpion.h"
 
 
-static int estBloqueH(int i, int j, tpm morpion);
-static int estBloqueV(int i, int j, tpm morpion);
-static int estBloqueDA(int i, int j, tpm morpion);
-static int estBloqueDD(int i, int j, tpm morpion);
-
 /**
  * Fonction plus lente que trouverCasesJouables(), mais n'oblige pas à une copie de liste
  * @param morpion
@@ -34,181 +29,7 @@ void choisirDifficulte()
     }
 }
 
-void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign) //TODO mettre ca en static et l'enlever du .h
-{
-    int i, j, k, l;
-    int cptO, cptX;
 
-    *seriesX = 0;
-    *seriesO = 0;
-    //ligne
-    for(i = 0; i < getTailleMorpion(morpion); ++i)
-    {
-        cptO = 0;
-        cptX = 0;
-
-        //horizontale
-        for(j = 0; j < getTailleMorpion(morpion); ++j)
-        {
-            if(morpion->morpion[i][j] == 'O')
-            {
-                ++cptO;
-                cptX = 0;
-                if(cptO == nbAlign && !estBloqueH(i, j, morpion)) // on vérifie en même temps que ce n'est pas bloqué
-                    ++*seriesO;
-            }
-            else if(morpion->morpion[i][j] == 'X')
-            {
-                ++cptX;
-                cptO = 0;
-                if(cptX == nbAlign && !estBloqueH(i, j, morpion)) // on vérifie en même temps que ce n'est pas bloqué
-                    ++*seriesX;
-            }
-        }
-
-        cptO = 0;
-        cptX = 0;
-
-        //verticalement
-        for(j = 0; j < getTailleMorpion(morpion); ++j)
-        {
-            if(morpion->morpion[j][i] == 'O')
-            {
-                ++cptO;
-                cptX = 0;
-
-                if(cptO == nbAlign && !estBloqueV(j, i, morpion)) // on vérifie en même temps que ce n'est pas bloqué
-                    ++*seriesO;
-            }
-            else if(morpion->morpion[j][i] == 'X')
-            {
-                ++cptX;
-                cptO = 0;
-                if(cptX == nbAlign && !estBloqueV(j, i, morpion)) // on vérifie en même temps que ce n'est pas bloqué
-                    ++*seriesX;
-            }
-        }
-    }
-
-    cptO = 0;
-    cptX = 0;
-
-    //diag desc
-    for(i = 0; i < getTailleMorpion(morpion) - 4; ++i)
-    {
-        cptO = 0;
-        cptX = 0;
-        k = i;
-        l = 0;
-        while(k < getTailleMorpion(morpion))
-        {
-            if(morpion->morpion[k][l] == 'O')
-            {
-                ++cptO;
-                cptX = 0;
-
-                if(cptO == nbAlign && !estBloqueDD(k, l, morpion)) // on vérifie en même temps que ce n'est pas bloqué
-                    ++*seriesO;
-            }
-            else if(morpion->morpion[k][l] == 'X')
-            {
-                ++cptX;
-                cptO = 0;
-                if(cptX == nbAlign && !estBloqueDD(k, l, morpion)) // on vérifie en même temps que ce n'est pas bloqué
-                    ++*seriesX;
-            }
-            ++k;
-            ++l;
-        }
-    }
-    for(j = 1; j < getTailleMorpion(morpion) - 4; ++j) // on commence à 1 pour pas refaire la meme diag qu'avec i = 0
-    {
-        cptO = 0;
-        cptX = 0;
-        k = 0;
-        l = j;
-        while(l < getTailleMorpion(morpion))
-        {
-            if(morpion->morpion[k][l] == 'O')
-            {
-                ++cptO;
-                cptX = 0;
-
-                if(cptO == nbAlign && !estBloqueDD(k, l, morpion)) // on vérifie en même temps que ce n'est pas bloqué
-                    ++*seriesO;
-            }
-            else if(morpion->morpion[k][l] == 'X')
-            {
-                ++cptX;
-                cptO = 0;
-                if(cptX == nbAlign && !estBloqueDD(k, l, morpion)) // on vérifie en même temps que ce n'est pas bloqué
-                    ++*seriesX;
-            }
-            ++k;
-            ++l;
-        }
-    }
-
-    //diag asc
-
-    for(i = 0; i < getTailleMorpion(morpion) - 4; ++i)
-    {
-        cptO = 0;
-        cptX = 0;
-        k = i;
-        l = getTailleMorpion(morpion) - 1;
-        while(k < getTailleMorpion(morpion))
-        {
-            if(morpion->morpion[k][l] == 'O')
-            {
-                ++cptO;
-                cptX = 0;
-
-                if(cptO == nbAlign && !estBloqueDA(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
-                    ++*seriesO;
-            }
-            else if(morpion->morpion[k][l] == 'X')
-            {
-                ++cptX;
-                cptO = 0;
-                if(cptX == nbAlign && !estBloqueDA(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
-                    ++*seriesX;
-            }
-            ++k;
-            --l;
-        }
-    }
-    for(j = getTailleMorpion(morpion)-2; j > 3; --j) // on commence à taille - 2 pour pas refaire la meme diag qu'avec i = 0
-    {
-        cptO = 0;
-        cptX = 0;
-        k = 0;
-        l = j;
-        while(l >= 0)
-        {
-            if(morpion->morpion[k][l] == 'O')
-            {
-                ++cptO;
-                cptX = 0;
-
-                if(cptO == nbAlign && !estBloqueDA(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
-                    ++*seriesO;
-            }
-            else if(morpion->morpion[k][l] == 'X')
-            {
-                ++cptX;
-                cptO = 0;
-                if(cptX == nbAlign && !estBloqueDA(k, l, morpion)) // onvérifie en même temps que ce n'est pas bloqué
-                    ++*seriesX;
-            }
-            ++k;
-            --l;
-        }
-    }
-
-    printf("seriesX : %d nbAlign : %d\n", *seriesX, nbAlign);
-    printf("seriesO : %d nbAlign : %d\n", *seriesO, nbAlign);
-}
 
 /**
  * Vérifie grâce à nbSeriesAlign si il y a un gagnant
@@ -220,7 +41,7 @@ static int estGainIA(tpm morpion)
     int seriesJ1 = 0;
     int seriesJ2 = 0;
 
-    nbSeriesAlign(morpion, &seriesJ1, &seriesJ2, 5);
+    nbSeriesAlign(morpion, & seriesJ1, & seriesJ2, 5, 5);
 
     if(joueurCourant == 1 && seriesJ1)
         return 1;
@@ -386,124 +207,12 @@ int compterSuccDiagAsc(int i, int j, tpm morpion)
     return cptNbAlignes;
 }
 
-static int estBloqueH(int i, int j, tpm morpion)
+
+int estNonBloque6(tpm morpion)
 {
-    int indJ;
-    int cptPlaceDispo;
-
-    cptPlaceDispo = 1;
-    indJ = j;
-
-    while(indJ < getTailleMorpion(morpion)-1 && (morpion->morpion[i][j] == morpion->morpion[i][indJ+1]
-            || morpion->morpion[i][indJ+1] == ' '))
-    {
-        ++cptPlaceDispo;
-        indJ = indJ +1;
-    }
-    indJ = j;
-    while(indJ > 0 && (morpion->morpion[i][indJ] == morpion->morpion[i][indJ-1]
-            || morpion->morpion[i][indJ-1] == ' '))
-    {
-        ++cptPlaceDispo;
-        indJ = indJ -1;
-    }
-
-    if(cptPlaceDispo >= 5)
-        return 0;
-    return 1;
+//TODO
 }
 
-static int estBloqueV(int i, int j, tpm morpion)
-{
-    int indI;
-    int cptPlaceDispo;
-
-    cptPlaceDispo = 1;
-    indI = i;
-
-    while(indI < getTailleMorpion(morpion)-1 && (morpion->morpion[indI][j] == morpion->morpion[indI+1][j]
-            || morpion->morpion[indI+1][j] == ' '))
-    {
-        ++cptPlaceDispo;
-        indI = indI +1;
-    }
-    indI = i;
-    while(indI > 0 && (morpion->morpion[indI][j] == morpion->morpion[indI-1][j]
-            || morpion->morpion[indI-1][j] == ' '))
-    {
-        ++cptPlaceDispo;
-        indI = indI -1;
-    }
-    if(cptPlaceDispo >= 5)
-        return 0;
-    return 1;
-}
-
-static int estBloqueDA(int i, int j, tpm morpion)
-{
-    int indI;
-    int indJ;
-    int cptPlaceDispo;
-
-    cptPlaceDispo = 1;
-    indI = i;
-    indJ = j;
-
-    while(indI > 0 && indJ < getTailleMorpion(morpion)-1
-          && (morpion->morpion[indI][indJ] == morpion->morpion[indI-1][indJ+1]
-              || morpion->morpion[indI-1][indJ+1] == ' '))
-    {
-        ++cptPlaceDispo;
-        indI = indI-1;
-        indJ = indJ+1;
-    }
-    indI = i;
-    indJ = j;
-    while(indI < getTailleMorpion(morpion)-1 && indJ > 0
-          && (morpion->morpion[indI][indJ] == morpion->morpion[indI+1][indJ-1]
-              || morpion->morpion[indI+1][indJ-1] == ' '))
-    {
-        ++cptPlaceDispo;
-        indI = indI+1;
-        indJ = indJ-1;
-    }
-    if(cptPlaceDispo >= 5)
-        return 0;
-    return 1;
-}
-
-static int estBloqueDD(int i, int j, tpm morpion)
-{
-    int indI;
-    int indJ;
-    int cptPlaceDispo;
-
-    cptPlaceDispo = 1;
-    indI = i;
-    indJ=j;
-
-    while(indI > 0 && indJ > 0
-          && (morpion->morpion[indI][indJ] == morpion->morpion[indI-1][indJ-1]
-              || morpion->morpion[indI-1][indJ-1] == ' '))
-    {
-        ++cptPlaceDispo;
-        indI = indI-1;
-        indJ = indJ-1;
-    }
-    indI = i;
-    indJ = j;
-    while(indI < getTailleMorpion(morpion)-1 && indJ < getTailleMorpion(morpion)-1
-          && (morpion->morpion[indI][indJ] == morpion->morpion[indI+1][indJ+1]
-              || morpion->morpion[indI+1][indJ+1] == ' '))
-    {
-        ++cptPlaceDispo;
-        indI = indI+1;
-        indJ = indJ+1;
-    }
-    if(cptPlaceDispo >= 5)
-        return 0;
-    return 1;
-}
 /**
  * Evalue juste le dernier coups joué
  * @param indI
@@ -512,7 +221,7 @@ static int estBloqueDD(int i, int j, tpm morpion)
  * @param estMax
  * @return
  */
-static int eval(int indI, int indJ, tpm morpion, int estMax) //TODO prendre en compte le dernier coup joué, et tout les coups intermédiaires (pas juste le dernier)
+static int eval(int indI, int indJ, tpm morpion, int estMax)
 {
     int cptHorizontale, cptVerticale, cptDiagDes, cptDiagAsc;
     int poidsH = 0,
@@ -525,7 +234,7 @@ static int eval(int indI, int indJ, tpm morpion, int estMax) //TODO prendre en c
 
     //horizontale
     cptHorizontale = compterSuccHorizontale(indI, indJ, morpion);
-    if(cptHorizontale >= 3 && cptHorizontale < 5 && !estBloqueH(indI, indJ, morpion))
+    if(cptHorizontale >= 3 && cptHorizontale < 5 && !estBloqueH(indI, indJ, morpion, 5))
     {
         poidsH = 50;
     }
@@ -539,7 +248,7 @@ static int eval(int indI, int indJ, tpm morpion, int estMax) //TODO prendre en c
 
     //verticale
     cptVerticale = compterSuccVerticale(indI, indJ, morpion);
-    if(cptVerticale >= 3 && cptVerticale < 5 && !estBloqueV(indI, indJ, morpion))
+    if(cptVerticale >= 3 && cptVerticale < 5 && !estBloqueV(indI, indJ, morpion, 5))
     {
         poidsV = 50;
     }
@@ -552,7 +261,7 @@ static int eval(int indI, int indJ, tpm morpion, int estMax) //TODO prendre en c
     }
     //diag asc
     cptDiagAsc = compterSuccDiagAsc(indI, indJ, morpion);
-    if(cptDiagAsc >= 3 && cptDiagAsc < 5 && !estBloqueDA(indI, indJ, morpion))
+    if(cptDiagAsc >= 3 && cptDiagAsc < 5 && !estBloqueDA(indI, indJ, morpion, 5))
     {
         poidsDA = 50;
     }
@@ -566,7 +275,7 @@ static int eval(int indI, int indJ, tpm morpion, int estMax) //TODO prendre en c
 
     //diag desc
     cptDiagDes = compterSuccDiagDesc(indI, indJ, morpion);
-    if(cptDiagDes >= 3 && cptDiagAsc < 5 && !estBloqueDD(indI, indJ, morpion))
+    if(cptDiagDes >= 3 && cptDiagAsc < 5 && !estBloqueDD(indI, indJ, morpion, 5))
     {
         poidsDD = 50;
     }
@@ -682,37 +391,37 @@ static int eval2(tpm morpion)
 
     if(joueurCourant == 1)
     {
-        nbSeriesAlign(morpion, & seriesJ1, & seriesJ2, 4);
+        nbSeriesAlign(morpion, & seriesJ1, & seriesJ2, 4, 5);
         pointsJ1 += seriesJ1 * 15;
         pointsJ2 += seriesJ2 * 15;
 
         seriesJ1 = 0;
         seriesJ2 = 0;
-        nbSeriesAlign(morpion, & seriesJ1, & seriesJ2, 3);
+        nbSeriesAlign(morpion, & seriesJ1, & seriesJ2, 3, 5);
         pointsJ1 += seriesJ1 * 5;
         pointsJ2 += seriesJ2 * 5;
 
         seriesJ1 = 0;
         seriesJ2 = 0;
-        nbSeriesAlign(morpion, & seriesJ1, & seriesJ2, 2);
+        nbSeriesAlign(morpion, & seriesJ1, & seriesJ2, 2, 5);
         pointsJ1 += seriesJ1;
         pointsJ2 += seriesJ2;
     }
     else    // l'adversaire
     {
-        nbSeriesAlign(morpion, & seriesJ2, & seriesJ1, 4);
+        nbSeriesAlign(morpion, & seriesJ2, & seriesJ1, 4, 5);
         pointsJ1 += seriesJ1 * 15;
         pointsJ2 += seriesJ2 * 15;
 
         seriesJ1 = 0;
         seriesJ2 = 0;
-        nbSeriesAlign(morpion, & seriesJ2, & seriesJ1, 3);
+        nbSeriesAlign(morpion, & seriesJ2, & seriesJ1, 3, 5);
         pointsJ1 += seriesJ1 * 5;
         pointsJ2 += seriesJ2 * 5;
 
         seriesJ1 = 0;
         seriesJ2 = 0;
-        nbSeriesAlign(morpion, & seriesJ2, & seriesJ1, 2);
+        nbSeriesAlign(morpion, & seriesJ2, & seriesJ1, 2, 5);
         pointsJ1 += seriesJ1;
         pointsJ2 += seriesJ2;
     }
@@ -783,9 +492,14 @@ static int evalF(tpm morpion)
 }
 
 static int evalF2(tpm morpion) {
+
     int gagnant = 0;
-    int seriesJ1, seriesJ2;
-    int pointsJ1 = 0, pointsJ2 = 0;
+    int seriesJ1;
+    int seriesJ2;
+    int pointsJ1 = 0;
+    int pointsJ2 = 0;
+    int seriesDangJ1 = 0;
+    int seriesDangJ2 = 0;
 
     gagnant = estGainIA(morpion);
 
@@ -837,6 +551,33 @@ static int evalF2(tpm morpion) {
         pointsJ1 += seriesJ1 * 12;
         pointsJ2 += seriesJ2 * 10;
     }
+//////---------------------------
+    if(joueurCourant == 1)
+    {
+        nbSeriesAlign(morpion, & seriesDangJ1, & seriesDangJ2, 3, 6);
+        pointsJ1 += seriesDangJ1 * 15;
+        pointsJ2 += seriesDangJ2 * 25;
+    }
+    else
+    {
+        nbSeriesAlign(morpion, & seriesDangJ2, & seriesDangJ1, 3, 6);
+        pointsJ1 += seriesDangJ1 * 25;
+        pointsJ2 += seriesDangJ2 * 15;
+    }
+    // pour ia (1) bac à sable
+    if(joueurCourant == 1)
+    {
+        nbSeriesAlign(morpion, & seriesDangJ1, & seriesDangJ2, 4, 6);
+        pointsJ1 += seriesDangJ1 * 20;
+        pointsJ2 += seriesDangJ2 * 30;
+    }
+    else
+    {
+        nbSeriesAlign(morpion, & seriesDangJ2, & seriesDangJ1, 4, 6);
+        pointsJ1 += seriesDangJ1 * 30;
+        pointsJ2 += seriesDangJ2 * 20;
+    }
+//////----------------------------
 
     printf("======> JOUEUR COURANT : %d <=======\n", joueurCourant);
     afficherMorpion(morpion);
@@ -873,9 +614,9 @@ static int evalBacASable(tpm morpion)
             return 0;
     }
     if(joueurCourant == 1)
-        nbSeriesAlign(morpion, & seriesX, & seriesO, 3);
+        nbSeriesAlign(morpion, & seriesX, & seriesO, 3, 5);
     else
-        nbSeriesAlign(morpion, & seriesO, & seriesX, 3);
+        nbSeriesAlign(morpion, & seriesO, & seriesX, 3, 5);
     return seriesX - seriesO;
 }
 

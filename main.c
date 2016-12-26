@@ -243,7 +243,7 @@ int main(void)
             default :
                 break;
         }
-        int choix = 0;
+        choix = 0;
         printf("Partie finie, voulez-vous quitter (0 / 1) ?\n>");
         scanf("%d", & sortir);
     }
