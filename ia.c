@@ -552,28 +552,26 @@ static int evalF2(tpm morpion) {
         pointsJ2 += seriesJ2 * 10;
     }
 //////---------------------------
+    nbSeriesAlign(morpion, & seriesDangJ1, & seriesDangJ2, 3, 6);
     if(joueurCourant == 1)
     {
-        nbSeriesAlign(morpion, & seriesDangJ1, & seriesDangJ2, 3, 6);
         pointsJ1 += seriesDangJ1 * 15;
         pointsJ2 += seriesDangJ2 * 25;
     }
     else
     {
-        nbSeriesAlign(morpion, & seriesDangJ2, & seriesDangJ1, 3, 6);
         pointsJ1 += seriesDangJ1 * 25;
         pointsJ2 += seriesDangJ2 * 15;
     }
     // pour ia (1) bac à sable
+    nbSeriesAlign(morpion, & seriesDangJ1, & seriesDangJ2, 4, 6);
     if(joueurCourant == 1)
     {
-        nbSeriesAlign(morpion, & seriesDangJ1, & seriesDangJ2, 4, 6);
         pointsJ1 += seriesDangJ1 * 20;
         pointsJ2 += seriesDangJ2 * 30;
     }
     else
     {
-        nbSeriesAlign(morpion, & seriesDangJ2, & seriesDangJ1, 4, 6);
         pointsJ1 += seriesDangJ1 * 30;
         pointsJ2 += seriesDangJ2 * 20;
     }
