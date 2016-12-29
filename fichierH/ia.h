@@ -6,14 +6,16 @@
 #include "parcoursMorpion.h"
 
 /**
- *
  * Permet à l'IA de jouer en fonction de l'état du morpion
  * @param morpion
  * @param joueur (vaut 1 ou 0) determine si il faut jouer O ou X
- * @return
+ * @return la liste après que l'IA ai joué
  */
-
 tpl jouerIA(tpm morpion, int joueur);
+
+/**
+ * Permet à l'utilisateur de selectionner une difficulté d'IA
+ */
 void choisirDifficulte();
 
 #endif

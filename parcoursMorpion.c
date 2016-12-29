@@ -669,6 +669,6 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign, int nbN
         }
     }
 
-    printf("seriesX : %d nbAlign : %d\n", *seriesX, nbAlign);
-    printf("seriesO : %d nbAlign : %d\n", *seriesO, nbAlign);
+    printf("seriesX : %d nbAlign : %d\n", *seriesX, nbAlign);  // affichage test
+    printf("seriesO : %d nbAlign : %d\n", *seriesO, nbAlign);  // affichage test
 }

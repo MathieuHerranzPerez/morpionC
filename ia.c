@@ -30,7 +30,6 @@ void choisirDifficulte()
 }
 
 
-
 /**
  * Vérifie grâce à nbSeriesAlign si il y a un gagnant
  * @param morpion
@@ -55,7 +54,11 @@ static int estGainIA(tpm morpion)
         return 0;
 }
 
-
+/**
+ * Trouve dans le morpion les cases jouables et renvois la liste des coups
+ * @param morpion
+ * @return
+ */
 static tpl trouverJouables(tpm morpion)
 {
     tpl liste = creerVide();
@@ -491,8 +494,13 @@ static int evalF(tpm morpion)
     }
 }
 
-static int evalF2(tpm morpion) {
-
+/**
+ * Meilleur fonction d'évaluation, on évaluera toujours en faveur de l'adversaire (tactique défensive)
+ * @param morpion
+ * @return
+ */
+static int evalF2(tpm morpion)
+{
     int gagnant = 0;
     int seriesJ1;
     int seriesJ2;
@@ -618,6 +626,14 @@ static int evalBacASable(tpm morpion)
     return seriesX - seriesO;
 }
 
+/**
+ * MinMax classique
+ * @param morpion
+ * @param profondeur jusqu'à la quelle l'IA doit anticiper
+ * @param estMax pour savoir si on est dans un min ou dans un max
+ * @param joueur le joueur au quel c'est le tour de jouer
+ * @return
+ */
 static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
 {
     int poidsM;
@@ -682,6 +698,10 @@ static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
     return poidsM;
 }
 
+/**
+ * Message qui demande de passienter (appelé lorsque l'IA "calcule")
+ * @param cpt
+ */
 static void afficherPatienter(int cpt)
 {
     //clear le terminal
