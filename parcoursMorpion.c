@@ -152,6 +152,7 @@ static int peutGagnerHori(char pion, int i, int j, int tailleSerie, int *nbCases
     return peutGagnerHori(pion, i, j + sens, 0, nbCasesLibres, sens, morpion);
 }
 
+//on aurait pu faire autrement, c'est juste pour tester comment ca marche
 static void comparerSeries2Succ(int nbMaxOcc, int *nbOcc, char *pion, int i, int j, int *series0, int *series1,
                                 void compar(int, int*, char*, int, int, int*, int*, tpm), tpm morpion)
 {

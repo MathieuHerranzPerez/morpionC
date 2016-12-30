@@ -18,4 +18,14 @@ tpl jouerIA(tpm morpion, int joueur);
  */
 void choisirDifficulte();
 
+/**
+ * Permet à l'utilisateur de selectionner une complexité d'IA
+ */
+void choisirIAenJvIA();
+
+/**
+ * Permet à l'utilisateur de selectionner une complexité d'IA
+ */
+void choisirIAenIAvIA();
+
 #endif

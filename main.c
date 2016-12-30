@@ -92,6 +92,7 @@ static void jouerJvIA()
     tpl liste = creerVide();
 
     choisirDifficulte();
+    choisirIAenJvIA();
     tpm morpion = initialiserMorpion();
 
     jouerJoueur(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, joueur, morpion); // premier coup au milieu
@@ -169,6 +170,7 @@ static void jouerIAvIA()
     tpl liste = creerVide();
 
     choisirDifficulte();
+    choisirIAenIAvIA();
     tpm morpion = initialiserMorpion();
 
     jouerJoueur(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, joueur, morpion); // premier coup au milieu

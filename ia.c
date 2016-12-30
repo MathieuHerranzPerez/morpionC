@@ -7,26 +7,24 @@
 #include "fichierH/parcoursMorpion.h"
 
 
-/**
- * Fonction plus lente que trouverCasesJouables(), mais n'oblige pas à une copie de liste
- * @param morpion
- * @return
- */
-
 static int profondeur = 0;
 static int joueurCourant = -1;
+static int fonctionEval1;   // la fonction d'évaluation pour JvIA et IAvIA
+static int fonctionEval2;   // l'autre fonction d'évaluation pour IAvIA
 
 void choisirDifficulte()
 {
-    while(profondeur < 1 || profondeur > 4) {
-        printf("Veuillez choisir une difficulté : \n"
+    int prof = 0;
+    while(prof < 1 || prof > 4) {
+        printf("Veuillez choisir une difficulte : \n"
                        "- (1) bac a sable\n"
                        "- (2) facile\n"
-                       "- (3) normal\n"
-                       "- (4) difficile (deconseille, trop long)\n"
+                       "- (3) normal (long)\n"
+                       "- (4) difficile (deconseille, vraiment tres long)\n"
                        ">");
-        scanf("%d", &profondeur);
+        scanf("%d", & prof);
     }
+    profondeur = prof;
 }
 
 
@@ -56,6 +54,7 @@ static int estGainIA(tpm morpion)
 
 /**
  * Trouve dans le morpion les cases jouables et renvois la liste des coups
+ * plus lente que trouverCasesJouables(), mais n'oblige pas à une copie de liste
  * @param morpion
  * @return
  */
@@ -101,270 +100,116 @@ static void dejouer(int i, int j, tpm morpion)
     morpion->morpion[i][j] = ' ';
 }
 
-/**
- * Compte le nombre de mêmes symboles succéssifs horizontalement à partir des coordonnées i j
- * @param i colonne
- * @param j ligne
- * @param morpion
- * @return le nombre de symboles succéssifs
- */
-int compterSuccHorizontale(int i, int j, tpm morpion)
-{
-    int indJ;
-    int cptNbAlignes;
-
-    cptNbAlignes = 1;
-    indJ = j;
-
-    while(indJ < getTailleMorpion(morpion)-1 && morpion->morpion[i][indJ] == morpion->morpion[i][indJ+1])
-    {
-        cptNbAlignes = cptNbAlignes+1;
-        indJ = indJ +1;
-    }
-    indJ = j;
-    while(indJ > 0 && morpion->morpion[i][indJ] == morpion->morpion[i][indJ-1])
-    {
-        cptNbAlignes = cptNbAlignes+1;
-        indJ = indJ -1;
-    }
-    return cptNbAlignes;
-}
-
-int compterSuccVerticale(int i, int j, tpm morpion)
-{
-    int indI;
-    int cptNbAlignes;
-
-    cptNbAlignes=1;
-    indI = i;
-
-    while(indI < getTailleMorpion(morpion)-1 && morpion->morpion[indI][j] == morpion->morpion[indI+1][j])
-    {
-        cptNbAlignes = cptNbAlignes+1;
-        indI = indI +1;
-    }
-    indI = i;
-    while(indI > 0 && morpion->morpion[indI][j] == morpion->morpion[indI-1][j])
-    {
-        cptNbAlignes = cptNbAlignes+1;
-        indI = indI -1;
-    }
-    return cptNbAlignes;
-}
-
-int compterSuccDiagDesc(int i, int j, tpm morpion)
-{
-    int indI;
-    int indJ;
-    int cptNbAlignes;
-
-    cptNbAlignes=1;
-    indI = i;
-    indJ=j;
-
-    while(indI > 0 && indJ > 0
-    && morpion->morpion[indI][indJ] == morpion->morpion[indI-1][indJ-1])
-    {
-        cptNbAlignes = cptNbAlignes+1;
-        indI = indI-1;
-        indJ = indJ-1;
-    }
-    indI = i;
-    indJ = j;
-    while(indI < getTailleMorpion(morpion)&& indJ < getTailleMorpion(morpion)-1
-            && morpion->morpion[indI][indJ] == morpion->morpion[indI+1][indJ+1])
-    {
-        cptNbAlignes = cptNbAlignes+1;
-        indI = indI+1;
-        indJ = indJ+1;
-    }
-    return cptNbAlignes;
-}
-
-int compterSuccDiagAsc(int i, int j, tpm morpion)
-{
-    int indI;
-    int indJ;
-    int cptNbAlignes;
-
-    cptNbAlignes=1;
-    indI = i;
-    indJ=j;
-
-    while(indI > 0 &&  indJ < getTailleMorpion(morpion)-1
-          && morpion->morpion[indI][indJ] == morpion->morpion[indI-1][indJ+1])
-    {
-        cptNbAlignes = cptNbAlignes+1;
-        indI = indI-1;
-        indJ = indJ+1;
-    }
-    indI = i;
-    indJ = j;
-    while(indI < getTailleMorpion(morpion)-1 && indJ > 0
-          && morpion->morpion[indI][indJ] == morpion->morpion[indI+1][indJ-1])
-    {
-        cptNbAlignes = cptNbAlignes+1;
-        indI = indI+1;
-        indJ = indJ-1;
-    }
-    return cptNbAlignes;
-}
-
-
-int estNonBloque6(tpm morpion)
-{
-//TODO
-}
-
-/**
- * Evalue juste le dernier coups joué
- * @param indI
- * @param indJ
- * @param morpion
- * @param estMax
- * @return
- */
-static int eval(int indI, int indJ, tpm morpion, int estMax)
-{
-    int cptHorizontale, cptVerticale, cptDiagDes, cptDiagAsc;
-    int poidsH = 0,
-        poidsV = 0,
-        poidsDA = 0,
-        poidsDD = 0;
-    int meilleurPoids;
-
-    // compter nb pions successifs et si ils sont bloqués
-
-    //horizontale
-    cptHorizontale = compterSuccHorizontale(indI, indJ, morpion);
-    if(cptHorizontale >= 3 && cptHorizontale < 5 && !estBloqueH(indI, indJ, morpion, 5))
-    {
-        poidsH = 50;
-    }
-    else if(cptHorizontale == 5)
-    {
-        if(estMax)
-            return 200;
-        else
-            return -200;
-    }
-
-    //verticale
-    cptVerticale = compterSuccVerticale(indI, indJ, morpion);
-    if(cptVerticale >= 3 && cptVerticale < 5 && !estBloqueV(indI, indJ, morpion, 5))
-    {
-        poidsV = 50;
-    }
-    else if(cptVerticale == 5)
-    {
-        if(estMax)
-            return 200;
-        else
-            return -200;
-    }
-    //diag asc
-    cptDiagAsc = compterSuccDiagAsc(indI, indJ, morpion);
-    if(cptDiagAsc >= 3 && cptDiagAsc < 5 && !estBloqueDA(indI, indJ, morpion, 5))
-    {
-        poidsDA = 50;
-    }
-    else if (cptDiagAsc == 5)
-    {
-        if(estMax)
-            return 200;
-        else
-            return -200;
-    }
-
-    //diag desc
-    cptDiagDes = compterSuccDiagDesc(indI, indJ, morpion);
-    if(cptDiagDes >= 3 && cptDiagAsc < 5 && !estBloqueDD(indI, indJ, morpion, 5))
-    {
-        poidsDD = 50;
-    }
-    else if (cptDiagDes == 5)
-    {
-        if(estMax)
-            return 200;
-        else
-            return -200;
-    }
-
-    if(poidsH > poidsV)
-        meilleurPoids = poidsH;
-    else
-        meilleurPoids = poidsV;
-
-    if(poidsDA > meilleurPoids)
-        meilleurPoids = poidsDA;
-    if(poidsDD > meilleurPoids)
-        meilleurPoids = poidsDD;
-
-    printf("meilleurPoids : %d\n", meilleurPoids);
-
-    if(estMax)
-        return meilleurPoids;
-    else
-        return meilleurPoids * (-1);
-}
-
-
-//static int eval2(tpm morpion)
+///**
+// * Compte le nombre de mêmes symboles succéssifs horizontalement à partir des coordonnées i j
+// * @param i colonne
+// * @param j ligne
+// * @param morpion
+// * @return le nombre de symboles succéssifs
+// */
+//int compterSuccHorizontale(int i, int j, tpm morpion)
 //{
-//    int cptHorizontale, cptVerticale, cptDiagDes, cptDiagAsc;
-//    int seriesJ1 = 0;
-//    int seriesJ2 = 0;
+//    int indJ;
+//    int cptNbAlignes;
 //
-//    printf("-----------------------\n");
-//    afficherMorpion(morpion); // affichageTest
+//    cptNbAlignes = 1;
+//    indJ = j;
 //
-//    // compter nb pions successifs et si ils sont bloqués
-//
-//    if(estGainIA(morpion))
+//    while(indJ < getTailleMorpion(morpion)-1 && morpion->morpion[i][indJ] == morpion->morpion[i][indJ+1])
 //    {
-//        if(!estMax)  //il faut faire l'inverse car ici on aura déjà changé de joueur (et donc de estMax)
-//        {
-//            printf("eval2 EstMax Gain : %d\n", -1000 + morpion->nbCoupsJoues); // affichageTest
-//            return -1000 + morpion->nbCoupsJoues;       //TODO inverser ?
-//        }
-//        else
-//        {
-//            printf("eval2 NonEstMax Gain : %d\n", 1000 - morpion->nbCoupsJoues); // affichageTest
-//            return 1000 - morpion->nbCoupsJoues;        //TODO inverser ?
-//        }
+//        cptNbAlignes = cptNbAlignes+1;
+//        indJ = indJ +1;
 //    }
+//    indJ = j;
+//    while(indJ > 0 && morpion->morpion[i][indJ] == morpion->morpion[i][indJ-1])
+//    {
+//        cptNbAlignes = cptNbAlignes+1;
+//        indJ = indJ -1;
+//    }
+//    return cptNbAlignes;
+//}
 //
-//    // on compte le nombre de séries de 3 pions non bloqués de chaque joueur
-//    nbSeriesAlign(morpion, & seriesJ1, & seriesJ2, 3);
+//int compterSuccVerticale(int i, int j, tpm morpion)
+//{
+//    int indI;
+//    int cptNbAlignes;
 //
-//    if(!estMax && (seriesJ1 || seriesJ2))
+//    cptNbAlignes=1;
+//    indI = i;
+//
+//    while(indI < getTailleMorpion(morpion)-1 && morpion->morpion[indI][j] == morpion->morpion[indI+1][j])
 //    {
-//        printf("eval2 EstMax 3 Align : %d\n", seriesJ2 - seriesJ1); // affichageTest
-//        return 2*(seriesJ2 - seriesJ1);     //TODO inverser ?
+//        cptNbAlignes = cptNbAlignes+1;
+//        indI = indI +1;
 //    }
-//    else if(estMax &&(seriesJ1 || seriesJ2))
+//    indI = i;
+//    while(indI > 0 && morpion->morpion[indI][j] == morpion->morpion[indI-1][j])
 //    {
-//        printf("eval2 NonEstMax 3 Align : %d\n", seriesJ1 - seriesJ2); // affichageTest
-//        return 2*(seriesJ1 - seriesJ2);         //TODO inverser ?
+//        cptNbAlignes = cptNbAlignes+1;
+//        indI = indI -1;
 //    }
-//        //on compte le nombre de séries de 2 pions non bloqués de chaque joueur
-//    else
+//    return cptNbAlignes;
+//}
+//
+//int compterSuccDiagDesc(int i, int j, tpm morpion)
+//{
+//    int indI;
+//    int indJ;
+//    int cptNbAlignes;
+//
+//    cptNbAlignes=1;
+//    indI = i;
+//    indJ=j;
+//
+//    while(indI > 0 && indJ > 0
+//    && morpion->morpion[indI][indJ] == morpion->morpion[indI-1][indJ-1])
 //    {
-//        nbSeriesAlign(morpion, & seriesJ1, & seriesJ2, 2);
-//        if(!estMax)
-//        {
-//            printf("eval2 EstMax 2 Align : %d\n", seriesJ2 - seriesJ1); // affichageTest
-//            return seriesJ2 - seriesJ1;     //TODO inverser ?
-//        }
-//        else
-//        {
-//            printf("eval2 NonEstMax 2 Align : %d\n", seriesJ1 - seriesJ2); // affichageTest
-//            return seriesJ1 - seriesJ2;         //TODO inverser ?
-//        }
+//        cptNbAlignes = cptNbAlignes+1;
+//        indI = indI-1;
+//        indJ = indJ-1;
 //    }
+//    indI = i;
+//    indJ = j;
+//    while(indI < getTailleMorpion(morpion)&& indJ < getTailleMorpion(morpion)-1
+//            && morpion->morpion[indI][indJ] == morpion->morpion[indI+1][indJ+1])
+//    {
+//        cptNbAlignes = cptNbAlignes+1;
+//        indI = indI+1;
+//        indJ = indJ+1;
+//    }
+//    return cptNbAlignes;
+//}
+//
+//int compterSuccDiagAsc(int i, int j, tpm morpion)
+//{
+//    int indI;
+//    int indJ;
+//    int cptNbAlignes;
+//
+//    cptNbAlignes=1;
+//    indI = i;
+//    indJ = j;
+//
+//    while(indI > 0 &&  indJ < getTailleMorpion(morpion)-1
+//          && morpion->morpion[indI][indJ] == morpion->morpion[indI-1][indJ+1])
+//    {
+//        cptNbAlignes = cptNbAlignes+1;
+//        indI = indI-1;
+//        indJ = indJ+1;
+//    }
+//    indI = i;
+//    indJ = j;
+//    while(indI < getTailleMorpion(morpion)-1 && indJ > 0
+//          && morpion->morpion[indI][indJ] == morpion->morpion[indI+1][indJ-1])
+//    {
+//        cptNbAlignes = cptNbAlignes+1;
+//        indI = indI+1;
+//        indJ = indJ-1;
+//    }
+//    return cptNbAlignes;
 //}
 
-static int eval2(tpm morpion)
+static int evalF(tpm morpion)
 {
     int seriesJ1 = 0;
     int seriesJ2 = 0;
@@ -431,32 +276,32 @@ static int eval2(tpm morpion)
 
     return pointsJ1 - pointsJ2;
 }
+
 /**
- * Ne fonctionne pas en IA vs IA
+ * Ne verifie pas | | |O|O|O| |, tactique offensive
  * @param morpion
  * @return
  */
-static int evalF(tpm morpion)
+static int evalMO(tpm morpion)
 {
     int gagnant = 0;
-    int seriesJ1, seriesJ2;
-    int pointsJ1 = 0, pointsJ2 = 0;
+    int seriesJ1;
+    int seriesJ2;
+    int pointsJ1 = 0;
+    int pointsJ2 = 0;
 
     gagnant = estGainIA(morpion);
 
-    if(gagnant != 0)
-    {
+    if (gagnant != 0) {
         if (gagnant == -1) {
             return -1000 + morpion->nbCoupsJoues;
-        }
-        else
-        {
+        } else {
             return 1000 - morpion->nbCoupsJoues;
         }
     }
 
     //si egalite
-    if(estFin(morpion))
+    if (estFin(morpion))
         return 0;
 
     //On compte le nombre de séries de 2 pions alignés de chacun des joueurs
@@ -470,15 +315,31 @@ static int evalF(tpm morpion)
     seriesJ1 = 0;
     seriesJ2 = 0;
     rechercherSeriesSucc(3, & seriesJ1, & seriesJ2, morpion);
-    pointsJ1 += seriesJ1 * 5;
-    pointsJ2 += seriesJ2 * 5;
+    if (joueurCourant == 1)
+    {
+        pointsJ1 += seriesJ1 * 5;
+        pointsJ2 += seriesJ2 * 4;
+    }
+    else
+    {
+        pointsJ1 += seriesJ1 * 4;
+        pointsJ2 += seriesJ2 * 5;
+    }
 
     //On compte le nombre de séries de 4 pions alignés de chacun des joueurs
     seriesJ1 = 0;
     seriesJ2 = 0;
     rechercherSeriesSucc(4, & seriesJ1, & seriesJ2, morpion);
-    pointsJ1 += seriesJ1 * 12;
-    pointsJ2 += seriesJ2 * 12;
+    if (joueurCourant == 1)
+    {
+        pointsJ1 += seriesJ1 * 12;
+        pointsJ2 += seriesJ2 * 10;
+    }
+    else
+    {
+        pointsJ1 += seriesJ1 * 10;
+        pointsJ2 += seriesJ2 * 12;
+    }
 
     printf("======> JOUEUR COURANT : %d <=======\n", joueurCourant);
     afficherMorpion(morpion);
@@ -495,11 +356,194 @@ static int evalF(tpm morpion)
 }
 
 /**
- * Meilleur fonction d'évaluation, on évaluera toujours en faveur de l'adversaire (tactique défensive)
+ * Ne verifie pas | | |O|O|O| |, tactique defensive
  * @param morpion
  * @return
  */
-static int evalF2(tpm morpion)
+static int evalMD(tpm morpion)
+{
+    int gagnant = 0;
+    int seriesJ1;
+    int seriesJ2;
+    int pointsJ1 = 0;
+    int pointsJ2 = 0;
+
+    gagnant = estGainIA(morpion);
+
+    if (gagnant != 0) {
+        if (gagnant == -1) {
+            return -1000 + morpion->nbCoupsJoues;
+        } else {
+            return 1000 - morpion->nbCoupsJoues;
+        }
+    }
+
+    //si egalite
+    if (estFin(morpion))
+        return 0;
+
+    //On compte le nombre de séries de 2 pions alignés de chacun des joueurs
+    seriesJ1 = 0;
+    seriesJ2 = 0;
+    rechercherSeriesSucc(2, & seriesJ1, & seriesJ2, morpion);
+    pointsJ1 = seriesJ1;
+    pointsJ2 = seriesJ2;
+
+    //On compte le nombre de séries de 3 pions alignés de chacun des joueurs
+    seriesJ1 = 0;
+    seriesJ2 = 0;
+    rechercherSeriesSucc(3, & seriesJ1, & seriesJ2, morpion);
+    if (joueurCourant == 1)
+    {
+        pointsJ1 += seriesJ1 * 4;
+        pointsJ2 += seriesJ2 * 5;
+    }
+    else
+    {
+        pointsJ1 += seriesJ1 * 5;
+        pointsJ2 += seriesJ2 * 4;
+    }
+
+    //On compte le nombre de séries de 4 pions alignés de chacun des joueurs
+    seriesJ1 = 0;
+    seriesJ2 = 0;
+    rechercherSeriesSucc(4, & seriesJ1, & seriesJ2, morpion);
+    if (joueurCourant == 1)
+    {
+        pointsJ1 += seriesJ1 * 10;
+        pointsJ2 += seriesJ2 * 12;
+    }
+    else
+    {
+        pointsJ1 += seriesJ1 * 12;
+        pointsJ2 += seriesJ2 * 10;
+    }
+
+    printf("======> JOUEUR COURANT : %d <=======\n", joueurCourant);
+    afficherMorpion(morpion);
+    if(joueurCourant == 1)
+    {
+        printf("pointsJ1 - pointsJ2 = %d\n\n", pointsJ1 - pointsJ2);
+        return pointsJ1 - pointsJ2;
+    }
+    else
+    {
+        printf("pointsJ2 - pointsJ1 = %d\n\n", pointsJ2 - pointsJ1);
+        return pointsJ2 - pointsJ1;
+    }
+}
+
+/**
+ * Meilleur fonction d'évaluation, on évaluera toujours en faveur de l'IA (tactique offensive)
+ * @param morpion
+ * @return
+ */
+static int evalFO(tpm morpion)
+{
+    int gagnant = 0;
+    int seriesJ1;
+    int seriesJ2;
+    int pointsJ1 = 0;
+    int pointsJ2 = 0;
+    int seriesDangJ1 = 0;
+    int seriesDangJ2 = 0;
+
+    gagnant = estGainIA(morpion);
+
+    if (gagnant != 0) {
+        if (gagnant == -1) {
+            return -1000 + morpion->nbCoupsJoues;
+        } else {
+            return 1000 - morpion->nbCoupsJoues;
+        }
+    }
+
+    //si egalite
+    if (estFin(morpion))
+        return 0;
+
+    //On compte le nombre de séries de 2 pions alignés de chacun des joueurs
+    seriesJ1 = 0;
+    seriesJ2 = 0;
+    rechercherSeriesSucc(2, & seriesJ1, & seriesJ2, morpion);
+    pointsJ1 = seriesJ1;
+    pointsJ2 = seriesJ2;
+
+    //On compte le nombre de séries de 3 pions alignés de chacun des joueurs
+    seriesJ1 = 0;
+    seriesJ2 = 0;
+    rechercherSeriesSucc(3, & seriesJ1, & seriesJ2, morpion);
+    if (joueurCourant == 1)
+    {
+        pointsJ1 += seriesJ1 * 5;
+        pointsJ2 += seriesJ2 * 4;
+    }
+    else
+    {
+        pointsJ1 += seriesJ1 * 4;
+        pointsJ2 += seriesJ2 * 5;
+    }
+
+    //On compte le nombre de séries de 4 pions alignés de chacun des joueurs
+    seriesJ1 = 0;
+    seriesJ2 = 0;
+    rechercherSeriesSucc(4, & seriesJ1, & seriesJ2, morpion);
+    if (joueurCourant == 1)
+    {
+        pointsJ1 += seriesJ1 * 12;
+        pointsJ2 += seriesJ2 * 10;
+    }
+    else
+    {
+        pointsJ1 += seriesJ1 * 10;
+        pointsJ2 += seriesJ2 * 12;
+    }
+//////---------------------------
+    nbSeriesAlign(morpion, & seriesDangJ1, & seriesDangJ2, 3, 6);
+    if(joueurCourant == 1)
+    {
+        pointsJ1 += seriesDangJ1 * 25;
+        pointsJ2 += seriesDangJ2 * 15;
+    }
+    else
+    {
+        pointsJ1 += seriesDangJ1 * 15;
+        pointsJ2 += seriesDangJ2 * 25;
+    }
+    // pour ia (1) bac à sable
+    nbSeriesAlign(morpion, & seriesDangJ1, & seriesDangJ2, 4, 6);
+    if(joueurCourant == 1)
+    {
+        pointsJ1 += seriesDangJ1 * 30;
+        pointsJ2 += seriesDangJ2 * 20;
+    }
+    else
+    {
+        pointsJ1 += seriesDangJ1 * 20;
+        pointsJ2 += seriesDangJ2 * 30;
+    }
+//////----------------------------
+
+    printf("======> JOUEUR COURANT : %d <=======\n", joueurCourant);
+    afficherMorpion(morpion);
+    if(joueurCourant == 1)
+    {
+        printf("pointsJ1 - pointsJ2 = %d\n\n", pointsJ1 - pointsJ2);
+        return pointsJ1 - pointsJ2;
+    }
+    else
+    {
+        printf("pointsJ2 - pointsJ1 = %d\n\n", pointsJ2 - pointsJ1);
+        return pointsJ2 - pointsJ1;
+    }
+}
+
+/**
+ * Meilleur fonction d'évaluation, on évaluera toujours en faveur de l'adversaire (tactique defensive)
+ * @param morpion
+ * @return
+ */
+static int evalFD(tpm morpion)
 {
     int gagnant = 0;
     int seriesJ1;
@@ -605,6 +649,9 @@ static int evalBacASable(tpm morpion)
     int seriesX = 0;
     int seriesO = 0;
 
+
+    printf("======> JOUEUR COURANT : %d <=======\n", joueurCourant);    //affichage test
+    afficherMorpion(morpion);   //affichage test
     vainqueur = estGainIA(morpion);
     if(vainqueur != 0)
     {
@@ -626,6 +673,74 @@ static int evalBacASable(tpm morpion)
     return seriesX - seriesO;
 }
 
+static int lancerEval(int evaluer(tpm), tpm morpion)
+{
+    return evaluer(morpion);
+}
+
+/**
+ * lance la bonne fonction d'évaluation
+ * @param morpion
+ * @return le resultat de la fonction d'évaluation
+ */
+static int eval(tpm morpion)
+{
+    if(joueurCourant == 1)
+    {
+        switch(fonctionEval1)
+        {
+            case 1:
+                printf("IA lancee : evalFG\n");
+                return lancerEval(evalFD, morpion);
+            case 2:
+                printf("IA lancee : evalFO\n");
+                return lancerEval(evalFO, morpion);
+            case 3:
+                printf("IA lancee : evalMD\n");
+                return lancerEval(evalMD, morpion);
+            case 4:
+                printf("IA lancee : evalMO\n");
+                return lancerEval(evalMO, morpion);
+            case 5:
+                printf("IA lancee : evalF\n");
+                return lancerEval(evalF, morpion);
+            case 6:
+                printf("IA lancee : evalBacASable\n");
+                return lancerEval(evalBacASable, morpion);
+            default:
+                printf("IA lancee : evalFD\n");
+                return lancerEval(evalFD, morpion);
+        }
+    }
+    else
+    {
+        switch(fonctionEval2)
+        {
+            case 1:
+                printf("IA lancee : evalFG\n");
+                return lancerEval(evalFD, morpion);
+            case 2:
+                printf("IA lancee : evalFO\n");
+                return lancerEval(evalFO, morpion);
+            case 3:
+                printf("IA lancee : evalMD\n");
+                return lancerEval(evalMD, morpion);
+            case 4:
+                printf("IA lancee : evalMO\n");
+                return lancerEval(evalMO, morpion);
+            case 5:
+                printf("IA lancee : evalF\n");
+                return lancerEval(evalF, morpion);
+            case 6:
+                printf("IA lancee : evalBacASable\n");
+                return lancerEval(evalBacASable, morpion);
+            default:
+                printf("IA lancee : evalFD\n");
+                return lancerEval(evalFD, morpion);
+        }
+    }
+}
+
 /**
  * MinMax classique
  * @param morpion
@@ -640,7 +755,7 @@ static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
     int i, j, tmp;
     int estFctMax;
     tpl listeTmp;
-    tpl liste = creerVide();
+    tpl liste;
 
     if(estMax)
         poidsM = -1000;
@@ -649,8 +764,7 @@ static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
 
     if(profondeur == 0 || estGainIA(morpion) || estFin(morpion))
     {
-        //return evalBacASable(morpion);
-        return evalF2(morpion);
+        return eval(morpion);
     }
 
     liste = trouverJouables(morpion);
@@ -723,6 +837,63 @@ static void afficherPatienter(int cpt)
         default :
             break;
     }
+}
+
+static void setIA1(int numIA)
+{
+    fonctionEval1 = numIA;
+}
+
+static void setIA2(int numIA)
+{
+    fonctionEval2 = numIA;
+}
+
+void choisirIAenJvIA()
+{
+    int numIA = 0;
+    while(numIA > 6 || numIA < 1)
+    {
+        printf("Selectionnez la complexite de l'IA :\n"
+                       " - (1) forte defensive\n"
+                       " - (2) forte offensive\n"
+                       " - (3) moyenne defensive\n"
+                       " - (4) moyenne offensive\n"
+                       " - (5) faible\n"
+                       " - (6) tres faible\n>");
+        scanf("%d", & numIA);
+    }
+    setIA1(numIA);
+}
+
+void choisirIAenIAvIA()
+{
+    int numIA = 0;
+    while(numIA > 6 || numIA < 1)
+    {
+        printf("Selectionnez la complexite de la premiere IA :\n"
+                       " - (1) forte defensive\n"
+                       " - (2) forte offensive\n"
+                       " - (3) moyenne defensive\n"
+                       " - (4) moyenne offensive\n"
+                       " - (5) faible\n"
+                       " - (6) tres faible\n>");
+        scanf("%d", & numIA);
+    }
+    setIA1(numIA);
+    numIA = 0;
+    while(numIA > 6 || numIA < 1)
+    {
+        printf("Selectionnez la complexite de la deuxieme IA :\n"
+                       " - (1) forte defensive\n"
+                       " - (2) forte offensive\n"
+                       " - (3) moyenne defensive\n"
+                       " - (4) moyenne offensive\n"
+                       " - (5) faible\n"
+                       " - (6) tres faible\n>");
+        scanf("%d", & numIA);
+    }
+    setIA2(numIA);
 }
 
 tpl jouerIA(tpm morpion, int joueur)
