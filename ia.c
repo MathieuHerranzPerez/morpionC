@@ -751,11 +751,14 @@ static int eval(tpm morpion)
  */
 static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
 {
+    //TODO enlever le random pour tester des IA !
     int poidsM;
     int i, j, tmp;
     int estFctMax;
     tpl listeTmp;
     tpl liste;
+
+    int random; //  pour ne pas avoir tout le temps la même partie
 
     if(estMax)
         poidsM = -1000;
@@ -788,13 +791,33 @@ static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
         printf("tpm : %d\n", tmp);// affichage test
         if(estMax)
         {
-            if (tmp > poidsM)
-                poidsM = tmp;
+            if (tmp >= poidsM)
+            {
+                if (tmp == poidsM)      //pour ne pas avoir tout le temps la même partie
+                {
+                    random = rand() % 2;
+                    printf("RANDOM : %d\n", random);    //affichage test
+                    if(random)
+                        poidsM = tmp;
+                }
+                else
+                    poidsM = tmp;
+            }
         }
         else
         {
-            if (tmp < poidsM)
-                poidsM = tmp;
+            if (tmp <= poidsM)
+            {
+                if (tmp == poidsM)      //pour ne pas avoir tout le temps la même partie
+                {
+                    random = rand() % 2;
+                    printf("RANDOM : %d\n", random);    //affichage test
+                    if(random)
+                        poidsM = tmp;
+                }
+                else
+                    poidsM = tmp;
+            }
         }
 
         // on remet la case testée à defaut
