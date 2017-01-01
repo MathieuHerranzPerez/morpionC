@@ -1,6 +1,6 @@
 
-#include "fichierH/morpion.h"
-#include "fichierH/liste.h"
+#include "headers/morpion.h"
+#include "headers/liste.h"
 
 int getTailleMorpion(tpm morpion)
 {

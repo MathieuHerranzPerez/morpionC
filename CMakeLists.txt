@@ -5,16 +5,16 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 SET(CMAKE_C_FLAGS_DEBUG "-D_DEBUG")
 
 set(SOURCE_FILES main.c
-                 fichierH/gainFin.h
+        headers/gainFin.h
                  gainFin.c
-                 fichierH/ia.h
+        headers/ia.h
                  ia.c
-                 fichierH/jeu.h
+        headers/jeu.h
                  jeu.c
-                 fichierH/joueur.h
+        headers/joueur.h
                  joueur.c
-                 fichierH/liste.h
+        headers/liste.h
                  liste.c
-                 fichierH/morpion.h
-                 morpion.c parcoursMorpion.c fichierH/parcoursMorpion.h)
+        headers/morpion.h
+                 morpion.c parcoursMorpion.c headers/parcoursMorpion.h)
 add_executable(morpionC ${SOURCE_FILES})

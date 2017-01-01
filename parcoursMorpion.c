@@ -1,5 +1,5 @@
-#include "fichierH/parcoursMorpion.h"
-#include "fichierH/morpion.h"
+#include "headers/parcoursMorpion.h"
+#include "headers/morpion.h"
 
 static int estBloque(char pion, int i, int j, tpm morpion){
     if( i >= getTailleMorpion(morpion) || j >= getTailleMorpion(morpion))

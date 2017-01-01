@@ -1,6 +1,6 @@
 
 #include <stdio.h>
-#include "fichierH/joueur.h"
+#include "headers/joueur.h"
 
 void afficherJoueurActuel(int joueur)
 {

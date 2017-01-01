@@ -1,10 +1,11 @@
-#include "fichierH/liste.h"
-#include "fichierH/ia.h"
-#include "fichierH/joueur.h"
-#include "fichierH/morpion.h"
-#include "fichierH/jeu.h"
-#include "fichierH/gainFin.h"
-#include "fichierH/parcoursMorpion.h"
+#include "headers/liste.h"
+#include "headers/ia.h"
+#include "headers/joueur.h"
+#include "headers/morpion.h"
+#include "headers/jeu.h"
+#include "headers/gainFin.h"
+#include "headers/parcoursMorpion.h"
+
 
 
 static int profondeur = 0;

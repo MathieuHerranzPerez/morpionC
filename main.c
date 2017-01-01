@@ -1,12 +1,12 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "fichierH/morpion.h"
-#include "fichierH/liste.h"
-#include "fichierH/jeu.h"
-#include "fichierH/ia.h"
-#include "fichierH/gainFin.h"
-#include "fichierH/joueur.h"
+#include "headers/morpion.h"
+#include "headers/liste.h"
+#include "headers/jeu.h"
+#include "headers/ia.h"
+#include "headers/gainFin.h"
+#include "headers/joueur.h"
 
 
 #ifdef __WIN32__

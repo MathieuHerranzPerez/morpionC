@@ -1,5 +1,5 @@
 
-#include "fichierH/gainFin.h"
+#include "headers/gainFin.h"
 
 int estFin(tpm morpion)
 {

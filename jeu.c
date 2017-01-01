@@ -1,5 +1,5 @@
 
-#include "fichierH/jeu.h"
+#include "headers/jeu.h"
 
 void afficherMorpion(tpm morpion)
 {
