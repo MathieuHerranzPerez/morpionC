@@ -1,6 +1,11 @@
-
+/**
+ * @author HERRANZ PEREZ Mathieu <mathieu.herranz-perez@etu.univ-amu.fr>
+ * @author ALIE-SANDEVOIR Isis <isis.alie-sandevoir@etu.univ-amu.fr>
+ *
+ * @version 0.1.1 / 12-12-2016
+ * @file morpion.c
+ */
 #include "headers/morpion.h"
-#include "headers/liste.h"
 
 int getTailleMorpion(tpm morpion)
 {
@@ -9,13 +14,20 @@ int getTailleMorpion(tpm morpion)
 tpm initialiserMorpion()
 {
     int i, j, taille = 0;
+    int testSaisie = 0;
+    char chaine[2];
     tpm morpion = (tpm)malloc(sizeof(t_morpion));
 
     //On demande à l'utilisteur de saisir la taille du plateau
-    while(taille < 2 || taille > 15)
+    printf("Saisir taille du morpion (5 < et < 15)\n");
+    while(taille < 5 || taille > 15)
     {
-        printf("saisir la taille du morpion (>5 et <15)\n>");
-        scanf("%d", &taille);
+        while(testSaisie != 1)
+        {
+            fgets(chaine, sizeof chaine, stdin);
+            testSaisie = sscanf(chaine, "%d", &taille);
+        }
+        testSaisie = 0;
     }
 
     //On reserve de la place pour notre plateau
@@ -55,7 +67,7 @@ tpl trouverCasesJouables(int i, int j, tpl liste, tpm morpion)
         for(indJ = j-1; indJ <= j+1; ++indJ)
         {
             if(indI >= 0 && indJ >= 0 && indI < getTailleMorpion(morpion) && indJ < getTailleMorpion(morpion)
-                    && morpion->morpion[indI][indJ] == ' ' && !rechercherElmt(indI, indJ, liste))
+               && morpion->morpion[indI][indJ] == ' ' && !rechercherElmt(indI, indJ, liste))
             {
                 liste = ajoutListe(indI, indJ, liste);
             }

@@ -1,3 +1,10 @@
+/**
+ * @author HERRANZ PEREZ Mathieu <mathieu.herranz-perez@etu.univ-amu.fr>
+ * @author ALIE-SANDEVOIR Isis <isis.alie-sandevoir@etu.univ-amu.fr>
+ *
+ * @version 0.1.0 / 12-12-2016
+ * @file joueur.c
+ */
 
 #include <stdio.h>
 #include "headers/joueur.h"

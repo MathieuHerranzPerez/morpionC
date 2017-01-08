@@ -11,7 +11,7 @@
  * @param joueur (vaut 1 ou 0) determine si il faut jouer O ou X
  * @return la liste après que l'IA ai joué
  */
-tpl jouerIA(tpm morpion, int joueur);
+tpl jouerIA(tpm morpion, int joueur, int estAlphaBeta);
 
 /**
  * Permet à l'utilisateur de selectionner une difficulté d'IA

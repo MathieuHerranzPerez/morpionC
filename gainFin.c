@@ -1,4 +1,10 @@
-
+/**
+ * @author HERRANZ PEREZ Mathieu <mathieu.herranz-perez@etu.univ-amu.fr>
+ * @author ALIE-SANDEVOIR Isis <isis.alie-sandevoir@etu.univ-amu.fr>
+ *
+ * @version 0.2.0 / 12-12-2016
+ * @file gainFin.c
+ */
 #include "headers/gainFin.h"
 
 int estFin(tpm morpion)
@@ -17,7 +23,7 @@ static int estGainDiagAsc(int i, int j, tpm morpion)
     indJ=j;
 
     while(indI > 0 &&  indJ < getTailleMorpion(morpion)-1
-        && morpion->morpion[indI][indJ] == morpion->morpion[indI-1][indJ+1])
+          && morpion->morpion[indI][indJ] == morpion->morpion[indI-1][indJ+1])
     {
         cptNbAlignes = cptNbAlignes+1;
         indI = indI-1;
@@ -26,7 +32,7 @@ static int estGainDiagAsc(int i, int j, tpm morpion)
     indI = i;
     indJ = j;
     while(indI < getTailleMorpion(morpion)-1 && indJ > 0
-        && morpion->morpion[indI][indJ] == morpion->morpion[indI+1][indJ-1])
+          && morpion->morpion[indI][indJ] == morpion->morpion[indI+1][indJ-1])
     {
         cptNbAlignes = cptNbAlignes+1;
         indI = indI+1;
@@ -46,7 +52,7 @@ static int estGainDiagDes(int i, int j, tpm morpion)
     indJ=j;
 
     while(indI > 0 && indJ > 0
-        && morpion->morpion[indI][indJ] == morpion->morpion[indI-1][indJ-1])
+          && morpion->morpion[indI][indJ] == morpion->morpion[indI-1][indJ-1])
     {
         cptNbAlignes = cptNbAlignes+1;
         indI = indI-1;
@@ -55,7 +61,7 @@ static int estGainDiagDes(int i, int j, tpm morpion)
     indI = i;
     indJ = j;
     while(indI < getTailleMorpion(morpion)-1 && indJ < getTailleMorpion(morpion)-1
-        && morpion->morpion[indI][indJ] == morpion->morpion[indI+1][indJ+1])
+          && morpion->morpion[indI][indJ] == morpion->morpion[indI+1][indJ+1])
     {
         cptNbAlignes = cptNbAlignes+1;
         indI = indI+1;

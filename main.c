@@ -1,8 +1,13 @@
+/**
+ * @author HERRANZ PEREZ Mathieu <mathieu.herranz-perez@etu.univ-amu.fr>
+ * @author ALIE-SANDEVOIR Isis <isis.alie-sandevoir@etu.univ-amu.fr>
+ *
+ * @version 0.3.2 / 08-01-2017
+ * @file main.c
+ */
 
-#include <stdlib.h>
 #include <stdio.h>
 #include "headers/morpion.h"
-#include "headers/liste.h"
 #include "headers/jeu.h"
 #include "headers/ia.h"
 #include "headers/gainFin.h"
@@ -15,6 +20,8 @@
 
 #else /*Le reste, UNIX en particulier*/
 #include <unistd.h>
+#include <ctype.h>
+
 #define Sleep(n) usleep(n)
 #endif
 
@@ -48,15 +55,36 @@ static void jouerJvJ()
     {
         i = -1;
         j = -1;
+        printf("\033[H\033[J");     //clear terminal
         afficherMorpion(morpion);
         afficherJoueurActuel(joueur);
+
+        int testSaisie = 0;             // verifie qu'on utilise bien un int
+        char chaine[2];
+        char chaine2[2];
+
         //on saisie i et j
         while(rechercherElmt(i, j, liste) == NULL)
         {
             printf("Entrez ligne\n>");
-            scanf("%d", &i);
+            while(testSaisie != 1)      // si on saisie une lettre, ca ne crash pas
+            {
+                fgets(chaine, sizeof chaine, stdin);
+                testSaisie = sscanf(chaine, "%d", &i);
+            }
+            testSaisie = 0;
+//                printf("Entrez ligne\n>");
+//                scanf("%d", &i);
+//                fflush(stdin);
             printf("Entrez colonne\n>");
-            scanf("%d", &j);
+            while(testSaisie != 1)
+            {
+                fgets(chaine2, sizeof chaine, stdin);
+                fflush(stdin);
+
+                testSaisie = sscanf(chaine2, "%d", &j);
+            }
+            testSaisie = 0;
             if(!verifierCaseSaisieJouable(i, j, liste))
             {
                 printf("Mauvaises coordonnées, veuillez en entrer de nouvelles.\n");
@@ -88,8 +116,12 @@ static void jouerJvIA()
     int j = -1; //pour ne pas le trouver dans la lsite
     int joueur = 1;
     tpl listeTmp = creerVide();
-    tpl coordListe = creerVide(); // pour chercher la case jouée par l'IA
+    tpl coordListe; // pour chercher la case jouée par l'IA
     tpl liste = creerVide();
+
+    int testSaisie = 0;    // verifie qu'on utilise bien un int
+    char chaine[2];
+    char chaine2[2];
 
     choisirDifficulte();
     choisirIAenJvIA();
@@ -108,12 +140,32 @@ static void jouerJvIA()
             afficherMorpion(morpion);
             afficherJoueurActuel(joueur);
             //on saisie i et j
-            while (rechercherElmt(i, j, liste) == NULL) {
+            while (rechercherElmt(i, j, liste) == NULL)
+            {
                 printf("Entrez ligne\n>");
-                scanf("%d", &i);
+                while(testSaisie != 1)
+                {
+                    fgets(chaine, sizeof chaine, stdin);
+                    testSaisie = sscanf(chaine, "%d", &i);
+                }
+                testSaisie = 0;
+//                printf("Entrez ligne\n>");
+//                scanf("%d", &i);
+//                fflush(stdin);
                 printf("Entrez colonne\n>");
-                scanf("%d", &j);
-                if (!verifierCaseSaisieJouable(i, j, liste)) {
+                while(testSaisie != 1)
+                {
+                    fgets(chaine2, sizeof chaine, stdin);
+                    fflush(stdin);
+
+                    testSaisie = sscanf(chaine2, "%d", &j);
+                }
+                testSaisie = 0;
+//                printf("Entrez colonne\n>");
+//                scanf("%d", &j);
+//                fflush(stdin);
+                if (!verifierCaseSaisieJouable(i, j, liste))
+                {
                     printf("Mauvaises coordonnées, veuillez en entrer de nouvelles.\n");
                     afficherListe(liste);
                 }
@@ -127,9 +179,7 @@ static void jouerJvIA()
         }
         else
         {
-            afficherListe(listeTmp); // affichage test
-
-            liste = jouerIA(morpion, joueur);
+            liste = jouerIA(morpion, joueur, 1);
 
             coordListe = trouverCaseJouee(listeTmp, liste); // pour sortir en cas de victoire de l'IA
             if(coordListe != creerVide())
@@ -137,6 +187,7 @@ static void jouerJvIA()
                 i = teteListeI(coordListe);
                 j = teteListeJ(coordListe);
             }
+            printf("\033[H\033[J");     //clear terminal
             printf("i jouee par IA : %d\n", i);
             printf("j jouee par IA : %d\n", j);
 
@@ -165,8 +216,8 @@ static void jouerIAvIA()
     int i = -1; //pour ne pas le trouver dans la lsite
     int j = -1; //pour ne pas le trouver dans la lsite
     int joueur = 1;
-    tpl listeTmp = creerVide();
-    tpl coordListe = creerVide(); // pour chercher la case jouée par l'IA
+    tpl listeTmp;
+    tpl coordListe; // pour chercher la case jouée par l'IA
     tpl liste = creerVide();
 
     choisirDifficulte();
@@ -181,7 +232,7 @@ static void jouerIAvIA()
     {
         listeTmp = copierListe(liste); //pour trouver l'element joué par l'IA
         liste = supprimerListe(liste);
-        liste = jouerIA(morpion, joueur);
+        liste = jouerIA(morpion, joueur, 1);
 
         coordListe = trouverCaseJouee(listeTmp, liste); // pour sortir en cas de victoire de l'IA
         if(coordListe != creerVide())
@@ -189,6 +240,9 @@ static void jouerIAvIA()
             i = teteListeI(coordListe);
             j = teteListeJ(coordListe);
         }
+
+        // clear terminal
+        printf("\033[H\033[J");
         printf("i jouee par IA : %d\n", i);
         printf("j jouee par IA : %d\n", j);
 
@@ -196,10 +250,10 @@ static void jouerIAvIA()
         joueur = changerJoueur(joueur);
         ++morpion->nbCoupsJoues;
 
-        printf("------JEU------\n");
+        //printf("------JEU------\n");
         afficherMorpion(morpion);
-        printf("----FIN JEU----\n");
-        Sleep(1000);
+        //printf("----FIN JEU----\n");
+        sleep(1);
     } while(!estGain(i, j, morpion) && !estFin(morpion));
 
     if(estGain(i, j, morpion))
@@ -217,6 +271,8 @@ int main(void)
 {
     int choix = 0;
     int sortir = 0;
+    int testSaisie = 0;
+    char chaine[2];
 
     while(sortir == 0)
     {
@@ -224,7 +280,14 @@ int main(void)
         {
             printf("Voulez-vous jouer\n - (1) en J vs J\n - (2) en J vs IA\n - (3) en IA vs IA, et donc ne pas jouer ...\n"
                            " (4) Ou lire les regles du jeu ?\n> ");
-            scanf("%d", &choix);
+            //scanf("%d", &choix);
+            while(testSaisie != 1)
+            {
+                fgets(chaine, sizeof chaine, stdin);
+                testSaisie = sscanf(chaine, "%d", &choix);
+            }
+            testSaisie = 0;
+            fflush(stdin);
             if (choix == 4) {
                 afficherRegles();
                 choix = 0;
