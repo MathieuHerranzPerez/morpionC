@@ -25,22 +25,31 @@
 #define Sleep(n) usleep(n)
 #endif
 
-
+/**
+ * trouver les coordonnees qui sont dans liste mais pas dans la liste finale
+ * @param liste la liste
+ * @param listeF la liste finale
+ * @return la case jouee
+ */
 static tpl trouverCaseJouee(tpl liste, tpl listeF)
 {
     if(listeF != creerVide())
     {
-        while (liste != creerVide() && rechercherElmt(teteListeI(liste), teteListeJ(liste), listeF)) {
+        while (liste != creerVide() && rechercherElmt(teteListeI(liste), teteListeJ(liste), listeF))
+        {
             liste = queueListe(liste);
         }
     }
     return liste;
 }
 
+/**
+ * lance le programme du joueur contre joueur
+ */
 static void jouerJvJ()
 {
-    int i = -1; //pour ne pas le trouver dans la lsite
-    int j = -1; //pour ne pas le trouver dans la lsite
+    int i = -1; //pour ne pas le trouver dans la liste
+    int j = -1; //pour ne pas le trouver dans la liste
     int joueur = 0;
     tpl liste = creerVide();
 
@@ -59,33 +68,17 @@ static void jouerJvJ()
         afficherMorpion(morpion);
         afficherJoueurActuel(joueur);
 
-        int testSaisie = 0;             // verifie qu'on utilise bien un int
-        char chaine[2];
-        char chaine2[2];
-
         //on saisie i et j
         while(rechercherElmt(i, j, liste) == NULL)
         {
             printf("Entrez ligne\n>");
-            while(testSaisie != 1)      // si on saisie une lettre, ca ne crash pas
-            {
-                fgets(chaine, sizeof chaine, stdin);
-                testSaisie = sscanf(chaine, "%d", &i);
-            }
-            testSaisie = 0;
-//                printf("Entrez ligne\n>");
-//                scanf("%d", &i);
-//                fflush(stdin);
+            scanf("%d", &i);
+            fflush(stdin);
             printf("Entrez colonne\n>");
-            while(testSaisie != 1)
-            {
-                fgets(chaine2, sizeof chaine, stdin);
-                fflush(stdin);
 
-                testSaisie = sscanf(chaine2, "%d", &j);
-            }
-            testSaisie = 0;
-            if(!verifierCaseSaisieJouable(i, j, liste))
+            scanf("%d", &j);
+            fflush(stdin);
+            if(!estCaseSaisieJouable(i, j, liste))
             {
                 printf("Mauvaises coordonnées, veuillez en entrer de nouvelles.\n");
                 afficherListe(liste);
@@ -110,18 +103,17 @@ static void jouerJvJ()
     }
 }
 
+/**
+ * lance le programme joueur contre IA
+ */
 static void jouerJvIA()
 {
-    int i = -1; //pour ne pas le trouver dans la lsite
-    int j = -1; //pour ne pas le trouver dans la lsite
+    int i = -1; //pour ne pas le trouver dans la liste
+    int j = -1; //pour ne pas le trouver dans la liste
     int joueur = 1;
     tpl listeTmp = creerVide();
     tpl coordListe; // pour chercher la case jouée par l'IA
     tpl liste = creerVide();
-
-    int testSaisie = 0;    // verifie qu'on utilise bien un int
-    char chaine[2];
-    char chaine2[2];
 
     choisirDifficulte();
     choisirIAenJvIA();
@@ -143,28 +135,12 @@ static void jouerJvIA()
             while (rechercherElmt(i, j, liste) == NULL)
             {
                 printf("Entrez ligne\n>");
-                while(testSaisie != 1)
-                {
-                    fgets(chaine, sizeof chaine, stdin);
-                    testSaisie = sscanf(chaine, "%d", &i);
-                }
-                testSaisie = 0;
-//                printf("Entrez ligne\n>");
-//                scanf("%d", &i);
-//                fflush(stdin);
+                scanf("%d", &i);
+                fflush(stdin);
                 printf("Entrez colonne\n>");
-                while(testSaisie != 1)
-                {
-                    fgets(chaine2, sizeof chaine, stdin);
-                    fflush(stdin);
-
-                    testSaisie = sscanf(chaine2, "%d", &j);
-                }
-                testSaisie = 0;
-//                printf("Entrez colonne\n>");
-//                scanf("%d", &j);
-//                fflush(stdin);
-                if (!verifierCaseSaisieJouable(i, j, liste))
+                scanf("%d", &j);
+                fflush(stdin);
+                if (!estCaseSaisieJouable(i, j, liste))
                 {
                     printf("Mauvaises coordonnées, veuillez en entrer de nouvelles.\n");
                     afficherListe(liste);
@@ -211,10 +187,13 @@ static void jouerJvIA()
     }
 }
 
+/**
+ * lance le programme IA contre IA
+ */
 static void jouerIAvIA()
 {
-    int i = -1; //pour ne pas le trouver dans la lsite
-    int j = -1; //pour ne pas le trouver dans la lsite
+    int i = -1; //pour ne pas le trouver dans la liste
+    int j = -1; //pour ne pas le trouver dans la liste
     int joueur = 1;
     tpl listeTmp;
     tpl coordListe; // pour chercher la case jouée par l'IA
@@ -232,7 +211,7 @@ static void jouerIAvIA()
     {
         listeTmp = copierListe(liste); //pour trouver l'element joué par l'IA
         liste = supprimerListe(liste);
-        liste = jouerIA(morpion, joueur, 1);
+        liste = jouerIA(morpion, joueur, 0);
 
         coordListe = trouverCaseJouee(listeTmp, liste); // pour sortir en cas de victoire de l'IA
         if(coordListe != creerVide())
@@ -250,9 +229,7 @@ static void jouerIAvIA()
         joueur = changerJoueur(joueur);
         ++morpion->nbCoupsJoues;
 
-        //printf("------JEU------\n");
         afficherMorpion(morpion);
-        //printf("----FIN JEU----\n");
         sleep(1);
     } while(!estGain(i, j, morpion) && !estFin(morpion));
 
@@ -271,23 +248,18 @@ int main(void)
 {
     int choix = 0;
     int sortir = 0;
-    int testSaisie = 0;
-    char chaine[2];
 
     while(sortir == 0)
     {
         while (choix <= 0 || choix > 4)
         {
-            printf("Voulez-vous jouer\n - (1) en J vs J\n - (2) en J vs IA\n - (3) en IA vs IA, et donc ne pas jouer ...\n"
+            printf("========= MORPION =========\n\n");
+            printf("Voulez-vous jouer en\n - (1) J vs J\n - (2) J vs IA\n - (3) IA vs IA, et donc ne pas jouer ...\n"
                            " (4) Ou lire les regles du jeu ?\n> ");
-            //scanf("%d", &choix);
-            while(testSaisie != 1)
-            {
-                fgets(chaine, sizeof chaine, stdin);
-                testSaisie = sscanf(chaine, "%d", &choix);
-            }
-            testSaisie = 0;
+            scanf("%d", &choix);
+
             fflush(stdin);
+            printf("%d\n", choix);
             if (choix == 4) {
                 afficherRegles();
                 choix = 0;

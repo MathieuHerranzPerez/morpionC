@@ -6,6 +6,9 @@
  * @file ia.c
  */
 
+//TODO on peux pas mettre plus de 9 dans les scanf
+
+
 #include "headers/liste.h"
 #include "headers/ia.h"
 #include "headers/joueur.h"
@@ -22,10 +25,11 @@ static int fonctionEval2;   // l'autre fonction d'évaluation pour IAvIA
 void choisirDifficulte()
 {
     int prof = 0;
-    int testSaisie = 0;
-    char chaine[2];
+//    int testSaisie = 0;
+//    char chaine[3];
 
     while(prof < 1 || prof > 5) {
+//        testSaisie = 0;
         printf("Veuillez choisir une difficulte : \n"
                        "- (1) bac a sable\n"
                        "- (2) facile\n"
@@ -33,13 +37,12 @@ void choisirDifficulte()
                        "- (4) difficile (deconseille, vraiment long)\n"
                        "- (5) tres difficile (deconseille, vraiment tres tres tres tres (trop) long)\n"
                        ">");
-        //scanf("%d", & prof);
-        while(testSaisie != 1)
-        {
-            fgets(chaine, sizeof chaine, stdin);
-            testSaisie = sscanf(chaine, "%d", & prof);
-        }
-        testSaisie = 0;
+        scanf("%d", & prof);
+//        while(testSaisie != 1)
+//        {
+//            fgets(chaine, sizeof chaine, stdin);
+//            testSaisie = sscanf(chaine, "%d", & prof);
+//        }
     }
     profondeur = prof;
 }
@@ -780,8 +783,8 @@ static void setIA2(int numIA)
 void choisirIAenJvIA()
 {
     int numIA = 0;
-    int testSaisie = 0;
-    char chaine[2];
+//    int testSaisie = 0;
+//    char chaine[3];
 
     while(numIA > 6 || numIA < 1)
     {
@@ -792,13 +795,13 @@ void choisirIAenJvIA()
                        " - (4) moyenne offensive\n"
                        " - (5) faible\n"
                        " - (6) tres faible\n>");
-        //scanf("%d", & numIA);
-        while(testSaisie != 1)
-        {
-            fgets(chaine, sizeof chaine, stdin);
-            testSaisie = sscanf(chaine, "%d", &numIA);
-        }
-        testSaisie = 0;
+        scanf("%d", & numIA);
+//        while(testSaisie != 1)
+//        {
+//            fgets(chaine, sizeof chaine, stdin);
+//            testSaisie = sscanf(chaine, "%d", &numIA);
+//        }
+//        testSaisie = 0;
     }
     setIA1(numIA);
 }
@@ -806,8 +809,8 @@ void choisirIAenJvIA()
 void choisirIAenIAvIA()
 {
     int numIA = 0;
-    int testSaisie = 0;
-    char chaine[2];
+//    int testSaisie = 0;
+//    char chaine[3];
     while(numIA > 6 || numIA < 1)
     {
         printf("Selectionnez la complexite de la premiere IA :\n"
@@ -817,13 +820,13 @@ void choisirIAenIAvIA()
                        " - (4) moyenne offensive\n"
                        " - (5) faible\n"
                        " - (6) tres faible\n>");
-        //scanf("%d", & numIA);
-        while(testSaisie != 1)
-        {
-            fgets(chaine, sizeof chaine, stdin);
-            testSaisie = sscanf(chaine, "%d", &numIA);
-        }
-        testSaisie = 0;
+        scanf("%d", & numIA);
+//        while(testSaisie != 1)
+//        {
+//            fgets(chaine, sizeof chaine, stdin);
+//            testSaisie = sscanf(chaine, "%d", &numIA);
+//        }
+//        testSaisie = 0;
     }
     setIA1(numIA);
     numIA = 0;
@@ -836,19 +839,19 @@ void choisirIAenIAvIA()
                        " - (4) moyenne offensive\n"
                        " - (5) faible\n"
                        " - (6) tres faible\n>");
-        //scanf("%d", & numIA);
-        while(testSaisie != 1)
-        {
-            fgets(chaine, sizeof chaine, stdin);
-            testSaisie = sscanf(chaine, "%d", &numIA);
-        }
-        testSaisie = 0;
+        scanf("%d", & numIA);
+//        while(testSaisie != 1)
+//        {
+//            fgets(chaine, sizeof chaine, stdin);
+//            testSaisie = sscanf(chaine, "%d", &numIA);
+//        }
+//        testSaisie = 0;
     }
     setIA2(numIA);
 }
 
 int alphaBeta(tpm morpion ,int profondeur, int estAlpha, int joueur, int alpha, int beta)
-{
+{   //TODO probleme quand on voit le gagnant
     int i, j, tmp;
     int estFctAlpha;  // pour l'IA vs IA, on a besoin de retenir qui appelle la fonction
     tpl listeTmp;

@@ -215,7 +215,8 @@ static void comparerSerie2SuccDiagAsc(int nbMaxOcc, int *nbOccu, char *pion, int
         if(*nbOccu == nbMaxOcc)
         {
             nbCasesLibres = 0;
-            if(peutGagnerDiagDesc(*pion, i, j, nbMaxOcc, & nbCasesLibres, 0, morpion)){
+            if(peutGagnerDiagDesc(*pion, i, j, nbMaxOcc, & nbCasesLibres, 0, morpion))
+            {
                 if(*pion == 'X')
                     ++*series0;
                 else
@@ -235,13 +236,15 @@ static void comparerSerie2SuccDiagAsc(int nbMaxOcc, int *nbOccu, char *pion, int
 static void comparerSerie2Bas(int nbMaxOcc, int *nbOcc, char *pion, int i, int j, int *series0, int *series1,
                               tpm morpion)
 {
-    if(morpion->morpion[i][j] == ' '){
+    if(morpion->morpion[i][j] == ' ')
+    {
         *nbOcc = 0;
         *pion = ' ';
         return;
     }
 
-    if(morpion->morpion[i][j] == *pion && *pion != ' '){
+    if(morpion->morpion[i][j] == *pion && *pion != ' ')
+    {
         ++*nbOcc;
         if(*nbOcc == nbMaxOcc){
             int nbCasesLibres = 0;
@@ -267,13 +270,15 @@ static void comparerSerie2Bas(int nbMaxOcc, int *nbOcc, char *pion, int i, int j
 static void comparerSerie2Droite(int nbMaxOcc, int *nbOcc, char *pion, int i, int j, int *series0, int *series1,
                                  tpm morpion)
 {
-    if(morpion->morpion[i][j] == ' '){
+    if(morpion->morpion[i][j] == ' ')
+    {
         *nbOcc = 0;
         *pion = ' ';
         return;
     }
 
-    if(morpion->morpion[i][j] == *pion && *pion != ' '){
+    if(morpion->morpion[i][j] == *pion && *pion != ' ')
+    {
         ++*nbOcc;
         if(*nbOcc == nbMaxOcc)
         {

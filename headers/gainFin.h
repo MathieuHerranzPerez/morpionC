@@ -4,7 +4,8 @@
 #include "morpion.h"
 
 /**
- * Si il y a égalité, la grille du morpion passé en paramettre sera pleine
+ * Si il y a égalité, la grille du morpion passé en paramettre sera pleine. En fonction de la grille,
+ * renvoie si la partie est terminee par egalite
  * @param morpion
  * @return vrai ou faux
  */

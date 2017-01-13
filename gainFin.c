@@ -7,11 +7,23 @@
  */
 #include "headers/gainFin.h"
 
+/**
+ * Verifie si la grille est pleine (donc egalite)
+ * @param morpion le morpion
+ * @return vrai ou faux
+ */
 int estFin(tpm morpion)
 {
     return morpion->nbCoupsJoues == getTailleMorpion(morpion) * getTailleMorpion(morpion);
 }
 
+/**
+ * Verifie si cinq symboles sont alignes sur la diagonale ascendante
+ * @param i ligne
+ * @param j colonne
+ * @param morpion le morpion
+ * @return vrai ou faux
+ */
 static int estGainDiagAsc(int i, int j, tpm morpion)
 {
     int indI;
@@ -41,6 +53,13 @@ static int estGainDiagAsc(int i, int j, tpm morpion)
     return (cptNbAlignes == 5);
 }
 
+/**
+ * Verifie si cinq symboles sont alignes sur la diagonale descendante
+ * @param i ligne
+ * @param j colonne
+ * @param morpion le morpion
+ * @return vrai ou faux
+ */
 static int estGainDiagDes(int i, int j, tpm morpion)
 {
     int indI;
@@ -70,6 +89,13 @@ static int estGainDiagDes(int i, int j, tpm morpion)
     return (cptNbAlignes == 5);
 }
 
+/**
+ * Verifie si cinq symboles sont alignes sur la verticale
+ * @param i ligne
+ * @param j colonne
+ * @param morpion le morpion
+ * @return vrai ou faux
+ */
 static int estGainVertical(int i, int j, tpm morpion)
 {
     int indI;
@@ -92,6 +118,13 @@ static int estGainVertical(int i, int j, tpm morpion)
     return (cptNbAlignes == 5);
 }
 
+/**
+ * Verifie si cinq symboles sont alignes sur l'horizontale
+ * @param i ligne
+ * @param j colonne
+ * @param morpion le morpion
+ * @return vrai ou faux
+ */
 static int estGainHorizontal(int i, int j, tpm morpion)
 {
     int indJ;
@@ -114,6 +147,13 @@ static int estGainHorizontal(int i, int j, tpm morpion)
     return (cptNbAlignes == 5);
 }
 
+/**
+ * Verifie si un joueur a gagne
+ * @param i ligne
+ * @param j colonne
+ * @param morpion le morpion
+ * @return vrai ou faux
+ */
 int estGain(int i, int j, tpm morpion)
 {
     return (estGainDiagAsc(i, j, morpion) || estGainDiagDes(i, j, morpion) ||

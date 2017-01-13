@@ -7,27 +7,30 @@
  */
 #include "headers/morpion.h"
 
+/**
+ * recupere la taille
+ * @param morpion le morpion
+ * @return la taille des colonnes
+ */
 int getTailleMorpion(tpm morpion)
 {
     return morpion->taille;
 }
+
+/**
+ * demande a l'utilisateur la taille et initialise le morpion
+ * @return le morpion
+ */
 tpm initialiserMorpion()
 {
     int i, j, taille = 0;
-    int testSaisie = 0;
-    char chaine[2];
     tpm morpion = (tpm)malloc(sizeof(t_morpion));
 
     //On demande à l'utilisteur de saisir la taille du plateau
     printf("Saisir taille du morpion (5 < et < 15)\n");
     while(taille < 5 || taille > 15)
     {
-        while(testSaisie != 1)
-        {
-            fgets(chaine, sizeof chaine, stdin);
-            testSaisie = sscanf(chaine, "%d", &taille);
-        }
-        testSaisie = 0;
+        scanf("%d", &taille);
     }
 
     //On reserve de la place pour notre plateau
@@ -49,7 +52,15 @@ tpm initialiserMorpion()
     morpion->nbCoupsJoues = 1;
     return morpion;
 }
-int verifierCaseSaisieJouable(int i, int j, tpl liste)
+
+/**
+ * Verifie grace a la liste si la case i j peut etre jouee
+ * @param i la ligne
+ * @param j la colonne
+ * @param liste la liste des cases jouables
+ * @return vrai ou faux
+ */
+int estCaseSaisieJouable(int i, int j, tpl liste)
 {
     //si on trouve l'élément
     if(rechercherElmt(i, j, liste) != creerVide())
@@ -58,6 +69,14 @@ int verifierCaseSaisieJouable(int i, int j, tpl liste)
         return 0;
 }
 
+/**
+ * trouve les cases jouables a partir des coordonnees i et j et les ajoute a la liste
+ * @param i la ligne
+ * @param j la colonne
+ * @param liste la liste des cases jouables
+ * @param morpion le morpion
+ * @return la liste des cases jouables
+ */
 tpl trouverCasesJouables(int i, int j, tpl liste, tpm morpion)
 {
     int indI;
