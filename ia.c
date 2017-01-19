@@ -7,7 +7,6 @@
  */
 
 
-
 #include "headers/liste.h"
 #include "headers/ia.h"
 #include "headers/joueur.h"

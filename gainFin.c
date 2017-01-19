@@ -5,6 +5,7 @@
  * @version 0.2.0 / 12-12-2016
  * @file gainFin.c
  */
+
 #include "headers/gainFin.h"
 
 /**

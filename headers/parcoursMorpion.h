@@ -12,6 +12,7 @@
  * @return
  */
 int estBloqueH(int i, int j, tpm morpion, int placeDispo);
+
 /**
  * regarde à partir d'une case données par i et j si la colonne est bloquée (pas 5 cases libres)
  * @param i
@@ -21,6 +22,7 @@ int estBloqueH(int i, int j, tpm morpion, int placeDispo);
  * @return
  */
 int estBloqueV(int i, int j, tpm morpion, int placeDispo);
+
 /**
  * regarde à partir d'une case données par i et j si la diag asc est bloquée (pas 5 cases libres)
  * @param i
@@ -30,6 +32,7 @@ int estBloqueV(int i, int j, tpm morpion, int placeDispo);
  * @return
  */
 int estBloqueDA(int i, int j, tpm morpion, int placeDispo);
+
 /**
  * regarde à partir d'une case données par i et j si la diag des est bloquée (pas 5 cases libres)
  * @param i
@@ -39,6 +42,7 @@ int estBloqueDA(int i, int j, tpm morpion, int placeDispo);
  * @return
  */
 int estBloqueDD(int i, int j, tpm morpion, int placeDispo);
+
 
 /**
  * recherche les series de nbMaxOcc symboles (O ou X) successifs dans tous les sens

@@ -1,6 +1,7 @@
 #ifndef gainFin_H
 #define gainFin_H
 
+
 #include "morpion.h"
 
 /**

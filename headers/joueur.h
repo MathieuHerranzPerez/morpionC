@@ -1,6 +1,7 @@
 #ifndef joueur_H
 #define joueur_H
 
+
 /**
  * Affiche le joueur qui devra jouer le prochain coup (utile pour du Joueur vs Joueur)
  * @param joueur le joueur actuel

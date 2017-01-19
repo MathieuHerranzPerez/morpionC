@@ -1,6 +1,7 @@
 #ifndef ia_H_
 #define ia_H_
 
+
 #include "liste.h"
 #include "morpion.h"
 #include "parcoursMorpion.h"

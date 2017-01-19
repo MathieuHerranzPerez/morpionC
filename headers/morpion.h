@@ -12,6 +12,7 @@ typedef struct morp
     int nbCoupsJoues;
 } t_morpion, *tpm;
 
+
 /**
  * recupere la taille du morpion
  * @param morpion le morpion
