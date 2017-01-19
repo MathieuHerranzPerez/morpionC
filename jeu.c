@@ -7,6 +7,10 @@
  */
 #include "headers/jeu.h"
 
+/**
+ * affiche la grille et les symboles
+ * @param morpion
+ */
 void afficherMorpion(tpm morpion)
 {
     int i, j;
@@ -26,16 +30,16 @@ void afficherMorpion(tpm morpion)
         {
             if(morpion->morpion[i][j] == 'X')
             {
-                printf("\033[31m");
+               // printf("\033[31m");
                 printf("X");
-                printf("\033[30m");
+               // printf("\033[30m");
                 printf("|");
             }
             else if(morpion->morpion[i][j] == 'O')
             {
-                printf("\033[32m");
+               // printf("\033[32m");
                 printf("O");
-                printf("\033[30m");
+               // printf("\033[30m");
                 printf("|");
             }
             else
@@ -45,6 +49,13 @@ void afficherMorpion(tpm morpion)
     }
 }
 
+/**
+ * associe le joueur a un symbole et le place en coordonnees i et j
+ * @param i ligne ou placer le pion
+ * @param j colonne ou placer le pion
+ * @param joueur le joueur courant
+ * @param morpion le morpion
+ */
 void jouerJoueur(int i, int j, int joueur, tpm morpion)
 {
     if(joueur == 1)
@@ -53,6 +64,9 @@ void jouerJoueur(int i, int j, int joueur, tpm morpion)
         morpion->morpion[i][j] = 'O';
 }
 
+/**
+ * affiche les regles
+ */
 void afficherRegles()
 {
     printf("===== Regles du jeu =====\n\n"

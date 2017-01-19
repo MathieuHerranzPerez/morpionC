@@ -4,16 +4,18 @@
 #include <stdlib.h>
 #include "liste.h"
 
-typedef struct morp{
+
+typedef struct morp
+{
     int taille;
     char** morpion;
     int nbCoupsJoues;
 } t_morpion, *tpm;
 
 /**
- *
- * @param morpion
- * @return la taille d'une ligne (ie la taille d'une colonne)
+ * recupere la taille du morpion
+ * @param morpion le morpion
+ * @return la taille des colonnes (ie taille des lignes)
  */
 int getTailleMorpion(tpm morpion);
 
@@ -24,17 +26,17 @@ int getTailleMorpion(tpm morpion);
 tpm initialiserMorpion();
 
 /**
- * Verifie que la case aux coordonnées i j est bien jouable ; qu'elle ne soit pas en dehors du plateau,
- * et non plus sur une case déjà jouée
+ * Verifie que la case aux coordonnees i j est bien jouable ; qu'elle ne soit pas en dehors du plateau,
+ * et non plus sur une case deja jouee, grace a la liste des cases jouables
  * @param i colonne
  * @param j ligne
  * @param liste la liste contenant les coups possibles
  * @return vrai ou faux
  */
-int verifierCaseSaisieJouable(int i, int j, tpl liste);
+int estCaseSaisieJouable(int i, int j, tpl liste);
 
 /**
- * Mise à jour de la liste des coups jouables, grace aux coordonnées de la dernière case jouée
+ * Mise a jour de la liste des coups jouables, grace aux coordonnees de la derniere case jouee
  * @param i colonne
  * @param j ligne
  * @param liste liste des coups jouables

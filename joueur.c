@@ -9,6 +9,10 @@
 #include <stdio.h>
 #include "headers/joueur.h"
 
+/**
+ * affiche le joueur actuel
+ * @param joueur le joueur
+ */
 void afficherJoueurActuel(int joueur)
 {
     if(joueur)
@@ -29,6 +33,11 @@ void afficherJoueurActuel(int joueur)
     }
 }
 
+/**
+ * change de joueur courant
+ * @param joueur l'ancien joueur
+ * @return nouveau joueur
+ */
 int changerJoueur(int joueur)
 {
     if(joueur == 1)
