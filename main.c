@@ -156,7 +156,7 @@ static void jouerJvIA()
         }
         else
         {
-            liste = jouerIA(morpion, joueur, 0);//TODO 1 marche mal
+            liste = jouerIA(morpion, joueur, 1);
 
             coordListe = trouverCaseJouee(listeTmp, liste); // pour sortir en cas de victoire de l'IA
             if(coordListe != creerVide())
@@ -215,7 +215,7 @@ static void jouerIAvIA()
     {
         listeTmp = copierListe(liste); //pour trouver l'element joué par l'IA
         liste = supprimerListe(liste);
-        liste = jouerIA(morpion, joueur, 0);
+        liste = jouerIA(morpion, joueur, 1);
 
         coordListe = trouverCaseJouee(listeTmp, liste); // pour sortir en cas de victoire de l'IA
         if(coordListe != creerVide())
