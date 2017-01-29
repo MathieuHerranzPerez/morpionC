@@ -54,4 +54,12 @@ void choisirIAenJvIA();
  */
 void choisirIAenIAvIA();
 
+/**
+ * Indique une case pas trop mal à jouer en l'affichant
+ * @param morpion le morpion
+ * @param joueur (vaut 1 ou 0) determine si il faut jouer O ou X
+ * @param estAlphaBeta (0 ou 1) si on veux utiliser un algo AlphaBeta ou minMax
+ */
+void aiderJoueur(tpm morpion, int joueur, int estAlphaBeta);
+
 #endif

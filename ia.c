@@ -1132,3 +1132,53 @@ tpl jouerIA(tpm morpion, int joueur, int estAlphaBeta)
     liste = trouverJouables(morpion);
     return liste;
 }
+
+void aiderJoueur(tpm morpion, int joueur, int estAlphaBeta)
+{
+    int maxi = -10000;
+    int tmp;
+    int indI = 0, indJ = 0;
+    int i, j;
+    int cpt = 0;
+    tpl liste;
+
+    liste = trouverJouables(morpion);
+    tpl listeTmp = liste;
+
+    joueurCourant = joueur;
+    //printf("joueurCourant : %d\n", joueurCourant);    //affichage test
+
+    while(liste != NULL)
+    {
+        i = teteListeI(liste);
+        j = teteListeJ(liste);
+        jouerJoueur(i, j, joueur, morpion);
+        ++morpion->nbCoupsJoues;
+
+        afficherPatienter(cpt); // affichage
+        ++cpt;
+        if(estAlphaBeta)
+            tmp = alphaBeta(morpion, 4, 0, joueur, -1000, 1000);
+        else
+            tmp = minMax(morpion, 4, 0, joueur);
+
+        if(tmp > maxi)
+        {
+            maxi = tmp;
+            indI = i;
+            indJ = j;
+        }
+
+        // on remet la case testée à defaut
+        dejouer(i, j, morpion);
+        --morpion->nbCoupsJoues;
+
+        liste = queueListe(liste);
+    }
+    //printf("on supprime la premiere liste\n");//affichage test
+    listeTmp = supprimerListe(listeTmp);
+    //free(liste);
+    free(listeTmp);
+
+    printf("\nL'ordinateur vous suggere de jouer en (%d, %d)\n", indI, indJ);
+}
