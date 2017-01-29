@@ -27,6 +27,15 @@ int getTailleMorpion(tpm morpion);
 tpm initialiserMorpion();
 
 /**
+ * Suite a une sauvegarde, initialise le morpion
+ * @param taille taille du morpion
+ * @param grille l'etat de la grille sauvee
+ * @param nbCoups le nombre de coups deja joues
+ * @return
+ */
+tpm initialiserMorpionRestauration(int taille, char** grille, int nbCoups);
+
+/**
  * Verifie que la case aux coordonnees i j est bien jouable ; qu'elle ne soit pas en dehors du plateau,
  * et non plus sur une case deja jouee, grace a la liste des cases jouables
  * @param i colonne

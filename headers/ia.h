@@ -7,6 +7,30 @@
 #include "parcoursMorpion.h"
 
 /**
+ * Renvoie la profondeur de l'arbre alphaBeta / minMax
+ * @return la profondeur
+ */
+int getProfondeur();
+
+/**
+ * Renvoie la fonction eval utilisee
+ * @return le numero de la fonction eval
+ */
+int getFonctionEval1();
+
+/**
+ * Initialise fonctionEval1 a fctEval
+ * @param fctEval
+ */
+void setFonctionEval1(int fctEval);
+
+/**
+ * Initialise profondeur a prof
+ * @param prof
+ */
+void setProfondeur(int prof);
+
+/**
  * Permet a l'IA de jouer en fonction de l'etat du morpion, suivant le joueur actuel,
  * grace a un minMAx si estAlphaBeta est faux, avec un alphaBeta sinon
  * @param morpion le morpion

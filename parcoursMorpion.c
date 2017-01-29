@@ -682,7 +682,4 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign, int nbN
             --l;
         }
     }
-
-    //printf("seriesX : %d nbAlign : %d\n", *seriesX, nbAlign);  // affichage test
-    //printf("seriesO : %d nbAlign : %d\n", *seriesO, nbAlign);  // affichage test
 }

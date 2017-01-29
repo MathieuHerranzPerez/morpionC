@@ -7,6 +7,7 @@
  */
 
 
+
 #include "headers/liste.h"
 #include "headers/ia.h"
 #include "headers/joueur.h"
@@ -19,6 +20,26 @@ static int profondeur = 0;
 static int joueurCourant = -1;
 static int fonctionEval1;   // la fonction d'évaluation pour JvIA et IAvIA
 static int fonctionEval2;   // l'autre fonction d'évaluation pour IAvIA
+
+int getProfondeur()
+{
+    return profondeur;
+}
+
+int getFonctionEval1()
+{
+    return fonctionEval1;
+}
+
+void setProfondeur(int prof)
+{
+    profondeur = prof;
+}
+
+void setFonctionEval1(int fctEval)
+{
+    fonctionEval1 = fctEval;
+}
 
 void choisirDifficulte()
 {
@@ -698,7 +719,6 @@ static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
                 if (tmp == poidsM)      //pour ne pas avoir tout le temps la même partie
                 {
                     random = rand() % 2;
-                    //printf("RANDOM : %d\n", random);    //affichage test
                     if(random)
                         poidsM = tmp;
                 }
@@ -713,7 +733,6 @@ static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
                 if (tmp == poidsM)      //pour ne pas avoir tout le temps la même partie
                 {
                     random = rand() % 2;
-                    //printf("RANDOM : %d\n", random);    //affichage test
                     if(random)
                         poidsM = tmp;
                 }
@@ -728,9 +747,7 @@ static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
 
         liste = queueListe(liste);
     }
-    //printf("On suppime la liste\n");  //affichage test
     listeTmp = supprimerListe(listeTmp);
-    //afficherListe(listeTmp);      //affichage test
     free(listeTmp);
     free(liste);
 
@@ -946,21 +963,28 @@ void choisirIAenIAvIA()
 //        return beta;
 //}
 
+/**
+ * ne pas utiliser, faux !
+ * @param morpion
+ * @param profondeur
+ * @param estBeta
+ * @param joueur
+ * @param alpha
+ * @param beta
+ * @return
+ */
 static int alphaBeta(tpm morpion ,int profondeur, int estBeta, int joueur, int alpha, int beta)
 {
     int i, j, tmp, meilleur;
     int estFctBeta;  // pour l'IA vs IA, on a besoin de retenir qui appelle la fonction
-    tpl listeTmp;
     tpl liste;
+
     if(profondeur == 0 || estGainIA(morpion) || estFin(morpion))
     {
-        //printf("--------------ON EVAL--------------\n");
-        //printf("%d, %d, %d\n\n", profondeur == 0, estGainIA(morpion), estFin(morpion));
         return eval(morpion);
     }
 
     liste = trouverJouables(morpion);
-    listeTmp = liste;
     joueur = changerJoueur(joueur);
 
     if(estBeta)
@@ -968,6 +992,7 @@ static int alphaBeta(tpm morpion ,int profondeur, int estBeta, int joueur, int a
         estFctBeta = 0;
         meilleur = -1000;
     }
+
     else
     {
         estFctBeta = 1;
@@ -978,8 +1003,6 @@ static int alphaBeta(tpm morpion ,int profondeur, int estBeta, int joueur, int a
     {
         i = teteListeI(liste);
         j = teteListeJ(liste);
-        //afficherListe(liste);     //affichage test
-        //printf("estBeta : %d \n", estBeta); //affichage test
         jouerJoueur(i, j, joueur, morpion);
         ++morpion->nbCoupsJoues;
 
@@ -996,7 +1019,8 @@ static int alphaBeta(tpm morpion ,int profondeur, int estBeta, int joueur, int a
                 if(meilleur > alpha)
                 {
                     alpha = meilleur;
-                    if (alpha >= beta) {
+                    if(alpha >= beta)
+                    {
                         // on remet la case testée à defaut
                         dejouer(i, j, morpion);
                         --morpion->nbCoupsJoues;
@@ -1013,9 +1037,11 @@ static int alphaBeta(tpm morpion ,int profondeur, int estBeta, int joueur, int a
             if(tmp < meilleur)
             {
                 meilleur = tmp;
-                if (meilleur < beta) {
+                if (meilleur < beta)
+                {
                     beta = meilleur;
-                    if (alpha >= beta) {
+                    if (alpha >= beta)
+                    {
                         // on remet la case testée à defaut
                         dejouer(i, j, morpion);
                         --morpion->nbCoupsJoues;
@@ -1032,6 +1058,7 @@ static int alphaBeta(tpm morpion ,int profondeur, int estBeta, int joueur, int a
 
         liste = queueListe(liste);
     }
+
     return meilleur;
 }
 
@@ -1043,6 +1070,8 @@ tpl jouerIA(tpm morpion, int joueur, int estAlphaBeta)
     int i, j;
     int cpt = 0;
     tpl liste;
+
+    int random;
 
     liste = trouverJouables(morpion);
     tpl listeTmp = liste;
@@ -1064,11 +1093,29 @@ tpl jouerIA(tpm morpion, int joueur, int estAlphaBeta)
         else
             tmp = minMax(morpion, profondeur-1, 0, joueur);
 
-        if(tmp > maxi)
+        if(tmp >= maxi)
         {
-            maxi = tmp;
-            indI = i;
-            indJ = j;
+            if(tmp == maxi)
+            {
+                random = rand() % 2;
+                //printf("RANDOM : %d\n", random);    //affichage test
+                if(random)
+                {
+                    maxi = tmp;
+                    indI = i;
+                    //printf("meilleur i : %d\n", i); //affichage test
+                    indJ = j;
+                    //printf("meilleur j : %d\n", j); //affichage test
+                }
+            }
+            else
+            {
+                maxi = tmp;
+                indI = i;
+                //printf("meilleur i : %d\n", i); //affichage test
+                indJ = j;
+                //printf("meilleur j : %d\n", j); //affichage test
+            }
         }
 
         // on remet la case testée à defaut
@@ -1077,13 +1124,11 @@ tpl jouerIA(tpm morpion, int joueur, int estAlphaBeta)
 
         liste = queueListe(liste);
     }
-    //printf("on supprime la premiere liste\n");//affichage test
     listeTmp = supprimerListe(listeTmp);
     //free(liste);
     free(listeTmp);
     jouerJoueur(indI, indJ, joueur, morpion);
 
     liste = trouverJouables(morpion);
-    //printf("et on sorts\n");    //affichage test
     return liste;
 }

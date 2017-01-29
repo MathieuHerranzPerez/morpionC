@@ -54,6 +54,31 @@ tpm initialiserMorpion()
     return morpion;
 }
 
+tpm initialiserMorpionRestauration(int taille, char** grille, int nbCoups)
+{
+    int i, j;
+    tpm newMorpion = (tpm)malloc(sizeof(t_morpion));
+
+    //On reserve de la place pour notre plateau
+    newMorpion->morpion = (char**)malloc(taille * sizeof(char*));
+    for(i = 0; i < taille; ++i)
+    {
+        newMorpion->morpion[i] = (char*)malloc(taille * sizeof(char));
+    }
+
+    //On initialise chaque case avec le bon symbole
+    for(i = 0; i < taille; ++i)
+    {
+        for(j = 0; j < taille; ++j)
+        {
+            newMorpion->morpion[i][j] = grille[i][j];
+        }
+    }
+    newMorpion->taille = taille;
+    newMorpion->nbCoupsJoues = nbCoups;
+    return newMorpion;
+}
+
 /**
  * Verifie grace a la liste si la case i j peut etre jouee
  * @param i la ligne

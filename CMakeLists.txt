@@ -16,5 +16,5 @@ set(SOURCE_FILES main.c
         headers/liste.h
                  liste.c
         headers/morpion.h
-                 morpion.c parcoursMorpion.c headers/parcoursMorpion.h)
+                 morpion.c parcoursMorpion.c headers/parcoursMorpion.h headers/sauvegarde.h sauvegarde.c)
 add_executable(morpionC ${SOURCE_FILES})
