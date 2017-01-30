@@ -36,6 +36,7 @@ static tpl trouverCaseJouee(tpl liste, tpl listeF)
 {
     if(listeF != creerVide())
     {
+        //des qu'une coordonnée n'est pas trouvée ou qu'on est en fin de liste, on sort
         while (liste != creerVide() && rechercherElmt(teteListeI(liste), teteListeJ(liste), listeF))
         {
             liste = queueListe(liste);
@@ -45,25 +46,14 @@ static tpl trouverCaseJouee(tpl liste, tpl listeF)
 }
 
 /**
- * lance le programme du joueur contre joueur
+ * Boucle principale du JvJ. On passe le morpion la liste et le joueur initialisés
+ * @param morpion
+ * @param liste
+ * @param joueur
  */
-static void jouerJvJ()
+static void boucleJvJ(tpm morpion, tpl liste, int joueur)
 {
-    int i;
-    int j;
-    int joueur = 0;
-    tpl liste = creerVide();
-
-    tpm morpion = initialiserMorpion();
-
-    jouerJoueur(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, joueur, morpion); // premier coup au milieu
-    joueur = changerJoueur(joueur);
-    liste = trouverCasesJouables(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, liste, morpion);
-
-    printf("LE JOUEUR 1 COMMENCE, BONNE CHANCE, "
-                   "- vous pouvez sauver la partie en tapant comme ligne ou colonne '20'.\n"
-                   "toute nouvelle sauvegarde ecrasera l'ancienne\n"
-                   "- vous pouvez egalement demander de l'aide en tapant '18'\n\n");
+    int i, j;
     do
     {
         i = -1;
@@ -82,14 +72,17 @@ static void jouerJvJ()
 
             scanf("%d", &j);
             fflush(stdin);
+            //saisir 20 pour sauver
             if(i == 20 || j == 20)
             {
                 sauvegarder(morpion, 1, 0, 0);
             }
+            //saisir 18 pour de l'aide
             else if(i == 18 || j == 18)
             {
                 aiderJoueur(morpion, joueur, 1);
             }
+                //on verifie que la case saisie est bien dispo
             else if(!estCaseSaisieJouable(i, j, liste))
             {
                 printf("Mauvaises coordonnees, veuillez en entrer de nouvelles.\n");
@@ -115,30 +108,12 @@ static void jouerJvJ()
     }
 }
 
-/**
- * lance le programme joueur contre IA
- */
-static void jouerJvIA()
+static void boucleJvIA(tpm morpion, tpl liste, int joueur)
 {
-    int i = -1; //pour ne pas le trouver dans la liste
-    int j = -1; //pour ne pas le trouver dans la liste
-    int joueur = 1;
     tpl listeTmp = creerVide();
     tpl coordListe; // pour chercher la case jouée par l'IA
-    tpl liste = creerVide();
-
-    choisirDifficulte();
-    choisirIAenJvIA();
-    tpm morpion = initialiserMorpion();
-
-    jouerJoueur(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, joueur, morpion); // premier coup au milieu
-    joueur = changerJoueur(joueur);
-    liste = trouverCasesJouables(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, liste, morpion);
-
-    printf("L'ORDINATEUR COMMENCE, BONNE CHANCE, "
-                   "- vous pouvez sauver la partie en tapant comme ligne ou colonne '20'.\n"
-                   "toute nouvelle sauvegarde ecrasera l'ancienne\n"
-                   "- vous pouvez egalement demander de l'aide en tapant '18'\n\n");
+    int i = -1;
+    int j = -1;
 
     do
     {
@@ -198,14 +173,17 @@ static void jouerJvIA()
         ++morpion->nbCoupsJoues;
 
     } while(!estGain(i, j, morpion) && !estFin(morpion));
+
     if(estGain(i, j, morpion))
     {
         joueur = changerJoueur(joueur);
+        afficherMorpion(morpion);
         if(joueur == 0)
+        {
             printf("VOUS AVEZ GAGNE\n");
+        }
         else
         {
-            afficherMorpion(morpion);
             printf("VOUS AVEZ PERDU, ESSAYEZ PEUT-ETRE AVEC UNE DIFFICULTE MOINDRE\n");
         }
     }
@@ -213,6 +191,58 @@ static void jouerJvIA()
     {
         printf("EGALITE\n");
     }
+}
+
+/**
+ * lance le programme du joueur contre joueur
+ */
+static void jouerJvJ()
+{
+    // On initialise
+    int joueur = 0;
+    tpl liste = creerVide();
+
+    tpm morpion = initialiserMorpion();
+
+    //on joue le premier coup au milieu (cachier des charges ...)
+    jouerJoueur(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, joueur, morpion); // premier coup au milieu
+    joueur = changerJoueur(joueur);
+    liste = trouverCasesJouables(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, liste, morpion);
+
+    printf("LE JOUEUR 1 COMMENCE, BONNE CHANCE, "
+                   "- vous pouvez sauver la partie en tapant comme ligne ou colonne '20'.\n"
+                   "toute nouvelle sauvegarde ecrasera l'ancienne\n"
+                   "- vous pouvez egalement demander de l'aide en tapant '18'\n\n");
+
+    // On lance la boucle principale
+    boucleJvJ(morpion, liste, joueur);
+}
+
+/**
+ * lance le programme joueur contre IA
+ */
+static void jouerJvIA()
+{
+    // On initialise
+    int joueur = 1;
+    tpl liste = creerVide();
+
+    choisirDifficulte();
+    choisirIAenJvIA();
+    tpm morpion = initialiserMorpion();
+
+    //on joue le premier coup au milieu (cachier des charges ...)
+    jouerJoueur(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, joueur, morpion); // premier coup au milieu
+    joueur = changerJoueur(joueur);
+    liste = trouverCasesJouables(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, liste, morpion);
+
+    printf("L'ORDINATEUR COMMENCE, BONNE CHANCE, "
+                   "- vous pouvez sauver la partie en tapant comme ligne ou colonne '20'.\n"
+                   "toute nouvelle sauvegarde ecrasera l'ancienne\n"
+                   "- vous pouvez egalement demander de l'aide en tapant '18'\n\n");
+
+    // On lance la boucle principale
+    boucleJvIA(morpion, liste, joueur);
 }
 
 /**
@@ -230,7 +260,7 @@ static void jouerIAvIA()
     choisirDifficulte();
     choisirIAenIAvIA();
     tpm morpion = initialiserMorpion();
-
+    //on joue le premier coup au milieu (cachier des charges ...)
     jouerJoueur(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, joueur, morpion); // premier coup au milieu
     joueur = changerJoueur(joueur);
     liste = trouverCasesJouables(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, liste, morpion);
@@ -263,6 +293,7 @@ static void jouerIAvIA()
 
     if(estGain(i, j, morpion))
     {
+        afficherMorpion(morpion);
         joueur = changerJoueur(joueur);
         printf("LE JOUEUR %d A GAGNE !\n", joueur);
     }
@@ -272,6 +303,13 @@ static void jouerIAvIA()
     }
 }
 
+/**
+ * On cherche les cases adjacentes aux autres en regardant toutes les cases
+ * (moins rapide que trouverCasesJouables,
+ * mais plus portable : on a pas besoin de connaitre la derniere case jouee)
+ * @param morpion
+ * @return
+ */
 static tpl trouverJouables(tpm morpion)
 {
     tpl liste = creerVide();
@@ -303,143 +341,28 @@ static tpl trouverJouables(tpm morpion)
 
 static void jouerJvJRestaure(tpm morpion, int joueur)
 {
-    int i, j;
+    // On initialise
     tpl liste = trouverJouables(morpion);
-    do
-    {
-        i = -1;
-        j = -1;
-        printf("\033[H\033[J");     //clear terminal
-        afficherMorpion(morpion);
-        afficherJoueurActuel(joueur);
 
-        //on saisie i et j
-        while(rechercherElmt(i, j, liste) == NULL)
-        {
-            printf("Entrez ligne\n>");
-            scanf("%d", &i);
-            fflush(stdin);
-            printf("Entrez colonne\n>");
-
-            scanf("%d", &j);
-            fflush(stdin);
-            if(i == 20 || j == 20)
-            {
-                sauvegarder(morpion, 1, 0, 0);
-            }
-            else if(i == 18 || j == 18)
-            {
-                aiderJoueur(morpion, joueur, 1);
-            }
-            else if(!estCaseSaisieJouable(i, j, liste))
-            {
-                printf("Mauvaises coordonnees, veuillez en entrer de nouvelles.\n");
-                afficherListe(liste);
-            }
-        }
-        jouerJoueur(i, j, joueur, morpion);
-        //on supprime la case jouée
-        liste = supprimerElmt(i, j, liste);
-        liste = trouverCasesJouables(i, j, liste, morpion);
-        joueur = changerJoueur(joueur);
-        ++morpion->nbCoupsJoues;
-    } while(!estGain(i, j, morpion) && !estFin(morpion));
-
-    if(estGain(i, j, morpion))
-    {
-        joueur = changerJoueur(joueur);
-        printf("LE JOUEUR %d A GAGNE !\n", joueur);
-    }
-    else if(estFin(morpion))
-    {
-        printf("EGALITE\n");
-    }
+    // On lance la boucle principale
+    boucleJvJ(morpion, liste, joueur);
 }
 
 static void jouerJvIARestaure(tpm morpion, int difficulte, int numIA)
 {
-    int i = -1, j = -1;
-    tpl listeTmp = creerVide();
-    tpl coordListe; // pour chercher la case jouée par l'IA
+    // On initialise
     int joueur = 0;
     tpl liste = trouverJouables(morpion);
     setProfondeur(difficulte);
     setFonctionEval1(numIA);
-    do
-    {
-        if(joueur == 0)
-        {
-            i = -1;
-            j = -1;
-            afficherMorpion(morpion);
-            afficherJoueurActuel(joueur);
-            //on saisie i et j
-            while (rechercherElmt(i, j, liste) == NULL)
-            {
-                printf("Entrez ligne\n>");
-                scanf("%d", &i);
-                fflush(stdin);
-                printf("Entrez colonne\n>");
-                scanf("%d", &j);
-                fflush(stdin);
-                if(i == 20 || j == 20)
-                {
-                    sauvegarder(morpion, 1, 0, 0);
-                }
-                else if(i == 18 || j == 18)
-                {
-                    aiderJoueur(morpion, joueur, 1);
-                }
-                else if(!estCaseSaisieJouable(i, j, liste))
-                {
-                    printf("Mauvaises coordonnees, veuillez en entrer de nouvelles.\n");
-                    afficherListe(liste);
-                }
-            }
-            jouerJoueur(i, j, joueur, morpion);
 
-            liste = supprimerElmt(i, j, liste);
-            listeTmp = copierListe(liste); //pour trouver l'element joué par l'IA
-
-            liste = supprimerListe(liste);
-        }
-        else
-        {
-            liste = jouerIA(morpion, joueur, 1);
-
-            coordListe = trouverCaseJouee(listeTmp, liste); // pour sortir en cas de victoire de l'IA
-            if(coordListe != creerVide())
-            {
-                i = teteListeI(coordListe);
-                j = teteListeJ(coordListe);
-            }
-            printf("\033[H\033[J");     //clear terminal
-            printf("i jouee par IA : %d\n", i);
-            printf("j jouee par IA : %d\n", j);
-
-            supprimerListe(listeTmp);
-        }
-        joueur = changerJoueur(joueur);
-        ++morpion->nbCoupsJoues;
-
-    } while(!estGain(i, j, morpion) && !estFin(morpion));
-    if(estGain(i, j, morpion))
-    {
-        joueur = changerJoueur(joueur);
-        if(joueur == 0)
-            printf("VOUS AVEZ GAGNE\n");
-        else
-        {
-            afficherMorpion(morpion);
-            printf("VOUS AVEZ PERDU, ESSAYEZ PEUT-ETRE AVEC UNE DIFFICULTE MOINDRE\n");
-        }
-    }
-    else if(estFin(morpion))
-    {
-        printf("EGALITE\n");
-    }
+    // On lance la boucle principale
+    boucleJvIA(morpion, liste, joueur);
 }
 
+/**
+ * Traite les differentes sauvegardes aux quelles on peut etre confronte ( JvJ ou JvIA)
+ */
 static void jouerRestauration()
 {
     int mode = 0;
@@ -471,8 +394,10 @@ int main(void)
     int sortir = 0;
     int restaurer = 0;
 
+    // On recommence tant que l'utilisteur ne saisie pas 0 quand demande
     while(sortir == 0)
     {
+        // Si le fichier sauvegarde.txt n'est pas vide, on demande si on veut restaurer
         if(!estFichierSauvegardeVide())
         {
             printf("Voulez-vous restaurer la sauvegarde ?(0 / 1)\n>");
@@ -482,6 +407,7 @@ int main(void)
                 jouerRestauration();
             }
         }
+        // On demande a l'utilisateur ce qu'il veut faire
         while (choix <= 0 || choix > 4)
         {
             printf("Voulez-vous jouer\n - (1) en J vs J\n - (2) en J vs IA\n - (3) en IA vs IA, et donc ne pas jouer ...\n"

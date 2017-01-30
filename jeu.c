@@ -31,16 +31,16 @@ void afficherMorpion(tpm morpion)
         {
             if(morpion->morpion[i][j] == 'X')
             {
-                // printf("\033[31m");
+                printf("\033[31m");
                 printf("X");
-                // printf("\033[30m");
+                printf("\033[30m");
                 printf("|");
             }
             else if(morpion->morpion[i][j] == 'O')
             {
-                // printf("\033[32m");
+                printf("\033[32m");
                 printf("O");
-                // printf("\033[30m");
+                printf("\033[30m");
                 printf("|");
             }
             else
