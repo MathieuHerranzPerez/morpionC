@@ -90,9 +90,13 @@ int estCaseSaisieJouable(int i, int j, tpl liste)
 {
     //si on trouve l'élément
     if(rechercherElmt(i, j, liste) != creerVide())
+    {
         return 1;
+    }
     else
+    {
         return 0;
+    }
 }
 
 /**

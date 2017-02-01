@@ -1,3 +1,11 @@
+/**
+ * @author HERRANZ PEREZ Mathieu <mathieu.herranz-perez@etu.univ-amu.fr>
+ * @author ALIE-SANDEVOIR Isis <isis.alie-sandevoir@etu.univ-amu.fr>
+ *
+ * @version 0.1.1 / 028-01-2017
+ * @file sauvegarde.c
+ */
+
 #include "headers/morpion.h"
 
 void sauvegarder(tpm morpion, int mode/*1 ou 2*/, int difficulte, int numIA)
@@ -13,6 +21,8 @@ void sauvegarder(tpm morpion, int mode/*1 ou 2*/, int difficulte, int numIA)
                 "%d\n"
                 "%d\n"
                 "%d\n", mode, difficulte, numIA, morpion->taille);
+
+        //ecrit la grille dans le fichier
         for(i = 0; i < morpion->taille; ++i)
         {
             for(j = 0; j < morpion->taille; ++j)

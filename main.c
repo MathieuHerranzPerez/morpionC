@@ -58,7 +58,9 @@ static void boucleJvJ(tpm morpion, tpl liste, int joueur)
     {
         i = -1;
         j = -1;
-        printf("\033[H\033[J");     //clear terminal
+
+        //clear terminal
+        printf("\033[H\033[J");
         afficherMorpion(morpion);
         afficherJoueurActuel(joueur);
 
@@ -72,16 +74,19 @@ static void boucleJvJ(tpm morpion, tpl liste, int joueur)
 
             scanf("%d", &j);
             fflush(stdin);
+
             //saisir 20 pour sauver
             if(i == 20 || j == 20)
             {
                 sauvegarder(morpion, 1, 0, 0);
             }
-            //saisir 18 pour de l'aide
+
+                //saisir 18 pour de l'aide
             else if(i == 18 || j == 18)
             {
                 aiderJoueur(morpion, joueur, 1);
             }
+
                 //on verifie que la case saisie est bien dispo
             else if(!estCaseSaisieJouable(i, j, liste))
             {
@@ -90,6 +95,7 @@ static void boucleJvJ(tpm morpion, tpl liste, int joueur)
             }
         }
         jouerJoueur(i, j, joueur, morpion);
+
         //on supprime la case jouée
         liste = supprimerElmt(i, j, liste);
         liste = trouverCasesJouables(i, j, liste, morpion);
@@ -97,32 +103,44 @@ static void boucleJvJ(tpm morpion, tpl liste, int joueur)
         ++morpion->nbCoupsJoues;
     } while(!estGain(i, j, morpion) && !estFin(morpion));
 
+    //si quelqu'un a gagné
     if(estGain(i, j, morpion))
     {
         joueur = changerJoueur(joueur);
         printf("LE JOUEUR %d A GAGNE !\n", joueur);
     }
+        //sinon si il y a égalité
     else if(estFin(morpion))
     {
         printf("EGALITE\n");
     }
 }
 
+/**
+ * Boucle principale du JvIA. On passe le morpion la liste et le joueur initialisés
+ * @param morpion
+ * @param liste
+ * @param joueur
+ */
 static void boucleJvIA(tpm morpion, tpl liste, int joueur)
 {
     tpl listeTmp = creerVide();
-    tpl coordListe; // pour chercher la case jouée par l'IA
+
+    // pour chercher la case jouée par l'IA
+    tpl coordListe;
     int i = -1;
     int j = -1;
 
     do
     {
+        // c'est au joueur de jouer (humain)
         if(joueur == 0)
         {
             i = -1;
             j = -1;
             afficherMorpion(morpion);
             afficherJoueurActuel(joueur);
+
             //on saisie i et j
             while (rechercherElmt(i, j, liste) == NULL)
             {
@@ -132,20 +150,26 @@ static void boucleJvIA(tpm morpion, tpl liste, int joueur)
                 printf("Entrez colonne\n>");
                 scanf("%d", &j);
                 fflush(stdin);
+
+                // pour sauver
                 if(i == 20 || j == 20)
                 {
                     sauvegarder(morpion, 2, getProfondeur(), getFonctionEval1());
                 }
+                    // pour demander de l'aide
                 else if(i == 18 || j == 18)
                 {
                     aiderJoueur(morpion, joueur, 1);
                 }
+                    // on verifie si la case est jouable
                 else if(!estCaseSaisieJouable(i, j, liste))
                 {
                     printf("Mauvaises coordonnees, veuillez en entrer de nouvelles.\n");
                     afficherListe(liste);
                 }
             }
+
+            //on joue le coup saisi
             jouerJoueur(i, j, joueur, morpion);
 
             liste = supprimerElmt(i, j, liste);
@@ -153,6 +177,8 @@ static void boucleJvIA(tpm morpion, tpl liste, int joueur)
 
             liste = supprimerListe(liste);
         }
+
+            // c'est à l'IA de jouer
         else
         {
             liste = jouerIA(morpion, joueur, 1);
@@ -163,7 +189,9 @@ static void boucleJvIA(tpm morpion, tpl liste, int joueur)
                 i = teteListeI(coordListe);
                 j = teteListeJ(coordListe);
             }
-            printf("\033[H\033[J");     //clear terminal
+
+            //clear terminal
+            printf("\033[H\033[J");
             printf("i jouee par IA : %d\n", i);
             printf("j jouee par IA : %d\n", j);
 
@@ -174,6 +202,7 @@ static void boucleJvIA(tpm morpion, tpl liste, int joueur)
 
     } while(!estGain(i, j, morpion) && !estFin(morpion));
 
+    // si il y a un gagnant
     if(estGain(i, j, morpion))
     {
         joueur = changerJoueur(joueur);
@@ -187,6 +216,7 @@ static void boucleJvIA(tpm morpion, tpl liste, int joueur)
             printf("VOUS AVEZ PERDU, ESSAYEZ PEUT-ETRE AVEC UNE DIFFICULTE MOINDRE\n");
         }
     }
+        // sinon si il y a égalité
     else if(estFin(morpion))
     {
         printf("EGALITE\n");
@@ -231,7 +261,7 @@ static void jouerJvIA()
     choisirIAenJvIA();
     tpm morpion = initialiserMorpion();
 
-    //on joue le premier coup au milieu (cachier des charges ...)
+    // On joue le premier coup au milieu (cachier des charges ...)
     jouerJoueur(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, joueur, morpion); // premier coup au milieu
     joueur = changerJoueur(joueur);
     liste = trouverCasesJouables(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, liste, morpion);
@@ -260,8 +290,9 @@ static void jouerIAvIA()
     choisirDifficulte();
     choisirIAenIAvIA();
     tpm morpion = initialiserMorpion();
-    //on joue le premier coup au milieu (cachier des charges ...)
-    jouerJoueur(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, joueur, morpion); // premier coup au milieu
+
+    // On joue le premier coup au milieu (cachier des charges ...)
+    jouerJoueur(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, joueur, morpion);
     joueur = changerJoueur(joueur);
     liste = trouverCasesJouables(getTailleMorpion(morpion)/2, getTailleMorpion(morpion)/2, liste, morpion);
 
@@ -291,12 +322,14 @@ static void jouerIAvIA()
         sleep(2);
     } while(!estGain(i, j, morpion) && !estFin(morpion));
 
+    // Si il y a un gagnant
     if(estGain(i, j, morpion))
     {
         afficherMorpion(morpion);
         joueur = changerJoueur(joueur);
         printf("LE JOUEUR %d A GAGNE !\n", joueur);
     }
+        // Sinon si il y a égalité
     else if(estFin(morpion))
     {
         printf("EGALITE\n");
@@ -361,7 +394,7 @@ static void jouerJvIARestaure(tpm morpion, int difficulte, int numIA)
 }
 
 /**
- * Traite les differentes sauvegardes aux quelles on peut etre confronte ( JvJ ou JvIA)
+ * Traite les differentes sauvegardes aux quelles on peut etre confronte (JvJ ou JvIA)
  */
 static void jouerRestauration()
 {

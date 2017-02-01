@@ -19,16 +19,20 @@ void afficherJoueurActuel(int joueur)
     if(joueur)
     {
         printf("C'est au joueur ");
+        // rouge
         printf("\033[31m");
         printf("X");
+        // noir
         printf("\033[30m");
         printf(" de jouer.\n");
     }
     else
     {
         printf("C'est au joueur ");
+        // vert
         printf("\033[32m");
         printf("O");
+        // noir
         printf("\033[30m");
         printf(" de jouer.\n");
     }
@@ -42,6 +46,11 @@ void afficherJoueurActuel(int joueur)
 int changerJoueur(int joueur)
 {
     if(joueur == 1)
+    {
         return 0;
-    return 1;
+    }
+    else
+    {
+        return 1;
+    }
 }

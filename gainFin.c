@@ -35,7 +35,7 @@ static int estGainDiagAsc(int i, int j, tpm morpion)
     indI = i;
     indJ=j;
 
-    while(indI > 0 &&  indJ < getTailleMorpion(morpion)-1
+    while(indI > 0 && indJ < getTailleMorpion(morpion)-1
           && morpion->morpion[indI][indJ] == morpion->morpion[indI-1][indJ+1])
     {
         cptNbAlignes = cptNbAlignes+1;
@@ -78,8 +78,10 @@ static int estGainDiagDes(int i, int j, tpm morpion)
         indI = indI-1;
         indJ = indJ-1;
     }
+
     indI = i;
     indJ = j;
+
     while(indI < getTailleMorpion(morpion)-1 && indJ < getTailleMorpion(morpion)-1
           && morpion->morpion[indI][indJ] == morpion->morpion[indI+1][indJ+1])
     {
@@ -110,12 +112,14 @@ static int estGainVertical(int i, int j, tpm morpion)
         cptNbAlignes = cptNbAlignes+1;
         indI = indI +1;
     }
+
     indI = i;
     while(indI > 0 && morpion->morpion[indI][j] == morpion->morpion[indI-1][j])
     {
         cptNbAlignes = cptNbAlignes+1;
         indI = indI -1;
     }
+
     return (cptNbAlignes == 5);
 }
 
@@ -139,12 +143,14 @@ static int estGainHorizontal(int i, int j, tpm morpion)
         cptNbAlignes = cptNbAlignes+1;
         indJ = indJ +1;
     }
+
     indJ = j;
     while(indJ > 0 && morpion->morpion[i][indJ] == morpion->morpion[i][indJ-1])
     {
         cptNbAlignes = cptNbAlignes+1;
         indJ = indJ -1;
     }
+
     return (cptNbAlignes == 5);
 }
 

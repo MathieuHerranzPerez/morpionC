@@ -2,7 +2,7 @@
  * @author HERRANZ PEREZ Mathieu <mathieu.herranz-perez@etu.univ-amu.fr>
  * @author ALIE-SANDEVOIR Isis <isis.alie-sandevoir@etu.univ-amu.fr>
  *
- * @version 0.9.2 / 08-01-2017
+ * @version 0.9.2 / 01-02-2017
  * @file ia.c
  */
 
@@ -21,30 +21,48 @@ static int joueurCourant = -1;
 static int fonctionEval1;   // la fonction d'évaluation pour JvIA et IAvIA
 static int fonctionEval2;   // l'autre fonction d'évaluation pour IAvIA
 
+/**
+ * @return Retourne la profondeur de l'arbre de l'IA
+ */
 int getProfondeur()
 {
     return profondeur;
 }
 
+/**
+ * @return Retourne le numero de la fonctionEval1
+ */
 int getFonctionEval1()
 {
     return fonctionEval1;
 }
 
+/**
+ * Modifie la valeur de la profondeur
+ * @param prof la nouvelle profondeur
+ */
 void setProfondeur(int prof)
 {
     profondeur = prof;
 }
 
+/**
+ * Modifie la valeur du numéro de la fonctionEval1
+ * @param fctEval
+ */
 void setFonctionEval1(int fctEval)
 {
     fonctionEval1 = fctEval;
 }
 
+/**
+ * Permet à l'utilisateur de selectionner une difficulte d'IA
+ */
 void choisirDifficulte()
 {
     int prof = 0;
 
+    // Tant qu'on a saisi n'importe quoi
     while(prof < 1 || prof > 5) {
         printf("Veuillez choisir une difficulte : \n"
                        "- (1) bac a sable\n"
@@ -55,39 +73,50 @@ void choisirDifficulte()
                        ">");
         scanf("%d", & prof);
     }
-    profondeur = prof;
+    setProfondeur(prof);
 }
 
 
 /**
  * Vérifie grâce à nbSeriesAlign si il y a un gagnant
  * @param morpion
- * @return vrai ou faux
+ * @return 1, -1 ou 0 suivant le joueur courant et si le joueur courant gagne ou perd
  */
 static int estGainIA(tpm morpion)
 {
     int seriesJ1 = 0;
     int seriesJ2 = 0;
 
+    // Met dans seriesJ1 et seriesJ2 le nombre de séries de 5 symboles alignés des joueurs
     nbSeriesAlign(morpion, & seriesJ1, & seriesJ2, 5, 5);
 
     if(joueurCourant == 1 && seriesJ1)
+    {
         return 1;
+    }
     else if(joueurCourant == 1 && seriesJ2)
+    {
         return -1;
+    }
     else if(joueurCourant == 0 && seriesJ1)
+    {
         return -1;
+    }
     else if(joueurCourant == 0 && seriesJ2)
+    {
         return 1;
+    }
     else
+    {
         return 0;
+    }
 }
 
 /**
- * Trouve dans le morpion les cases jouables et renvois la liste des coups
- * plus lente que trouverCasesJouables(), mais n'oblige pas à une copie de liste
+ * Trouve dans le morpion les cases jouables et renvois la liste des coups.
+ * fonction plus lente que trouverCasesJouables(), mais n'oblige pas à une copie de liste
  * @param morpion
- * @return
+ * @return la liste
  */
 static tpl trouverJouables(tpm morpion)
 {
@@ -131,7 +160,11 @@ static void dejouer(int i, int j, tpm morpion)
     morpion->morpion[i][j] = ' ';
 }
 
-
+/**
+ * Fonction d'évaluation faible
+ * @param morpion
+ * @return un poids
+ */
 static int evalF(tpm morpion)
 {
     int seriesJ1 = 0;
@@ -141,20 +174,22 @@ static int evalF(tpm morpion)
     int gagnant;
 
     gagnant = estGainIA(morpion);
-    //printf("gagnant : %d\n\n", gagnant); //affichage test
 
     if(gagnant)
     {
+        // Si l'IA perd
         if(gagnant == -1)
         {
             return -1000 + morpion->nbCoupsJoues;
         }
+            // Si l'IA gagne
         else
         {
             return 1000 - morpion->nbCoupsJoues;
         }
     }
 
+    // Si il y a égalité
     if(estFin(morpion))
     {
         return 0;
@@ -215,17 +250,25 @@ static int evalMO(tpm morpion)
 
     gagnant = estGainIA(morpion);
 
-    if (gagnant != 0) {
-        if (gagnant == -1) {
+    if (gagnant != 0)
+    {
+        // Si l'IA perd
+        if (gagnant == -1)
+        {
             return -1000 + morpion->nbCoupsJoues;
-        } else {
+        }
+            // Si l'iA gagne
+        else
+        {
             return 1000 - morpion->nbCoupsJoues;
         }
     }
 
-    //si egalite
+    // Si egalite
     if (estFin(morpion))
+    {
         return 0;
+    }
 
     //On compte le nombre de séries de 2 pions alignés de chacun des joueurs
     seriesJ1 = 0;
@@ -240,11 +283,13 @@ static int evalMO(tpm morpion)
     rechercherSeriesSucc(3, & seriesJ1, & seriesJ2, morpion);
     if (joueurCourant == 1)
     {
+        // On maximise car offensive
         pointsJ1 += seriesJ1 * 5;
         pointsJ2 += seriesJ2 * 4;
     }
     else
     {
+        // On minimise car offensive
         pointsJ1 += seriesJ1 * 4;
         pointsJ2 += seriesJ2 * 5;
     }
@@ -253,27 +298,26 @@ static int evalMO(tpm morpion)
     seriesJ1 = 0;
     seriesJ2 = 0;
     rechercherSeriesSucc(4, & seriesJ1, & seriesJ2, morpion);
+
     if (joueurCourant == 1)
     {
+        // On maximise car offensive
         pointsJ1 += seriesJ1 * 12;
         pointsJ2 += seriesJ2 * 10;
     }
     else
     {
+        // On minimise car offensive
         pointsJ1 += seriesJ1 * 10;
         pointsJ2 += seriesJ2 * 12;
     }
 
-    //printf("======> JOUEUR COURANT : %d <=======\n", joueurCourant);  //affichage test
-    //afficherMorpion(morpion); //affichage test
     if(joueurCourant == 1)
     {
-        //printf("pointsJ1 - pointsJ2 = %d\n\n", pointsJ1 - pointsJ2);//affichage test
         return pointsJ1 - pointsJ2;
     }
     else
     {
-        //printf("pointsJ2 - pointsJ1 = %d\n\n", pointsJ2 - pointsJ1);//affichage test
         return pointsJ2 - pointsJ1;
     }
 }
@@ -293,17 +337,23 @@ static int evalMD(tpm morpion)
 
     gagnant = estGainIA(morpion);
 
-    if (gagnant != 0) {
-        if (gagnant == -1) {
+    if (gagnant != 0)
+    {
+        if (gagnant == -1)
+        {
             return -1000 + morpion->nbCoupsJoues;
-        } else {
+        }
+        else
+        {
             return 1000 - morpion->nbCoupsJoues;
         }
     }
 
     //si egalite
     if (estFin(morpion))
+    {
         return 0;
+    }
 
     //On compte le nombre de séries de 2 pions alignés de chacun des joueurs
     seriesJ1 = 0;
@@ -316,13 +366,16 @@ static int evalMD(tpm morpion)
     seriesJ1 = 0;
     seriesJ2 = 0;
     rechercherSeriesSucc(3, & seriesJ1, & seriesJ2, morpion);
+
     if (joueurCourant == 1)
     {
+        // On minimise car defensive
         pointsJ1 += seriesJ1 * 4;
         pointsJ2 += seriesJ2 * 5;
     }
     else
     {
+        // On maximise car defensive
         pointsJ1 += seriesJ1 * 5;
         pointsJ2 += seriesJ2 * 4;
     }
@@ -331,27 +384,26 @@ static int evalMD(tpm morpion)
     seriesJ1 = 0;
     seriesJ2 = 0;
     rechercherSeriesSucc(4, & seriesJ1, & seriesJ2, morpion);
+
     if (joueurCourant == 1)
     {
+        // On minimise car defensive
         pointsJ1 += seriesJ1 * 10;
         pointsJ2 += seriesJ2 * 12;
     }
     else
     {
+        // On maximise car defensive
         pointsJ1 += seriesJ1 * 12;
         pointsJ2 += seriesJ2 * 10;
     }
 
-    //printf("======> JOUEUR COURANT : %d <=======\n", joueurCourant); //affichage test
-    //afficherMorpion(morpion); //affichage test
     if(joueurCourant == 1)
     {
-        //printf("pointsJ1 - pointsJ2 = %d\n\n", pointsJ1 - pointsJ2);
         return pointsJ1 - pointsJ2;
     }
     else
     {
-        //printf("pointsJ2 - pointsJ1 = %d\n\n", pointsJ2 - pointsJ1);
         return pointsJ2 - pointsJ1;
     }
 }
@@ -373,17 +425,23 @@ static int evalFO(tpm morpion)
 
     gagnant = estGainIA(morpion);
 
-    if (gagnant != 0) {
-        if (gagnant == -1) {
+    if (gagnant != 0)
+    {
+        if (gagnant == -1)
+        {
             return -1000 + morpion->nbCoupsJoues;
-        } else {
+        }
+        else
+        {
             return 1000 - morpion->nbCoupsJoues;
         }
     }
 
-    //si egalite
+    // Si egalite
     if (estFin(morpion))
+    {
         return 0;
+    }
 
     //On compte le nombre de séries de 2 pions alignés de chacun des joueurs
     seriesJ1 = 0;
@@ -398,11 +456,13 @@ static int evalFO(tpm morpion)
     rechercherSeriesSucc(3, & seriesJ1, & seriesJ2, morpion);
     if (joueurCourant == 1)
     {
+        // On maximise car offensive
         pointsJ1 += seriesJ1 * 5;
         pointsJ2 += seriesJ2 * 4;
     }
     else
     {
+        // On minimise car offensive
         pointsJ1 += seriesJ1 * 4;
         pointsJ2 += seriesJ2 * 5;
     }
@@ -411,52 +471,57 @@ static int evalFO(tpm morpion)
     seriesJ1 = 0;
     seriesJ2 = 0;
     rechercherSeriesSucc(4, & seriesJ1, & seriesJ2, morpion);
+
     if (joueurCourant == 1)
     {
+        // On maximise car offensive
         pointsJ1 += seriesJ1 * 12;
         pointsJ2 += seriesJ2 * 10;
     }
     else
     {
+        // On minimise car offensive
         pointsJ1 += seriesJ1 * 10;
         pointsJ2 += seriesJ2 * 12;
     }
 //////---------------------------
     nbSeriesAlign(morpion, & seriesDangJ1, & seriesDangJ2, 3, 6);
+
     if(joueurCourant == 1)
     {
+        // On maximise car offensive
         pointsJ1 += seriesDangJ1 * 25;
         pointsJ2 += seriesDangJ2 * 15;
     }
     else
     {
+        // On minimise car offensive
         pointsJ1 += seriesDangJ1 * 15;
         pointsJ2 += seriesDangJ2 * 25;
     }
     // pour ia (1) bac à sable
     nbSeriesAlign(morpion, & seriesDangJ1, & seriesDangJ2, 4, 6);
+
     if(joueurCourant == 1)
     {
+        // On maximise car offensive
         pointsJ1 += seriesDangJ1 * 30;
         pointsJ2 += seriesDangJ2 * 20;
     }
     else
     {
+        // On minimise car offensive
         pointsJ1 += seriesDangJ1 * 20;
         pointsJ2 += seriesDangJ2 * 30;
     }
 //////----------------------------
 
-    //printf("======> JOUEUR COURANT : %d <=======\n", joueurCourant);  //affichage test
-    //afficherMorpion(morpion);//affichage test
     if(joueurCourant == 1)
     {
-        //printf("pointsJ1 - pointsJ2 = %d\n\n", pointsJ1 - pointsJ2);//affichage test
         return pointsJ1 - pointsJ2;
     }
     else
     {
-        //printf("pointsJ2 - pointsJ1 = %d\n\n", pointsJ2 - pointsJ1);//affichage test
         return pointsJ2 - pointsJ1;
     }
 }
@@ -478,17 +543,23 @@ static int evalFD(tpm morpion)
 
     gagnant = estGainIA(morpion);
 
-    if (gagnant != 0) {
-        if (gagnant == -1) {
+    if (gagnant != 0)
+    {
+        if (gagnant == -1)
+        {
             return -1000 + morpion->nbCoupsJoues;
-        } else {
+        }
+        else
+        {
             return 1000 - morpion->nbCoupsJoues;
         }
     }
 
     //si egalite
     if (estFin(morpion))
+    {
         return 0;
+    }
 
     //On compte le nombre de séries de 2 pions alignés de chacun des joueurs
     seriesJ1 = 0;
@@ -501,13 +572,16 @@ static int evalFD(tpm morpion)
     seriesJ1 = 0;
     seriesJ2 = 0;
     rechercherSeriesSucc(3, & seriesJ1, & seriesJ2, morpion);
+
     if (joueurCourant == 1)
     {
+        // On minimise car defensive
         pointsJ1 += seriesJ1 * 4;
         pointsJ2 += seriesJ2 * 5;
     }
     else
     {
+        // On maximise car defensive
         pointsJ1 += seriesJ1 * 5;
         pointsJ2 += seriesJ2 * 4;
     }
@@ -516,52 +590,57 @@ static int evalFD(tpm morpion)
     seriesJ1 = 0;
     seriesJ2 = 0;
     rechercherSeriesSucc(4, & seriesJ1, & seriesJ2, morpion);
+
     if (joueurCourant == 1)
     {
+        // On minimise car defensive
         pointsJ1 += seriesJ1 * 10;
         pointsJ2 += seriesJ2 * 12;
     }
     else
     {
+        // On minimise car defensive
         pointsJ1 += seriesJ1 * 12;
         pointsJ2 += seriesJ2 * 10;
     }
 //////---------------------------
     nbSeriesAlign(morpion, & seriesDangJ1, & seriesDangJ2, 3, 6);
+
     if(joueurCourant == 1)
     {
+        // On minimise car defensive
         pointsJ1 += seriesDangJ1 * 15;
         pointsJ2 += seriesDangJ2 * 25;
     }
     else
     {
+        // On maximise car defensive
         pointsJ1 += seriesDangJ1 * 25;
         pointsJ2 += seriesDangJ2 * 15;
     }
     // pour ia (1) bac à sable
     nbSeriesAlign(morpion, & seriesDangJ1, & seriesDangJ2, 4, 6);
+
     if(joueurCourant == 1)
     {
+        // On minimise car defensive
         pointsJ1 += seriesDangJ1 * 20;
         pointsJ2 += seriesDangJ2 * 30;
     }
     else
     {
+        // On maximise car defensive
         pointsJ1 += seriesDangJ1 * 30;
         pointsJ2 += seriesDangJ2 * 20;
     }
 //////----------------------------
 
-    //printf("======> JOUEUR COURANT : %d <=======\n", joueurCourant);//affichage test
-    //afficherMorpion(morpion);     //affichage test
     if(joueurCourant == 1)
     {
-        //printf("pointsJ1 - pointsJ2 = %d\n\n", pointsJ1 - pointsJ2); //affichage test
         return pointsJ1 - pointsJ2;
     }
     else
     {
-        //printf("pointsJ2 - pointsJ1 = %d\n\n", pointsJ2 - pointsJ1); //affichage test
         return pointsJ2 - pointsJ1;
     }
 }
@@ -573,8 +652,6 @@ static int evalBacASable(tpm morpion)
     int seriesO = 0;
 
 
-    //printf("======> JOUEUR COURANT : %d <=======\n", joueurCourant);    //affichage test
-    //afficherMorpion(morpion);   //affichage test
     vainqueur = estGainIA(morpion);
     if(vainqueur != 0)
     {
@@ -587,15 +664,28 @@ static int evalBacASable(tpm morpion)
             return -1000 + morpion->nbCoupsJoues;
         }
         else    //jamais
+        {
             return 0;
+        }
     }
     if(joueurCourant == 1)
-        nbSeriesAlign(morpion, & seriesX, & seriesO, 3, 5);
+    {
+        nbSeriesAlign(morpion, &seriesX, &seriesO, 3, 5);
+    }
     else
-        nbSeriesAlign(morpion, & seriesO, & seriesX, 3, 5);
+    {
+        nbSeriesAlign(morpion, &seriesO, &seriesX, 3, 5);
+    }
+
     return seriesX - seriesO;
 }
 
+/**
+ * Lance la bonne fonction d'évaluation
+ * @param evaluer la fonction d'évaluation
+ * @param morpion
+ * @return le poids renvoyé par la fonction d'évaluation
+ */
 static int lancerEval(int evaluer(tpm), tpm morpion)
 {
     return evaluer(morpion);
@@ -613,52 +703,51 @@ static int eval(tpm morpion)
         switch(fonctionEval1)
         {
             case 1:
-                //printf("IA lancee : evalFD\n");
                 return lancerEval(evalFD, morpion);
+
             case 2:
-                //printf("IA lancee : evalFO\n");
                 return lancerEval(evalFO, morpion);
+
             case 3:
-                //printf("IA lancee : evalMD\n");
                 return lancerEval(evalMD, morpion);
+
             case 4:
-                //printf("IA lancee : evalMO\n");
                 return lancerEval(evalMO, morpion);
+
             case 5:
-                //printf("IA lancee : evalFaible\n");
                 return lancerEval(evalF, morpion);
+
             case 6:
-                //printf("IA lancee : evalBacASable\n");
                 return lancerEval(evalBacASable, morpion);
+
             default:
-                //printf("IA lancee : evalFD\n");
                 return lancerEval(evalFD, morpion);
         }
     }
+        // Pour la deuxième IA de IAvsIA
     else
     {
         switch(fonctionEval2)
         {
             case 1:
-                //printf("IA lancee : evalFD\n");
                 return lancerEval(evalFD, morpion);
+
             case 2:
-                //printf("IA lancee : evalFO\n");
                 return lancerEval(evalFO, morpion);
+
             case 3:
-                //printf("IA lancee : evalMD\n");
                 return lancerEval(evalMD, morpion);
+
             case 4:
-                //printf("IA lancee : evalMO\n");
                 return lancerEval(evalMO, morpion);
+
             case 5:
-                //printf("IA lancee : evalFaible\n");
                 return lancerEval(evalF, morpion);
+
             case 6:
-                //printf("IA lancee : evalBacASable\n");
                 return lancerEval(evalBacASable, morpion);
+
             default:
-                //printf("IA lancee : evalFD\n");
                 return lancerEval(evalFD, morpion);
         }
     }
@@ -674,7 +763,6 @@ static int eval(tpm morpion)
  */
 static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
 {
-    //TODO enlever le random pour tester des IA !
     int poidsM;
     int i, j, tmp;
     int estFctMax;  // pour l'IA vs IA, on a besoin de retenir qui appelle la fonction
@@ -684,9 +772,13 @@ static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
     int random; //  pour ne pas avoir tout le temps la même partie
 
     if(estMax)
+    {
         poidsM = -1000;
+    }
     else
+    {
         poidsM = 1000;
+    }
 
     if(profondeur == 0 || estGainIA(morpion) || estFin(morpion))
     {
@@ -698,20 +790,24 @@ static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
     joueur = changerJoueur(joueur);
 
     if(estMax)
+    {
         estFctMax = 0;
+    }
     else
+    {
         estFctMax = 1;
+    }
 
     while(liste != NULL)
     {
         i = teteListeI(liste);
         j = teteListeJ(liste);
-        //afficherListe(liste);     //affichage test
+
         jouerJoueur(i, j, joueur, morpion);
         ++morpion->nbCoupsJoues;
 
         tmp = minMax(morpion, profondeur-1, estFctMax, joueur);
-        //printf("tpm : %d\n", tmp);// affichage test
+
         if(estMax)
         {
             if (tmp >= poidsM)
@@ -720,10 +816,14 @@ static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
                 {
                     random = rand() % 2;
                     if(random)
+                    {
                         poidsM = tmp;
+                    }
                 }
                 else
+                {
                     poidsM = tmp;
+                }
             }
         }
         else
@@ -734,10 +834,14 @@ static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
                 {
                     random = rand() % 2;
                     if(random)
+                    {
                         poidsM = tmp;
+                    }
                 }
                 else
+                {
                     poidsM = tmp;
+                }
             }
         }
 
@@ -757,41 +861,54 @@ static int minMax(tpm morpion ,int profondeur, int estMax, int joueur)
 /**
  * Message qui demande de patienter (appelé lorsque l'IA "calcule")
  */
-static void afficherPatienter(int cpt)  //TODO
+static void afficherPatienter(int cpt)
 {
     if(cpt % 2 == 0)        // il est pair
     {
-        if (cpt % 8 == 0) {
+        if (cpt % 8 == 0)
+        {
             printf("\rveuillez patienter        ");
             fflush(stdout);
-        } else if (cpt % 8 == 2) {
+        } else if (cpt % 8 == 2)
+        {
             printf("\rveuillez patienter .      ");
             fflush(stdout);
-        } else if (cpt % 8 == 4) {
+        } else if (cpt % 8 == 4)
+        {
             printf("\rveuillez patienter ..     ");
             fflush(stdout);
-        } else if (cpt % 8 == 6) {
+        } else if (cpt % 8 == 6)
+        {
             printf("\rveuillez patienter ...    ");
             fflush(stdout);
         }
     }
 }
 
+/**
+ * Change la valeur de fonctionEval1
+ * @param numIA la nouvelle valeur
+ */
 static void setIA1(int numIA)
 {
     fonctionEval1 = numIA;
 }
 
+/**
+ * Change la valeur de fonctionEval2
+ * @param numIA la nouvelle valeur
+ */
 static void setIA2(int numIA)
 {
     fonctionEval2 = numIA;
 }
 
+/**
+ * Permet à l'utilisateur de selectionner une complexite d'IA
+ */
 void choisirIAenJvIA()
 {
     int numIA = 0;
-//    int testSaisie = 0;
-//    char chaine[3];
 
     while(numIA > 6 || numIA < 1)
     {
@@ -803,21 +920,17 @@ void choisirIAenJvIA()
                        " - (5) faible\n"
                        " - (6) tres faible\n>");
         scanf("%d", & numIA);
-//        while(testSaisie != 1)
-//        {
-//            fgets(chaine, sizeof chaine, stdin);
-//            testSaisie = sscanf(chaine, "%d", &numIA);
-//        }
-//        testSaisie = 0;
     }
     setIA1(numIA);
 }
 
+/**
+ * Permet à l'utilisateur de selectionner une complexite d'IA
+ */
 void choisirIAenIAvIA()
 {
     int numIA = 0;
-//    int testSaisie = 0;
-//    char chaine[3];
+
     while(numIA > 6 || numIA < 1)
     {
         printf("Selectionnez la complexite de la premiere IA :\n"
@@ -828,15 +941,11 @@ void choisirIAenIAvIA()
                        " - (5) faible\n"
                        " - (6) tres faible\n>");
         scanf("%d", & numIA);
-//        while(testSaisie != 1)
-//        {
-//            fgets(chaine, sizeof chaine, stdin);
-//            testSaisie = sscanf(chaine, "%d", &numIA);
-//        }
-//        testSaisie = 0;
     }
+
     setIA1(numIA);
     numIA = 0;
+
     while(numIA > 6 || numIA < 1)
     {
         printf("Selectionnez la complexite de la deuxieme IA :\n"
@@ -847,122 +956,12 @@ void choisirIAenIAvIA()
                        " - (5) faible\n"
                        " - (6) tres faible\n>");
         scanf("%d", & numIA);
-//        while(testSaisie != 1)
-//        {
-//            fgets(chaine, sizeof chaine, stdin);
-//            testSaisie = sscanf(chaine, "%d", &numIA);
-//        }
-//        testSaisie = 0;
     }
     setIA2(numIA);
 }
 
-/**
- * ne pas utiliser, faux !
- * @param morpion
- * @param profondeur
- * @param estBeta
- * @param joueur
- * @param alpha
- * @param beta
- * @return
- */
-//static int alphaBeta(tpm morpion ,int profondeur, int estAlpha, int joueur, int alpha, int beta)
-//{   //TODO probleme quand on voit le gagnant
-//    int i, j, tmp;
-//    int estFctAlpha;  // pour l'IA vs IA, on a besoin de retenir qui appelle la fonction
-//    tpl listeTmp;
-//    tpl liste;
-//
-//    if(profondeur == 0 || estGainIA(morpion) || estFin(morpion))
-//    {
-//        return eval(morpion);
-//    }
-//
-//    liste = trouverJouables(morpion);
-//    listeTmp = liste;
-//    joueur = changerJoueur(joueur);
-//
-//    if(estAlpha)
-//        estFctAlpha = 0;
-//    else
-//        estFctAlpha = 1;
-//
-//    while(liste != NULL)
-//    {
-//        i = teteListeI(liste);
-//        j = teteListeJ(liste);
-//        //afficherListe(liste);     //affichage test
-//        jouerJoueur(i, j, joueur, morpion);
-//        ++morpion->nbCoupsJoues;
-//
-//        tmp = alphaBeta(morpion, profondeur - 1, estFctAlpha, joueur, alpha, beta);
-//
-//        if(estAlpha)
-//        {
-////            afficherMorpion(morpion);
-////            printf("alpha : %d\n", tmp);
-//            if(tmp < alpha)
-//            {
-//                alpha = tmp;
-//            }
-//            printf("alpha : %d, beta : %d\n", alpha, beta);
-//            if(alpha >= beta)
-//            {
-//                // on remet la case testée à defaut
-//                dejouer(i, j, morpion);
-//                --morpion->nbCoupsJoues;
-//
-//                listeTmp = supprimerListe(listeTmp);
-//                free(listeTmp);
-//                free(liste);
-//                printf("ON COUPE ! : alpha : %d, beta : %d\n", alpha, beta);
-//                fflush(stdout);
-//                return alpha;
-//            }
-//        }
-//        else
-//        {
-////            afficherMorpion(morpion);
-////            printf("beta : %d\n", tmp);
-//            if(tmp > beta)
-//            {
-//                beta = tmp;
-//            }
-//            printf("alpha : %d, beta : %d\n", alpha, beta);
-//            if(alpha >= beta)
-//            {
-//                // on remet la case testée à defaut
-//                dejouer(i, j, morpion);
-//                --morpion->nbCoupsJoues;
-//
-//                listeTmp = supprimerListe(listeTmp);
-//                free(listeTmp);
-//                free(liste);
-//printf("ON COUPE ! : alpha : %d, beta : %d\n", alpha, beta);
-//                fflush(stdout);
-//                return beta;
-//            }
-//        }
-//
-//        // on remet la case testée à defaut
-//        dejouer(i, j, morpion);
-//        --morpion->nbCoupsJoues;
-//
-//        liste = queueListe(liste);
-//    }
-//    //printf("On suppime la liste\n");  //affichage test
-//    listeTmp = supprimerListe(listeTmp);
-//    //afficherListe(listeTmp);      //affichage test
-//    free(listeTmp);
-//    free(liste);
-//
-//    if(estFctAlpha)
-//        return alpha;
-//    else
-//        return beta;
-//}
 
+//TODO
 /**
  * ne pas utiliser, faux !
  * @param morpion
@@ -971,7 +970,7 @@ void choisirIAenIAvIA()
  * @param joueur
  * @param alpha
  * @param beta
- * @return
+ * @return un poids
  */
 static int alphaBeta(tpm morpion ,int profondeur, int estBeta, int joueur, int alpha, int beta)
 {
@@ -992,7 +991,6 @@ static int alphaBeta(tpm morpion ,int profondeur, int estBeta, int joueur, int a
         estFctBeta = 0;
         meilleur = -1000;
     }
-
     else
     {
         estFctBeta = 1;
@@ -1010,8 +1008,6 @@ static int alphaBeta(tpm morpion ,int profondeur, int estBeta, int joueur, int a
 
         if(estBeta)
         {
-//            afficherMorpion(morpion);
-//            printf("alpha : %d\n", tmp);
             if(tmp > meilleur)
             {
                 meilleur = tmp;
@@ -1032,8 +1028,6 @@ static int alphaBeta(tpm morpion ,int profondeur, int estBeta, int joueur, int a
         }
         else
         {
-//            afficherMorpion(morpion);
-//            printf("beta : %d\n", tmp);
             if(tmp < meilleur)
             {
                 meilleur = tmp;
@@ -1062,6 +1056,13 @@ static int alphaBeta(tpm morpion ,int profondeur, int estBeta, int joueur, int a
     return meilleur;
 }
 
+/**
+ * Permet a l'IA de jouer en fonction de l'etat du morpion, suivant le joueur actuel,
+ * grace a un minMAx si estAlphaBeta est faux, avec un alphaBeta sinon
+ * @param morpion le morpion
+ * @param joueur (vaut 1 ou 0) determine si il faut jouer O ou X
+ * @return la liste apres que l'IA ai joue
+ */
 tpl jouerIA(tpm morpion, int joueur, int estAlphaBeta)
 {
     int maxi = -10000;
@@ -1077,7 +1078,6 @@ tpl jouerIA(tpm morpion, int joueur, int estAlphaBeta)
     tpl listeTmp = liste;
 
     joueurCourant = joueur;
-    //printf("joueurCourant : %d\n", joueurCourant);    //affichage test
 
     while(liste != NULL)
     {
@@ -1089,32 +1089,31 @@ tpl jouerIA(tpm morpion, int joueur, int estAlphaBeta)
         afficherPatienter(cpt); // affichage
         ++cpt;
         if(estAlphaBeta)
-            tmp = alphaBeta(morpion, profondeur-1, 0, joueur, -1000, 1000);
+        {
+            tmp = alphaBeta(morpion, profondeur - 1, 0, joueur, -1000, 1000);
+        }
         else
-            tmp = minMax(morpion, profondeur-1, 0, joueur);
+        {
+            tmp = minMax(morpion, profondeur - 1, 0, joueur);
+        }
 
         if(tmp >= maxi)
         {
             if(tmp == maxi)
             {
                 random = rand() % 2;
-                //printf("RANDOM : %d\n", random);    //affichage test
                 if(random)
                 {
                     maxi = tmp;
                     indI = i;
-                    //printf("meilleur i : %d\n", i); //affichage test
                     indJ = j;
-                    //printf("meilleur j : %d\n", j); //affichage test
                 }
             }
             else
             {
                 maxi = tmp;
                 indI = i;
-                //printf("meilleur i : %d\n", i); //affichage test
                 indJ = j;
-                //printf("meilleur j : %d\n", j); //affichage test
             }
         }
 
@@ -1125,6 +1124,7 @@ tpl jouerIA(tpm morpion, int joueur, int estAlphaBeta)
         liste = queueListe(liste);
     }
     listeTmp = supprimerListe(listeTmp);
+
     //free(liste);
     free(listeTmp);
     jouerJoueur(indI, indJ, joueur, morpion);
@@ -1133,6 +1133,12 @@ tpl jouerIA(tpm morpion, int joueur, int estAlphaBeta)
     return liste;
 }
 
+/**
+ * Indique une case pas trop mal à jouer en l'affichant
+ * @param morpion le morpion
+ * @param joueur (vaut 1 ou 0) determine si il faut jouer O ou X
+ * @param estAlphaBeta (0 ou 1) si on veux utiliser un algo AlphaBeta ou minMax
+ */
 void aiderJoueur(tpm morpion, int joueur, int estAlphaBeta)
 {
     int maxi = -10000;
@@ -1146,7 +1152,6 @@ void aiderJoueur(tpm morpion, int joueur, int estAlphaBeta)
     tpl listeTmp = liste;
 
     joueurCourant = joueur;
-    //printf("joueurCourant : %d\n", joueurCourant);    //affichage test
 
     while(liste != NULL)
     {
@@ -1158,9 +1163,13 @@ void aiderJoueur(tpm morpion, int joueur, int estAlphaBeta)
         afficherPatienter(cpt); // affichage
         ++cpt;
         if(estAlphaBeta)
+        {
             tmp = alphaBeta(morpion, 4, 0, joueur, -1000, 1000);
+        }
         else
+        {
             tmp = minMax(morpion, 4, 0, joueur);
+        }
 
         if(tmp > maxi)
         {
@@ -1175,7 +1184,7 @@ void aiderJoueur(tpm morpion, int joueur, int estAlphaBeta)
 
         liste = queueListe(liste);
     }
-    //printf("on supprime la premiere liste\n");//affichage test
+
     listeTmp = supprimerListe(listeTmp);
     //free(liste);
     free(listeTmp);

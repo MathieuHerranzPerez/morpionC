@@ -9,17 +9,26 @@
 
 #include "headers/parcoursMorpion.h"
 
-static int estBloque(char pion, int i, int j, tpm morpion){
+static int estBloque(char pion, int i, int j, tpm morpion)
+{
     if( i >= getTailleMorpion(morpion) || j >= getTailleMorpion(morpion))
+    {
         return 1;
+    }
     if(i <  0 || j <  0)
+    {
         return 1;
+    }
 
     // si on tombe sur un pion de l'adversaire, return 1
     if(morpion->morpion[i][j] != ' ' && morpion->morpion[i][j] != pion)
+    {
         return 1;
-
-    return 0;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 static int peutGagnerDiagAsc(char pion, int i, int j, int tailleSerie, int *nbCasesLibres, int sens, tpm morpion)
@@ -28,7 +37,9 @@ static int peutGagnerDiagAsc(char pion, int i, int j, int tailleSerie, int *nbCa
     int nbCasesLibresD;
 
     if(estBloque(pion, i, j, morpion))
+    {
         return 0;
+    }
 
     //lors de la premiere iteration , on lance recursivement l'algorithme avant la serie et apres la serie
     if(tailleSerie)
@@ -44,26 +55,34 @@ static int peutGagnerDiagAsc(char pion, int i, int j, int tailleSerie, int *nbCa
         (*nbCasesLibres) = nbCasesLibresD+nbCasesLibresG;
 
         if(*nbCasesLibres >= 5-tailleSerie)
+        {
             return 1;
-
-        return 0;
+        }
+        else
+        {
+            return 0;
+        }
     }
     ++*nbCasesLibres;
 
     // si on a trouvé que tailleSerie + nbCasesLibres = 5, c est que la serie peut etre gagnante
     if(*nbCasesLibres == 5)
+    {
         return 1;
+    }
+
     //lors des iterations suivantes , on lance recursivement l'algorithme pour les cases suivantes (selon le sens)
     return peutGagnerDiagAsc(pion, i + sens, j - sens, 0, nbCasesLibres, sens, morpion);
 }
 
-static int peutGagnerDiagDesc(char pion, int i, int j, int tailleSerie, int *nbCasesLibres, int sens, tpm morpion)
-{
+static int peutGagnerDiagDesc(char pion, int i, int j, int tailleSerie, int *nbCasesLibres, int sens, tpm morpion) {
     int nbCasesLibresG;
     int nbCasesLibresD;
 
-    if(estBloque(pion, i, j, morpion))
+    if (estBloque(pion, i, j, morpion))
+    {
         return 0;
+    }
 
     //lors de la premiere iteration , on lance recursivement l'algorithme avant la serie et apres la serie
     if(tailleSerie)
@@ -79,15 +98,21 @@ static int peutGagnerDiagDesc(char pion, int i, int j, int tailleSerie, int *nbC
         (*nbCasesLibres) = nbCasesLibresD+nbCasesLibresG;
 
         if(*nbCasesLibres >= 5-tailleSerie)
+        {
             return 1;
-
-        return 0;
+        }
+        else
+        {
+            return 0;
+        }
     }
     ++*nbCasesLibres;
 
     // si on a trouvé que tailleSerie + nbCasesLibres = 5, c est que la serie peut etre gagnante
     if(*nbCasesLibres == 5)
+    {
         return 1;
+    }
     //lors des iterations suivantes , on lance recursivement l'algorithme pour les cases suivantes (selon le sens)
     return peutGagnerDiagDesc(pion, i + sens, j + sens, 0, nbCasesLibres, sens, morpion);
 }
@@ -98,7 +123,9 @@ static int peutGagnerVert(char pion, int i, int j, int tailleSerie, int *nbCases
     int nbCasesLibresH;
 
     if(estBloque(pion, i, j, morpion))
+    {
         return 0;
+    }
 
     //lors de la premiere iteration , on lance recursivement l'algorithme avant la serie et apres la serie
     if(tailleSerie)
@@ -113,15 +140,22 @@ static int peutGagnerVert(char pion, int i, int j, int tailleSerie, int *nbCases
         nbCasesLibresB -= tailleSerie;
         (*nbCasesLibres) = nbCasesLibresH+nbCasesLibresB;
         if(*nbCasesLibres >= 5-tailleSerie)
+        {
             return 1;
-
-        return 0;
+        }
+        else
+        {
+            return 0;
+        }
     }
     ++*nbCasesLibres;
 
     // si on a trouvé que tailleSerie + nbCasesLibres == 5, c est que la serie peut etre gagnante
     if(*nbCasesLibres == 5)
+    {
         return 1;
+    }
+
     //lors des iterations suivantes , on lance recursivement l'algorithme pour les cases suivantes (selon le sens)
     return peutGagnerVert(pion, i + sens, j, 0, nbCasesLibres, sens, morpion);
 }
@@ -132,7 +166,9 @@ static int peutGagnerHori(char pion, int i, int j, int tailleSerie, int *nbCases
     int nbCasesLibresG;
 
     if(estBloque(pion, i, j, morpion))
+    {
         return 0;
+    }
 
     //lors de la premiere iteration , on lance recursivement l'algorithme avant la serie et apres la serie
     if(tailleSerie)
@@ -147,15 +183,22 @@ static int peutGagnerHori(char pion, int i, int j, int tailleSerie, int *nbCases
         nbCasesLibresG -= tailleSerie;
         *nbCasesLibres = nbCasesLibresD+nbCasesLibresG;
         if(*nbCasesLibres >= 5-tailleSerie)
+        {
             return 1;
-
-        return 0;
+        }
+        else
+        {
+            return 0;
+        }
     }
     ++*nbCasesLibres;
 
     // si on a trouvé que tailleSerie + nbCasesLibres = 5, c est que la serie peut etre gagnante
     if(*nbCasesLibres == 5)
+    {
         return 1;
+    }
+
     //lors des iterations suivantes , on lance recursivement l'algorithme pour les cases suivantes (selon le sens)
     return peutGagnerHori(pion, i, j + sens, 0, nbCasesLibres, sens, morpion);
 }
@@ -180,13 +223,19 @@ static void comparerSerie2SuccDiagDes(int nbMaxOcc, int *nbOccu, char *pion, int
 
     if(morpion->morpion[i][j] == *pion && *pion != ' '){
         ++*nbOccu;
-        if(*nbOccu == nbMaxOcc){
+        if(*nbOccu == nbMaxOcc)
+        {
             nbCasesLibres = 0;
-            if(peutGagnerDiagAsc(*pion, i, j, nbMaxOcc, & nbCasesLibres, 0, morpion)){
+            if(peutGagnerDiagAsc(*pion, i, j, nbMaxOcc, & nbCasesLibres, 0, morpion))
+            {
                 if(*pion == 'X')
+                {
                     ++*series0;
+                }
                 else
-                    ++*series1 ;
+                {
+                    ++*series1;
+                }
             }
             *nbOccu = 0;
             *pion = ' ';
@@ -219,9 +268,13 @@ static void comparerSerie2SuccDiagAsc(int nbMaxOcc, int *nbOccu, char *pion, int
             if(peutGagnerDiagDesc(*pion, i, j, nbMaxOcc, & nbCasesLibres, 0, morpion))
             {
                 if(*pion == 'X')
+                {
                     ++*series0;
+                }
                 else
+                {
                     ++*series1;
+                }
             }
             *nbOccu = 0;
             *pion = ' ';
@@ -247,14 +300,19 @@ static void comparerSerie2Bas(int nbMaxOcc, int *nbOcc, char *pion, int i, int j
     if(morpion->morpion[i][j] == *pion && *pion != ' ')
     {
         ++*nbOcc;
-        if(*nbOcc == nbMaxOcc){
+        if(*nbOcc == nbMaxOcc)
+        {
             int nbCasesLibres = 0;
             if(peutGagnerVert(*pion, i, j, nbMaxOcc, & nbCasesLibres, 0, morpion))
             {
                 if(*pion == 'X')
+                {
                     ++*series0;
+                }
                 else
+                {
                     ++*series1;
+                }
             }
             *nbOcc = 0;
             *pion = ' ';
@@ -284,17 +342,23 @@ static void comparerSerie2Droite(int nbMaxOcc, int *nbOcc, char *pion, int i, in
         if(*nbOcc == nbMaxOcc)
         {
             int nbCasesLibres = 0;
-            if(peutGagnerHori(*pion, i, j, nbMaxOcc, & nbCasesLibres, 0, morpion)){
+            if(peutGagnerHori(*pion, i, j, nbMaxOcc, & nbCasesLibres, 0, morpion))
+            {
                 if(*pion == 'X')
+                {
                     ++*series0;
+                }
                 else
+                {
                     ++*series1;
+                }
             }
             *nbOcc = 0;
             *pion = ' ';
         }
     }
-    else{
+    else
+    {
         *pion = morpion->morpion[i][j];
         *nbOcc = 1;
     }
@@ -308,8 +372,10 @@ static void rechercherSeriesSuccDiagASc(int nbMaxOcc, int departX, int departY, 
     char pion = ' ';
 
     for(i = departY, j = departX; i < morpion->taille && j < morpion->taille; ++i, ++j)
-        comparerSeries2Succ(nbMaxOcc, & nbOcc, & pion, i, j, series0, series1, comparerSerie2SuccDiagAsc,
+    {
+        comparerSeries2Succ(nbMaxOcc, &nbOcc, &pion, i, j, series0, series1, comparerSerie2SuccDiagAsc,
                             morpion);
+    }
 }
 
 static void rechercherSeriesSuccDiagDes(int nbMaxOcc, int departX, int departY, int *series0, int *series1, tpm morpion)
@@ -319,8 +385,10 @@ static void rechercherSeriesSuccDiagDes(int nbMaxOcc, int departX, int departY, 
     char pion = ' ';
 
     for(i = departY, j = departX; i < morpion->taille && j >= 0; ++i, --j)
+    {
         comparerSeries2Succ(nbMaxOcc, &nbOcc, &pion, i, j, series0, series1, comparerSerie2SuccDiagDes,
                             morpion);
+    }
 }
 
 static void rechercherSeriesSuccHaut(int nbMaxOcc, int colonne, int *series0, int *series1, tpm morpion)
@@ -330,7 +398,9 @@ static void rechercherSeriesSuccHaut(int nbMaxOcc, int colonne, int *series0, in
     char pion = ' ';
 
     for(i = 0; i < morpion->taille ; ++i)
-        comparerSeries2Succ(nbMaxOcc, & nbOccu, & pion, i, colonne, series0, series1, comparerSerie2Bas, morpion);
+    {
+        comparerSeries2Succ(nbMaxOcc, &nbOccu, &pion, i, colonne, series0, series1, comparerSerie2Bas, morpion);
+    }
 }
 
 static void rechercherSeriesSuccLarg(int nbMaxOcc, int ligne, int *series0, int *series1, tpm morpion)
@@ -340,7 +410,9 @@ static void rechercherSeriesSuccLarg(int nbMaxOcc, int ligne, int *series0, int 
     char pion = ' ';
 
     for(i = 0; i < morpion->taille ; ++i)
-        comparerSeries2Succ(nbMaxOcc, & nbOccu, & pion, ligne, i, series0, series1, comparerSerie2Droite, morpion);
+    {
+        comparerSeries2Succ(nbMaxOcc, &nbOccu, &pion, ligne, i, series0, series1, comparerSerie2Droite, morpion);
+    }
 }
 
 static void rechercherSeriesSuccDiags(int nbMaxOcc, int *series0, int *series1, tpm morpion)
@@ -350,7 +422,8 @@ static void rechercherSeriesSuccDiags(int nbMaxOcc, int *series0, int *series1, 
     // parcours du premier element
     rechercherSeriesSuccDiagASc(nbMaxOcc, 0, 0, series0, series1, morpion);
 
-    for(i = 1; i < morpion->taille - nbMaxOcc +1 ; ++i){
+    for(i = 1; i < morpion->taille - nbMaxOcc +1 ; ++i)
+    {
         // parcours les colonnes de la premiere ligne
         rechercherSeriesSuccDiagASc(nbMaxOcc, i, 0, series0, series1, morpion);
 
@@ -372,16 +445,26 @@ static void rechercherSeriesSuccDiags(int nbMaxOcc, int *series0, int *series1, 
 static void rechercherSeriesSuccVert(int nbMaxOcc, int *series0, int *series1, tpm morpion){
     int i;
     for(i = 0; i < morpion->taille ; ++i)
+    {
         rechercherSeriesSuccHaut(nbMaxOcc, i, series0, series1, morpion);
+    }
 }
 
 static void rechercherSeriesSuccHori(int nbMaxOcc, int *series0, int *series1, tpm morpion){
     int i;
     for(i = 0; i < morpion->taille ; ++i)
+    {
         rechercherSeriesSuccLarg(nbMaxOcc, i, series0, series1, morpion);
+    }
 }
 
-//Compte le nombre de séries nbMaxOcc de pions alignés de chacun des joueurs
+/**
+ * Compte le nombre de séries nbMaxOcc de pions alignés de chacun des joueurs
+ * @param nbMaxOcc
+ * @param series0
+ * @param series1
+ * @param morpion
+ */
 void rechercherSeriesSucc(int nbMaxOcc, int *series0, int *series1, tpm morpion)
 {
     rechercherSeriesSuccDiags(nbMaxOcc, series0, series1, morpion);
@@ -391,7 +474,14 @@ void rechercherSeriesSucc(int nbMaxOcc, int *series0, int *series1, tpm morpion)
     rechercherSeriesSuccHori(nbMaxOcc, series0, series1, morpion);
 }
 
-
+/**
+ * Regarde si oui ou non un "combo" de symbole est bloque horizontalement
+ * @param i
+ * @param j
+ * @param morpion
+ * @param placeDispo
+ * @return
+ */
 int estBloqueH(int i, int j, tpm morpion, int placeDispo)
 {
     int indJ;
@@ -415,10 +505,23 @@ int estBloqueH(int i, int j, tpm morpion, int placeDispo)
     }
 
     if(cptPlaceDispo >= placeDispo)
+    {
         return 0;
-    return 1;
+    }
+    else
+    {
+        return 1;
+    }
 }
 
+/**
+ * Regarde si oui ou non un "combo" de symbole est bloque verticalement
+ * @param i
+ * @param j
+ * @param morpion
+ * @param placeDispo
+ * @return
+ */
 int estBloqueV(int i, int j, tpm morpion, int placeDispo)
 {
     int indI;
@@ -441,10 +544,23 @@ int estBloqueV(int i, int j, tpm morpion, int placeDispo)
         indI = indI -1;
     }
     if(cptPlaceDispo >= placeDispo)
+    {
         return 0;
-    return 1;
+    }
+    else
+    {
+        return 1;
+    }
 }
 
+/**
+ * Regarde si oui ou non un "combo" de symbole est bloque en diagonale ascendante
+ * @param i
+ * @param j
+ * @param morpion
+ * @param placeDispo
+ * @return
+ */
 int estBloqueDA(int i, int j, tpm morpion, int placeDispo)
 {
     int indI;
@@ -474,10 +590,23 @@ int estBloqueDA(int i, int j, tpm morpion, int placeDispo)
         indJ = indJ-1;
     }
     if(cptPlaceDispo >= placeDispo)
+    {
         return 0;
-    return 1;
+    }
+    else
+    {
+        return 1;
+    }
 }
 
+/**
+ * Regarde si oui ou non un "combo" de symbole est bloque en diagonale descendante
+ * @param i
+ * @param j
+ * @param morpion
+ * @param placeDispo
+ * @return
+ */
 int estBloqueDD(int i, int j, tpm morpion, int placeDispo)
 {
     int indI;
@@ -507,10 +636,20 @@ int estBloqueDD(int i, int j, tpm morpion, int placeDispo)
         indJ = indJ+1;
     }
     if(cptPlaceDispo >= placeDispo)
+    {
         return 0;
+    }
     return 1;
 }
 
+/**
+ * Compte le nombre de series de O et de X alignés, et le nombre max qu'on peut aligner sans est bloqué
+ * @param morpion
+ * @param seriesX
+ * @param seriesO
+ * @param nbAlign
+ * @param nbNonBloque
+ */
 void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign, int nbNonBloque)
 {
     int i, j, k, l;
@@ -518,6 +657,7 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign, int nbN
 
     *seriesX = 0;
     *seriesO = 0;
+
     //ligne
     for(i = 0; i < getTailleMorpion(morpion); ++i)
     {
@@ -531,15 +671,23 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign, int nbN
             {
                 ++cptO;
                 cptX = 0;
-                if(cptO == nbAlign && !estBloqueH(i, j, morpion, nbNonBloque)) // on vérifie en même temps que ce n'est pas bloqué
+
+                // on vérifie en même temps que ce n'est pas bloqué
+                if(cptO == nbAlign && !estBloqueH(i, j, morpion, nbNonBloque))
+                {
                     ++*seriesO;
+                }
             }
             else if(morpion->morpion[i][j] == 'X')
             {
                 ++cptX;
                 cptO = 0;
-                if(cptX == nbAlign && !estBloqueH(i, j, morpion, nbNonBloque)) // on vérifie en même temps que ce n'est pas bloqué
+
+                // on vérifie en même temps que ce n'est pas bloqué
+                if(cptX == nbAlign && !estBloqueH(i, j, morpion, nbNonBloque))
+                {
                     ++*seriesX;
+                }
             }
         }
 
@@ -554,15 +702,22 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign, int nbN
                 ++cptO;
                 cptX = 0;
 
-                if(cptO == nbAlign && !estBloqueV(j, i, morpion, nbNonBloque)) // on vérifie en même temps que ce n'est pas bloqué
+                // on vérifie en même temps que ce n'est pas bloqué
+                if(cptO == nbAlign && !estBloqueV(j, i, morpion, nbNonBloque))
+                {
                     ++*seriesO;
+                }
             }
             else if(morpion->morpion[j][i] == 'X')
             {
                 ++cptX;
                 cptO = 0;
-                if(cptX == nbAlign && !estBloqueV(j, i, morpion, nbNonBloque)) // on vérifie en même temps que ce n'est pas bloqué
+
+                // on vérifie en même temps que ce n'est pas bloqué
+                if(cptX == nbAlign && !estBloqueV(j, i, morpion, nbNonBloque))
+                {
                     ++*seriesX;
+                }
             }
         }
     }
@@ -584,21 +739,30 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign, int nbN
                 ++cptO;
                 cptX = 0;
 
-                if(cptO == nbAlign && !estBloqueDD(k, l, morpion, nbNonBloque)) // on vérifie en même temps que ce n'est pas bloqué
+                // on vérifie en même temps que ce n'est pas bloqué
+                if(cptO == nbAlign && !estBloqueDD(k, l, morpion, nbNonBloque))
+                {
                     ++*seriesO;
+                }
             }
             else if(morpion->morpion[k][l] == 'X')
             {
                 ++cptX;
                 cptO = 0;
-                if(cptX == nbAlign && !estBloqueDD(k, l, morpion, nbNonBloque)) // on vérifie en même temps que ce n'est pas bloqué
+
+                // on vérifie en même temps que ce n'est pas bloqué
+                if(cptX == nbAlign && !estBloqueDD(k, l, morpion, nbNonBloque))
+                {
                     ++*seriesX;
+                }
             }
             ++k;
             ++l;
         }
     }
-    for(j = 1; j < getTailleMorpion(morpion) - 4; ++j) // on commence à 1 pour pas refaire la meme diag qu'avec i = 0
+
+    // on commence à 1 pour pas refaire la meme diag qu'avec i = 0
+    for(j = 1; j < getTailleMorpion(morpion) - 4; ++j)
     {
         cptO = 0;
         cptX = 0;
@@ -611,15 +775,22 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign, int nbN
                 ++cptO;
                 cptX = 0;
 
-                if(cptO == nbAlign && !estBloqueDD(k, l, morpion, nbNonBloque)) // on vérifie en même temps que ce n'est pas bloqué
+                // on vérifie en même temps que ce n'est pas bloqué
+                if(cptO == nbAlign && !estBloqueDD(k, l, morpion, nbNonBloque))
+                {
                     ++*seriesO;
+                }
             }
             else if(morpion->morpion[k][l] == 'X')
             {
                 ++cptX;
                 cptO = 0;
-                if(cptX == nbAlign && !estBloqueDD(k, l, morpion, nbNonBloque)) // on vérifie en même temps que ce n'est pas bloqué
+
+                // on vérifie en même temps que ce n'est pas bloqué
+                if(cptX == nbAlign && !estBloqueDD(k, l, morpion, nbNonBloque))
+                {
                     ++*seriesX;
+                }
             }
             ++k;
             ++l;
@@ -641,21 +812,30 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign, int nbN
                 ++cptO;
                 cptX = 0;
 
-                if(cptO == nbAlign && !estBloqueDA(k, l, morpion, nbNonBloque)) // onvérifie en même temps que ce n'est pas bloqué
+                // onvérifie en même temps que ce n'est pas bloqué
+                if(cptO == nbAlign && !estBloqueDA(k, l, morpion, nbNonBloque))
+                {
                     ++*seriesO;
+                }
             }
             else if(morpion->morpion[k][l] == 'X')
             {
                 ++cptX;
                 cptO = 0;
-                if(cptX == nbAlign && !estBloqueDA(k, l, morpion, nbNonBloque)) // onvérifie en même temps que ce n'est pas bloqué
+
+                // onvérifie en même temps que ce n'est pas bloqué
+                if(cptX == nbAlign && !estBloqueDA(k, l, morpion, nbNonBloque))
+                {
                     ++*seriesX;
+                }
             }
             ++k;
             --l;
         }
     }
-    for(j = getTailleMorpion(morpion)-2; j > 3; --j) // on commence à taille - 2 pour pas refaire la meme diag qu'avec i = 0
+
+    // on commence à taille - 2 pour pas refaire la meme diag qu'avec i = 0
+    for(j = getTailleMorpion(morpion)-2; j > 3; --j)
     {
         cptO = 0;
         cptX = 0;
@@ -668,15 +848,22 @@ void nbSeriesAlign(tpm morpion, int* seriesX, int* seriesO, int nbAlign, int nbN
                 ++cptO;
                 cptX = 0;
 
-                if(cptO == nbAlign && !estBloqueDA(k, l, morpion, nbNonBloque)) // onvérifie en même temps que ce n'est pas bloqué
+                // onvérifie en même temps que ce n'est pas bloqué
+                if(cptO == nbAlign && !estBloqueDA(k, l, morpion, nbNonBloque))
+                {
                     ++*seriesO;
+                }
             }
             else if(morpion->morpion[k][l] == 'X')
             {
                 ++cptX;
                 cptO = 0;
-                if(cptX == nbAlign && !estBloqueDA(k, l, morpion, nbNonBloque)) // onvérifie en même temps que ce n'est pas bloqué
+
+                // onvérifie en même temps que ce n'est pas bloqué
+                if(cptX == nbAlign && !estBloqueDA(k, l, morpion, nbNonBloque))
+                {
                     ++*seriesX;
+                }
             }
             ++k;
             --l;
