@@ -9,6 +9,14 @@
 
 #include "headers/parcoursMorpion.h"
 
+/**
+ * Verifie si la position i, j présente une menace en étant libre
+ * @param pion X ou O
+ * @param i
+ * @param j
+ * @param morpion
+ * @return vrai ou faux
+ */
 static int estBloque(char pion, int i, int j, tpm morpion)
 {
     if( i >= getTailleMorpion(morpion) || j >= getTailleMorpion(morpion))
@@ -31,6 +39,17 @@ static int estBloque(char pion, int i, int j, tpm morpion)
     }
 }
 
+/**
+ * Verifie si (i, j) peut-être un coup gagnant (ultérieurement) en diagonale ascendante
+ * @param pion
+ * @param i
+ * @param j
+ * @param tailleSerie
+ * @param nbCasesLibres
+ * @param sens
+ * @param morpion
+ * @return vrai ou faux
+ */
 static int peutGagnerDiagAsc(char pion, int i, int j, int tailleSerie, int *nbCasesLibres, int sens, tpm morpion)
 {
     int nbCasesLibresG;
@@ -75,6 +94,17 @@ static int peutGagnerDiagAsc(char pion, int i, int j, int tailleSerie, int *nbCa
     return peutGagnerDiagAsc(pion, i + sens, j - sens, 0, nbCasesLibres, sens, morpion);
 }
 
+/**
+ *  * Verifie si (i, j) peut-être un coup gagnant (ultérieurement) en diagonale descandante
+ * @param pion
+ * @param i
+ * @param j
+ * @param tailleSerie
+ * @param nbCasesLibres
+ * @param sens
+ * @param morpion
+ * @return vrai ou faux
+ */
 static int peutGagnerDiagDesc(char pion, int i, int j, int tailleSerie, int *nbCasesLibres, int sens, tpm morpion) {
     int nbCasesLibresG;
     int nbCasesLibresD;
@@ -117,6 +147,17 @@ static int peutGagnerDiagDesc(char pion, int i, int j, int tailleSerie, int *nbC
     return peutGagnerDiagDesc(pion, i + sens, j + sens, 0, nbCasesLibres, sens, morpion);
 }
 
+/**
+ * Verifie si (i, j) peut-être un coup gagnant (ultérieurement) en vertical
+ * @param pion
+ * @param i
+ * @param j
+ * @param tailleSerie
+ * @param nbCasesLibres
+ * @param sens
+ * @param morpion
+ * @return vrai ou faux
+ */
 static int peutGagnerVert(char pion, int i, int j, int tailleSerie, int *nbCasesLibres, int sens, tpm morpion){
 
     int nbCasesLibresB;
@@ -160,6 +201,17 @@ static int peutGagnerVert(char pion, int i, int j, int tailleSerie, int *nbCases
     return peutGagnerVert(pion, i + sens, j, 0, nbCasesLibres, sens, morpion);
 }
 
+/**
+ * Verifie si (i, j) peut-être un coup gagnant (ultérieurement) horizontalement
+ * @param pion
+ * @param i
+ * @param j
+ * @param tailleSerie
+ * @param nbCasesLibres
+ * @param sens
+ * @param morpion
+ * @return vrai ou faux
+ */
 static int peutGagnerHori(char pion, int i, int j, int tailleSerie, int *nbCasesLibres, int sens, tpm morpion){
 
     int nbCasesLibresD;
