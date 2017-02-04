@@ -645,6 +645,12 @@ static int evalFD(tpm morpion)
     }
 }
 
+/**
+ * Fonction d'évaluation très basique
+ * Vérifie si vainqueur ou si trois symboles alignés
+ * @param morpion
+ * @return un poids
+ */
 static int evalBacASable(tpm morpion)
 {
     int vainqueur;
@@ -663,7 +669,7 @@ static int evalBacASable(tpm morpion)
         {
             return -1000 + morpion->nbCoupsJoues;
         }
-        else    //jamais
+        else    // jamais
         {
             return 0;
         }
