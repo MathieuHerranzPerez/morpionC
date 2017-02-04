@@ -961,9 +961,9 @@ void choisirIAenIAvIA()
 }
 
 
-//TODO
+
 /**
- * ne pas utiliser, faux !
+ * AlphaBeta, renvoie un poids suivant la fonction eval utilisée, correspondant au meilleur coup à jouer
  * @param morpion
  * @param profondeur
  * @param estBeta
